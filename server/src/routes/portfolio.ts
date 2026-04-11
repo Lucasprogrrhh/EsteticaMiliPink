@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 // GET /api/portfolio - Obtener portfolio publicado (Público)
 router.get('/', async (req, res) => {
     try {
-        const { category } = req.query;
+        const category = req.query.category as string | undefined;
         
         const whereClause: any = { status: 'PUBLISHED' };
         if (category && typeof category === 'string' && category !== 'Todos') {
