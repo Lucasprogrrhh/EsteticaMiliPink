@@ -34,7 +34,7 @@ const AdminAppointmentsPage: React.FC = () => {
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/appointments', {
+                const response = await fetch('${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/appointments', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -61,7 +61,7 @@ const AdminAppointmentsPage: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:3001/api/appointments/${id}/status`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/appointments/${id}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

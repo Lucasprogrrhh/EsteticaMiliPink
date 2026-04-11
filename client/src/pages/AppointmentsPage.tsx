@@ -74,7 +74,7 @@ const AppointmentsPage: React.FC = () => {
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/appointments', {
+                const response = await fetch('${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/appointments', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -102,7 +102,7 @@ const AppointmentsPage: React.FC = () => {
         if (!confirm('Are you sure you want to cancel this appointment?')) return;
 
         try {
-            const response = await fetch(`http://localhost:3001/api/appointments/${id}/status`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/appointments/${id}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ const AppointmentsPage: React.FC = () => {
                 formData.append('photo', photo);
             }
 
-            const response = await fetch('http://localhost:3001/api/reviews', {
+            const response = await fetch('${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/reviews', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -209,7 +209,7 @@ const AppointmentsPage: React.FC = () => {
                 formData.append('specialistName', selectedAppt.specialist?.name || 'Clínica Estética');
             }
 
-            const response = await fetch('http://localhost:3001/api/portfolio/client', {
+            const response = await fetch('${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/portfolio/client', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -301,7 +301,7 @@ const AppointmentsPage: React.FC = () => {
                                         {appointment.review.comment && <p className="text-on-surface-variant font-medium italic mt-1">"{appointment.review.comment}"</p>}
                                         {appointment.review.photoUrl && (
                                             <div className="mt-3">
-                                                <img src={`http://localhost:3001${appointment.review.photoUrl}`} alt="Reseña" className="w-16 h-16 object-cover rounded-xl shadow-sm border border-outline-variant/30 hover:scale-[2.5] hover:z-50 relative origin-top-left transition-transform duration-300 cursor-zoom-in" />
+                                                <img src={`${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}${appointment.review.photoUrl}`} alt="Reseña" className="w-16 h-16 object-cover rounded-xl shadow-sm border border-outline-variant/30 hover:scale-[2.5] hover:z-50 relative origin-top-left transition-transform duration-300 cursor-zoom-in" />
                                             </div>
                                         )}
                                         <div className="mt-3 pt-2 border-t border-outline-variant/20">
