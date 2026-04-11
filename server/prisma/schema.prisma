@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     String        @id @default(uuid())
+  email                  String        @unique
+  password               String
+  name                   String
+  phone                  String?
+  photoUrl               String?
+  role                   Role          @default(CLIENT)
+  paymentAlias           String?
+  adminPhone             String?
+  depositPercentage      Int?          @default(50)
+  reminderTime           String?       @default("10:00")
+  remindersActive        Boolean?      @default(true)
+  points                 Int           @default(0)
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+  specialistAppointments Appointment[] @relation("SpecialistAppointments")
+  clientAppointments     Appointment[] @relation("ClientAppointments")
+  reviews                Review[]
+  reminders              Reminder[]
+  pointTransactions      PointsTransaction[]
+  portfolioItems         PortfolioItem[]
+  courseEnrollments      CourseEnrollment[]
+}
+
+model Service {
+  id              String        @id @default(uuid())
+  name            String
+  description     String?
+  price           Decimal
+  durationMinutes Int
+  active          Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  appointments    Appointment[]
+  reviews         Review[]
+}
+
+model Appointment {
+  id           String            @id @default(uuid())
+  dateTime     DateTime
+  status       AppointmentStatus @default(PENDING)
+  notes        String?
+  depositAmount Decimal?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  clientId     String
+  specialistId String?
+  serviceId    String
+  service      Service           @relation(fields: [serviceId], references: [id])
+  specialist   User?             @relation("SpecialistAppointments", fields: [specialistId], references: [id])
+  client       User              @relation("ClientAppointments", fields: [clientId], references: [id])
+  review       Review?
+  reminders    Reminder[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal
+  stock       Int      @default(0)
+  sku         String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Review {
+  id            String      @id @default(uuid())
+  rating        Int
+  comment       String?
+  photoUrl      String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  appointmentId String      @unique
+  clientId      String
+  serviceId     String
+  service       Service     @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  client        User        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+}
+
+model Reminder {
+  id            String      @id @default(uuid())
+  type          String      // CLIENT_REMINDER o SPECIALIST_REMINDER
+  status        String      @default("PENDING") // PENDING, SENT
+  message       String
+  phoneTarget   String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  appointmentId String
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  adminId       String?
+  admin         User?       @relation(fields: [adminId], references: [id], onDelete: SetNull)
+}
+
+model PointsTransaction {
+  id          String   @id @default(uuid())
+  amount      Int
+  type        String   // "earned" o "spent"
+  description String?
+  date        DateTime @default(now())
+  userId      String
+  serviceId   String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BusinessConfig {
+  id              String   @id @default(uuid())
+  instagramUrl    String?
+  whatsappNumber  String?
+  address         String?
+  googleMapsUrl   String?
+  tiktokUrl       String?
+  facebookUrl     String?
+  termsConditions String?
+  pointsPerDollar Int      @default(1)
+  discountRules   String?  // JSON mapping of points to discounts (e.g. [{"points": 100, "discount": 5}])
+  updatedAt       DateTime @updatedAt
+}
+
+model PortfolioItem {
+  id              String   @id @default(uuid())
+  imageUrl        String
+  serviceCategory String
+  specialistName  String
+  clientId        String?
+  description     String?
+  status          String   @default("PENDING") // PENDING, PUBLISHED, REJECTED
+  isFeatured      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  client          User?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
+}
+
+model Course {
+  id            String   @id @default(uuid())
+  name          String
+  category      String
+  description   String?
+  coverImageUrl String?
+  price         Decimal
+  duration      String?
+  maxSpots      Int
+  status        String   @default("ACTIVE") // ACTIVE, PAUSED, FULL
+  isFeatured    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  dates         CourseDate[]
+  enrollments   CourseEnrollment[]
+}
+
+model CourseDate {
+  id                 String   @id @default(uuid())
+  date               DateTime
+  time               String
+  currentEnrollments Int      @default(0)
+  courseId           String
+  course             Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrollments        CourseEnrollment[]
+}
+
+model CourseEnrollment {
+  id            String   @id @default(uuid())
+  name          String
+  email         String
+  phone         String?
+  enrolledAt    DateTime @default(now())
+  courseId      String
+  courseDateId  String
+  userId        String?
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseDate    CourseDate @relation(fields: [courseDateId], references: [id], onDelete: Cascade)
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model NewsletterSubscriber {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  SPECIALIST
+  CLIENT
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}

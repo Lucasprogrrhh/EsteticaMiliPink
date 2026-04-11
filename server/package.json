@@ -1,0 +1,39 @@
+{
+    "name": "estetica-app-server",
+    "version": "1.0.0",
+    "main": "src/index.ts",
+    "scripts": {
+        "start": "ts-node src/index.ts",
+        "dev": "nodemon src/index.ts",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@prisma/client": "^6.3.1",
+        "bcryptjs": "^3.0.3",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "jsonwebtoken": "^9.0.3",
+        "multer": "^2.1.1",
+        "node-cron": "^4.2.1"
+    },
+    "devDependencies": {
+        "@types/bcryptjs": "^2.4.6",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^5.0.0",
+        "@types/form-data": "^2.2.1",
+        "@types/jsonwebtoken": "^9.0.10",
+        "@types/multer": "^2.1.0",
+        "@types/node": "^22.13.4",
+        "@types/node-cron": "^3.0.11",
+        "axios": "^1.13.6",
+        "form-data": "^4.0.5",
+        "nodemon": "^3.1.9",
+        "prisma": "^6.3.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.7.3"
+    },
+    "prisma": {
+        "seed": "ts-node src/seed.ts"
+    }
+}
