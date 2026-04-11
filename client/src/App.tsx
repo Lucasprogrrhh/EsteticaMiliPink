@@ -22,7 +22,7 @@ import PublicBookingPage from './pages/PublicBookingPage'
 import PublicPortfolioPage from './pages/PublicPortfolioPage'
 import AdminPortfolioPage from './pages/AdminPortfolioPage'
 
-const API = (import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api')
+const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 interface Service {
   id: string
@@ -272,7 +272,7 @@ function Dashboard({ services, appointments, reviews = [] }: { services: Service
                   {reviews[currentReviewIdx].photoUrl && (
                     <div className="shrink-0">
                       <img 
-                        src={`${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}${reviews[currentReviewIdx].photoUrl}`} 
+                        src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001'}${reviews[currentReviewIdx].photoUrl}`} 
                         alt="Trabajo" 
                         className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-xl shadow-lg border border-pink-500/20"
                       />

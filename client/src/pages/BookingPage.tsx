@@ -37,11 +37,11 @@ const BookingPage: React.FC = () => {
         const fetchData = async () => {
             try {
                 const [servicesRes, specialistsRes, settingsRes] = await Promise.all([
-                    fetch('${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/services'),
-                    fetch('${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/users/specialists', {
+                    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/services`),
+                    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/users/specialists`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch('${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/users/admin-settings', {
+                    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/users/admin-settings`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     })
                 ]);
@@ -95,7 +95,7 @@ const BookingPage: React.FC = () => {
 
         setSubmitting(true);
         try {
-            const response = await fetch('${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/appointments', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/appointments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

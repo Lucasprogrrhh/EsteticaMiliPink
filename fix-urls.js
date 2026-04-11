@@ -19,30 +19,37 @@ files.forEach(f => {
     let c = fs.readFileSync(f, 'utf8');
     let changed = false;
 
-    // Primero reemplazamos cualquier /api suelto
-    if (c.includes(`'http://localhost:3001/api'`)) {
-        c = c.replaceAll(`'http://localhost:3001/api'`, `(import.meta.env.VITE_API_URL || 'http://localhost:3001/api')`);
-        changed = true;
-    }
-    if (c.includes(`"http://localhost:3001/api"`)) {
-        c = c.replaceAll(`"http://localhost:3001/api"`, `(import.meta.env.VITE_API_URL || 'http://localhost:3001/api')`);
-        changed = true;
-    }
-    
-    // Y los fetch que usan template literals ej: `http://localhost:3001/api/reviews`
-    if (c.includes('http://localhost:3001/api/')) {
-        c = c.replaceAll('http://localhost:3001/api/', `\${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/`);
+    // Regla 1: Arreglar el `const API = ...` que quedó mal formateado
+    const badApiRegex = /const API = \(import\.meta\.env\.VITE_API_URL \|\|\s*'[^']*'\);/g;
+    if (badApiRegex.test(c)) {
+        c = c.replace(badApiRegex, "const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';");
         changed = true;
     }
 
-    // Para las imágenes (que no tienen /api):
-    if (c.includes('http://localhost:3001')) {
-        c = c.replaceAll('http://localhost:3001', `\${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}`);
+    // Regla 1b: Otras variables mal formadas de fallback
+    const badApiRegex2 = /const API\s*=\s*\(import\.meta\.env\.VITE_API_URL \|\| '[^']*'\)/g;
+    if (badApiRegex2.test(c)) {
+        c = c.replace(badApiRegex2, "const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';");
+        changed = true;
+    }
+
+    // Regla 2: Reparar URLs interpoladas rotas: `${(import.meta.env...}`
+    const badInterpolatedRegex = /\$\{\(import\.meta\.env\.VITE_API_URL \? import\.meta\.env\.VITE_API_URL\.replace\('\/api',''\) : 'http:\/\/localhost:3001'\)\}/g;
+    if (badInterpolatedRegex.test(c)) {
+        c = c.replace(badInterpolatedRegex, "${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:3001'}");
+        changed = true;
+    }
+
+    // Regla 3: Reparar strings de fetch mal resueltos
+    const badFetchRegex = /\(import\.meta\.env\.VITE_API_URL \|\| 'http:\/\/localhost:3001\/api'\)/g;
+    // Evitar aplicarlo en const API
+    if (c.includes("fetch(") && badFetchRegex.test(c)) {
+        c = c.replace(badFetchRegex, "`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}`");
         changed = true;
     }
 
     if (changed) {
         fs.writeFileSync(f, c);
-        console.log('Fixed API URLs in:', f);
+        console.log('Fixed syntax in:', f);
     }
 });

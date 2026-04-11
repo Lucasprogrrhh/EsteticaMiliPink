@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Camera, User, Phone, Lock, Save, Loader2, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-const API = (import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api');
+const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export default function ProfilePage() {
   const { token, user: authUser } = useAuth();
@@ -169,7 +169,7 @@ export default function ProfilePage() {
             >
               {profile.photoUrl ? (
                 <img 
-                  src={`${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}${profile.photoUrl}`} 
+                  src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001'}${profile.photoUrl}`} 
                   alt="Perfil" 
                   className="w-full h-full object-cover group-hover:opacity-75 transition-opacity"
                 />

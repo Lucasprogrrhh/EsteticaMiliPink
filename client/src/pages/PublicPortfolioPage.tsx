@@ -26,8 +26,8 @@ export default function PublicPortfolioPage() {
             setLoading(true);
             try {
                 const url = activeCategory === 'Todos' 
-                    ? '${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/portfolio'
-                    : `${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/portfolio?category=${encodeURIComponent(activeCategory)}`;
+                    ? `${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio`
+                    : `http://localhost:3001/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
                 
                 const res = await fetch(url);
                 const data = await res.json();
@@ -112,7 +112,7 @@ export default function PublicPortfolioPage() {
                                     onClick={() => setSelectedItem(item)}
                                 >
                                     <img 
-                                        src={`${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}${item.imageUrl}`} 
+                                        src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001'}${item.imageUrl}`} 
                                         alt={item.serviceCategory}
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         loading="lazy"
@@ -155,7 +155,7 @@ export default function PublicPortfolioPage() {
                         >
                             <div className="md:w-3/5 bg-black flex items-center justify-center relative">
                                 <img 
-                                    src={`${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}${selectedItem.imageUrl}`} 
+                                    src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001'}${selectedItem.imageUrl}`} 
                                     alt={selectedItem.serviceCategory} 
                                     className="w-full h-auto max-h-[80vh] object-contain"
                                 />

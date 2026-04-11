@@ -37,7 +37,7 @@ export default function AdminPortfolioPage() {
 
     const fetchPortfolio = async () => {
         try {
-            const res = await fetch('${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/portfolio/admin', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/admin`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Failed to fetch portfolio');
@@ -52,7 +52,7 @@ export default function AdminPortfolioPage() {
 
     const handleUpdateStatus = async (id: string, newStatus: string) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/portfolio/${id}/status`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/${id}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export default function AdminPortfolioPage() {
 
     const handleToggleFeatured = async (id: string, currentFeatured: boolean) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/portfolio/${id}/status`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/${id}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ export default function AdminPortfolioPage() {
     const handleDelete = async (id: string) => {
         if (!confirm('¿Seguro de eliminar esta foto?')) return;
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/portfolio/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -111,7 +111,7 @@ export default function AdminPortfolioPage() {
             fd.append('specialistName', specialist);
             fd.append('isFeatured', isFeatured.toString());
 
-            const res = await fetch('${import.meta.env.VITE_API_URL || '${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}/api'}/portfolio/admin', {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/admin`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: fd
@@ -164,7 +164,7 @@ export default function AdminPortfolioPage() {
                     >
                         <div className="aspect-square relative">
                             <img 
-                                src={`${(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001')}${item.imageUrl}`} 
+                                src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001'}${item.imageUrl}`} 
                                 className="w-full h-full object-cover" 
                                 alt={item.serviceCategory} 
                             />
