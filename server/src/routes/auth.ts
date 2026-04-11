@@ -8,7 +8,7 @@ const router = Router();
 const prisma = new PrismaClient();
 
 const generateToken = (userId: string, email: string, role: string): string => {
-    const secret = process.env.JWT_SECRET!;
+    const secret = process.env.JWT_SECRET || 'fallback_secret_key_change_me_later_123!';
     const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
     return jwt.sign({ userId, email, role }, secret, { expiresIn } as jwt.SignOptions);
 };

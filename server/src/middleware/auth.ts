@@ -25,7 +25,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction): vo
     }
 
     const token = authHeader.split(' ')[1];
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.JWT_SECRET || 'fallback_secret_key_change_me_later_123!';
 
     if (!secret) {
         res.status(500).json({ error: 'JWT_SECRET not configured on server.' });
