@@ -345,7 +345,7 @@ export default function LandingPage() {
                         <div className="lg:col-span-5 order-1 lg:order-2 relative">
                             <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden group">
                                 {/* Main Hero Image */}
-                                <img alt="Mili professional portrait" className="w-full h-full object-cover rounded-lg transform transition-transform duration-700 group-hover:scale-110" data-alt="Professional portrait of Mili, a stylish aesthetician in a modern pink-themed studio." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbGPOvP8TN4y0yGTBsv_EIwbIgSa_1sXeEn14GGmLoCK2me-OmvTBwaK5n9p2Sek87t7rwWj4bdEDLVCV97o-sIOln73hWz2sImH4_U_XJwyWtVPn1C5NmLkCrSbJRJW9_GKTdCHUlrmfJ4eVN0fg0vNuWUaqNA-NLccFGeL05Byd3_AwsTluGMEqISwtpljCWKpkjHJ01KQhhniRG_qhO2vqHEZwb3TDbDkBgtY88_i711uDkkB-EdsaTn-0m6H-2lbJJf8ggZxo" />
+                                <img alt="Mili professional portrait" className="w-full h-full object-cover rounded-lg transform transition-transform duration-700 group-hover:scale-110" data-alt="Professional portrait of Mili, a stylish aesthetician in a modern pink-themed studio." src="/images/hero-image.png" />
                                 {/* Floating Glass Cards */}
                                 <div className="absolute -bottom-6 -left-6 glass-card p-6 rounded-lg border border-white/30 shadow-2xl hidden md:block">
                                     <div className="flex items-center gap-4">
@@ -386,7 +386,7 @@ export default function LandingPage() {
                             <div className="md:col-span-5 relative">
                                 <div className="sticky top-24">
                                     <div className="rounded-lg overflow-hidden h-[600px] shadow-2xl">
-                                        <img alt="Professional manicure and nail art session" className="w-full h-full object-cover" data-alt="Close-up of professional nail artist hands working with golden details and intricate artistic patterns in a high-end luxury spa" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxgCw20cCbMfOWdNchscPIScskCMkC5mQqziC-YAxn8habm4GFAdjRNeJqTa4Hz_fnUCWkKgZgEEKrdigc0Asfd6tXXFLPh7sQYCCFCXC-nde41AB1MoZNJjPe0BXbOmGdgtKkYhDJGjIwt_3TJMxdeyXmNYcgW0_UxBFpLq1acX8xkO_Z4yTjFti4LWm6bcL4_mn19Qm5WsWk_yaSMaTdgltnknEl6VkxJIqnkVO4qj880MWxvOZZ6Dd-bqdoKpM3LQC0Aqs1W1M" />
+                                        <img alt="Professional manicure and nail art session" className="w-full h-full object-cover" data-alt="Close-up of professional nail artist hands working with golden details and intricate artistic patterns in a high-end luxury spa" src="/images/about-image.png" />
                                     </div>
                                     {/* "Story Ring" Decoration */}
                                     <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full border-4 border-dashed border-primary/30 animate-spin-slow"></div>
@@ -551,8 +551,8 @@ export default function LandingPage() {
                         <div className="mb-galeria-grid">
                         <img src="/images/resultados-alumnas-colage.jpeg"  alt="Collage resultados alumnas" title="Nails Art – resultado grupal" />
                         <img src="/images/resultados-alumnas-colage2.jpeg"        alt="Nail art floral alumna"     title="Flores 3D rosa y negro" />
-                        <img src="/images/resultado-alumna-03.jpg"        alt="Nail art marmolado"          title="Marmolado y flores 3D" />
-                        <img src="/images/resultado-alumna-04.jpg"        alt="Nail art colorido"           title="Arte 3D multicolor" />
+                        <img src="/images/resultado-alumna-03.png"        alt="Nail art marmolado"          title="Marmolado y flores 3D" />
+                        <img src="/images/resultado-alumna-04.png"        alt="Nail art colorido"           title="Arte 3D multicolor" />
                         </div>
                     </div>
 

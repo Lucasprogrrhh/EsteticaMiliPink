@@ -544,9 +544,9 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<PrivateRoute><LandingPage /></PrivateRoute>} />
-          <Route path="/reservar" element={<PrivateRoute><PublicBookingPage /></PrivateRoute>} />
-          <Route path="/portfolio" element={<PrivateRoute><PublicPortfolioPage /></PrivateRoute>} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/reservar" element={<PublicBookingPage />} />
+          <Route path="/portfolio" element={<PublicPortfolioPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
