@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Calendar, Scissors, Users, LayoutDashboard,
   Clock, DollarSign, CheckCircle2, XCircle,
-  AlertCircle, ChevronRight, Star, Activity, LogOut, Plus, Quote, User, MessageCircle, Image, GraduationCap
+  AlertCircle, ChevronRight, Star, Activity, LogOut, Plus, Quote, User, MessageCircle, Image, GraduationCap, Home
 } from 'lucide-react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import PrivateRoute from './components/PrivateRoute'
@@ -411,6 +411,13 @@ function AppLayout() {
               </div>
             </div>
           </div>
+          <Link
+            to="/"
+            className={`w-full flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${user?.role === 'CLIENT' ? 'text-on-surface-variant hover:text-primary hover:bg-primary-fixed/30' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'}`}
+          >
+            <Home className="w-4 h-4" />
+            Ir a la Web
+          </Link>
           <button
             onClick={() => {
               logout()
