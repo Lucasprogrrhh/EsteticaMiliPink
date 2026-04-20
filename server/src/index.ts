@@ -11,6 +11,7 @@ import reviewsRouter from './routes/reviews';
 import remindersRouter from './routes/reminders';
 import portfolioRouter from './routes/portfolio';
 import promotionsRouter from './routes/promotions';
+import coursesRouter from './routes/courses';
 import { requireAuth } from './middleware/auth';
 import { startReminderCronJob } from './cron/reminderJob';
 
@@ -32,6 +33,7 @@ app.use('/api/reviews', reviewsRouter);
 app.use('/api/reminders', remindersRouter);
 app.use('/api/portfolio', portfolioRouter);
 app.use('/api/promotions', promotionsRouter);
+app.use('/api/courses', coursesRouter);
 
 // Protected routes
 app.use('/api/appointments', requireAuth, appointmentsRouter);

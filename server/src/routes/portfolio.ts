@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 
         const items = await prisma.portfolioItem.findMany({
             where: whereClause,
-            orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
+            orderBy: [{ order: 'asc' }, { isFeatured: 'desc' }, { createdAt: 'desc' }],
         });
 
         res.json(items);
@@ -35,7 +35,7 @@ router.get('/admin', requireAuth, async (req, res) => {
         if (!user || user.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
 
         const items = await prisma.portfolioItem.findMany({
-            orderBy: { createdAt: 'desc' },
+            orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
             include: {
                 client: { select: { name: true } },
             }
@@ -86,7 +86,7 @@ router.post('/admin', requireAuth, upload.single('photo'), async (req, res) => {
         const user = req.user;
         if (!user || user.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
 
-        const { description, serviceCategory, specialistName, isFeatured } = req.body;
+        const { altText, description, serviceCategory, specialistName, isFeatured } = req.body;
         
         if (!req.file) {
             return res.status(400).json({ error: 'Es requerida una imagen' });
@@ -99,9 +99,11 @@ router.post('/admin', requireAuth, upload.single('photo'), async (req, res) => {
                 imageUrl,
                 serviceCategory: serviceCategory || 'Otros',
                 specialistName: specialistName || 'Mili Belleza',
+                altText: altText || description,
                 description,
                 status: 'PUBLISHED',
-                isFeatured: isFeatured === 'true'
+                isFeatured: isFeatured === 'true',
+                order: 999
             }
         });
 
@@ -109,6 +111,29 @@ router.post('/admin', requireAuth, upload.single('photo'), async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al subir la imagen (Admin)' });
+    }
+});
+
+// PATCH /api/portfolio/reorder - Admin reordena imágenes
+router.patch('/reorder', requireAuth, async (req, res) => {
+    try {
+        const user = req.user;
+        if (!user || user.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
+
+        const { items } = req.body; // Array de { id, order }
+        if (!Array.isArray(items)) return res.status(400).json({ error: 'Formato inválido' });
+
+        // Actualizamos de a uno o con transaction
+        for (const item of items) {
+            await prisma.portfolioItem.update({
+                where: { id: item.id },
+                data: { order: item.order }
+            });
+        }
+        res.json({ success: true });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al reordenar el portfolio' });
     }
 });
 

@@ -8,6 +8,8 @@ interface PortfolioItem {
     serviceCategory: string;
     specialistName: string;
     description: string | null;
+    altText: string | null;
+    order: number;
     status: 'PENDING' | 'PUBLISHED' | 'REJECTED';
     isFeatured: boolean;
     createdAt: string;
@@ -26,10 +28,13 @@ export default function AdminPortfolioPage() {
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [desc, setDesc] = useState('');
+    const [altText, setAltText] = useState('');
     const [category, setCategory] = useState('Manicuría');
     const [specialist, setSpecialist] = useState('Mili Belleza');
     const [isFeatured, setIsFeatured] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+
+    const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
 
     useEffect(() => {
         fetchPortfolio();
@@ -42,11 +47,45 @@ export default function AdminPortfolioPage() {
             });
             if (!res.ok) throw new Error('Failed to fetch portfolio');
             const data = await res.json();
-            setItems(data);
+            // Sort client-side explicitly just in case
+            setItems(data.sort((a: any, b: any) => a.order - b.order));
         } catch (err: any) {
             setError(err.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDragStart = (index: number) => {
+        setDraggedItemIndex(index);
+    };
+
+    const handleDragEnter = (index: number) => {
+        if (draggedItemIndex === null || draggedItemIndex === index) return;
+        const newItems = [...items];
+        const item = newItems[draggedItemIndex];
+        newItems.splice(draggedItemIndex, 1);
+        newItems.splice(index, 0, item);
+        setDraggedItemIndex(index);
+        setItems(newItems);
+    };
+
+    const handleDragEnd = async () => {
+        setDraggedItemIndex(null);
+        try {
+            const updates = items.map((item, index) => ({ id: item.id, order: index }));
+            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/reorder`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ items: updates })
+            });
+            if (!res.ok) throw new Error('Failed to save sort order');
+        } catch (err: any) {
+            alert('Error guardando el orden: ' + err.message);
+            fetchPortfolio();
         }
     };
 
@@ -107,6 +146,7 @@ export default function AdminPortfolioPage() {
             const fd = new FormData();
             fd.append('photo', file);
             fd.append('description', desc);
+            fd.append('altText', altText);
             fd.append('serviceCategory', category);
             fd.append('specialistName', specialist);
             fd.append('isFeatured', isFeatured.toString());
@@ -151,16 +191,22 @@ export default function AdminPortfolioPage() {
             {error && <div className="bg-red-500/20 text-red-500 p-3 rounded mb-4">{error}</div>}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {items.map(item => (
+                {items.map((item, index) => (
                     <motion.div 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         key={item.id} 
-                        className={`bg-slate-800/80 rounded-xl overflow-hidden border ${
+                        draggable
+                        onDragStart={() => handleDragStart(index)}
+                        onDragEnter={() => handleDragEnter(index)}
+                        onDragEnd={handleDragEnd}
+                        onDragOver={(e) => e.preventDefault()}
+                        className={`bg-slate-800/80 rounded-xl overflow-hidden border cursor-move ${
+                            draggedItemIndex === index ? 'opacity-50 border-pink-500 scale-[1.02]' :
                             item.status === 'PENDING' ? 'border-yellow-500/40' : 
                             item.status === 'REJECTED' ? 'border-red-500/40' : 
                             'border-slate-700/50'
-                        } flex flex-col`}
+                        } flex flex-col transition-transform`}
                     >
                         <div className="aspect-square relative">
                             <img 
@@ -242,6 +288,10 @@ export default function AdminPortfolioPage() {
                             <div>
                                 <label className="block text-sm text-slate-300 mb-1">Especialista</label>
                                 <input type="text" value={specialist} onChange={e => setSpecialist(e.target.value)} required className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-white"/>
+                            </div>
+                            <div>
+                                <label className="block text-sm text-slate-300 mb-1">Alt Text (Texto alternativo imagen)</label>
+                                <input type="text" value={altText} onChange={e => setAltText(e.target.value)} required className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-white" />
                             </div>
                             <div>
                                 <label className="block text-sm text-slate-300 mb-1">Descripción</label>

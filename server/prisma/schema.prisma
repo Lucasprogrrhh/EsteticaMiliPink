@@ -132,10 +132,12 @@ model BusinessConfig {
 model PortfolioItem {
   id              String   @id @default(uuid())
   imageUrl        String
-  serviceCategory String
-  specialistName  String
+  serviceCategory String?
+  specialistName  String?
   clientId        String?
   description     String?
+  altText         String?
+  order           Int      @default(0)
   status          String   @default("PENDING") // PENDING, PUBLISHED, REJECTED
   isFeatured      Boolean  @default(false)
   createdAt       DateTime @default(now())
@@ -148,11 +150,12 @@ model Course {
   name          String
   category      String
   description   String?
+  contentGuide  String?
   coverImageUrl String?
   price         Decimal
   duration      String?
   maxSpots      Int
-  status        String   @default("ACTIVE") // ACTIVE, PAUSED, FULL
+  status        String   @default("ACTIVE") // ACTIVE, HIDDEN
   isFeatured    Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

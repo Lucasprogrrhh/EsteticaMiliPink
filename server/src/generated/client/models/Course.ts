@@ -41,6 +41,7 @@ export type CourseMinAggregateOutputType = {
   name: string | null
   category: string | null
   description: string | null
+  contentGuide: string | null
   coverImageUrl: string | null
   price: runtime.Decimal | null
   duration: string | null
@@ -56,6 +57,7 @@ export type CourseMaxAggregateOutputType = {
   name: string | null
   category: string | null
   description: string | null
+  contentGuide: string | null
   coverImageUrl: string | null
   price: runtime.Decimal | null
   duration: string | null
@@ -71,6 +73,7 @@ export type CourseCountAggregateOutputType = {
   name: number
   category: number
   description: number
+  contentGuide: number
   coverImageUrl: number
   price: number
   duration: number
@@ -98,6 +101,7 @@ export type CourseMinAggregateInputType = {
   name?: true
   category?: true
   description?: true
+  contentGuide?: true
   coverImageUrl?: true
   price?: true
   duration?: true
@@ -113,6 +117,7 @@ export type CourseMaxAggregateInputType = {
   name?: true
   category?: true
   description?: true
+  contentGuide?: true
   coverImageUrl?: true
   price?: true
   duration?: true
@@ -128,6 +133,7 @@ export type CourseCountAggregateInputType = {
   name?: true
   category?: true
   description?: true
+  contentGuide?: true
   coverImageUrl?: true
   price?: true
   duration?: true
@@ -230,6 +236,7 @@ export type CourseGroupByOutputType = {
   name: string
   category: string
   description: string | null
+  contentGuide: string | null
   coverImageUrl: string | null
   price: runtime.Decimal
   duration: string | null
@@ -268,6 +275,7 @@ export type CourseWhereInput = {
   name?: Prisma.StringFilter<"Course"> | string
   category?: Prisma.StringFilter<"Course"> | string
   description?: Prisma.StringNullableFilter<"Course"> | string | null
+  contentGuide?: Prisma.StringNullableFilter<"Course"> | string | null
   coverImageUrl?: Prisma.StringNullableFilter<"Course"> | string | null
   price?: Prisma.DecimalFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.StringNullableFilter<"Course"> | string | null
@@ -285,6 +293,7 @@ export type CourseOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   category?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentGuide?: Prisma.SortOrderInput | Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -305,6 +314,7 @@ export type CourseWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Course"> | string
   category?: Prisma.StringFilter<"Course"> | string
   description?: Prisma.StringNullableFilter<"Course"> | string | null
+  contentGuide?: Prisma.StringNullableFilter<"Course"> | string | null
   coverImageUrl?: Prisma.StringNullableFilter<"Course"> | string | null
   price?: Prisma.DecimalFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.StringNullableFilter<"Course"> | string | null
@@ -322,6 +332,7 @@ export type CourseOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   category?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentGuide?: Prisma.SortOrderInput | Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -345,6 +356,7 @@ export type CourseScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Course"> | string
   category?: Prisma.StringWithAggregatesFilter<"Course"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Course"> | string | null
+  contentGuide?: Prisma.StringNullableWithAggregatesFilter<"Course"> | string | null
   coverImageUrl?: Prisma.StringNullableWithAggregatesFilter<"Course"> | string | null
   price?: Prisma.DecimalWithAggregatesFilter<"Course"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.StringNullableWithAggregatesFilter<"Course"> | string | null
@@ -360,6 +372,7 @@ export type CourseCreateInput = {
   name: string
   category: string
   description?: string | null
+  contentGuide?: string | null
   coverImageUrl?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: string | null
@@ -377,6 +390,7 @@ export type CourseUncheckedCreateInput = {
   name: string
   category: string
   description?: string | null
+  contentGuide?: string | null
   coverImageUrl?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: string | null
@@ -394,6 +408,7 @@ export type CourseUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentGuide?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -411,6 +426,7 @@ export type CourseUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentGuide?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -428,6 +444,7 @@ export type CourseCreateManyInput = {
   name: string
   category: string
   description?: string | null
+  contentGuide?: string | null
   coverImageUrl?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: string | null
@@ -443,6 +460,7 @@ export type CourseUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentGuide?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -458,6 +476,7 @@ export type CourseUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentGuide?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -473,6 +492,7 @@ export type CourseCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   category?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  contentGuide?: Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
@@ -493,6 +513,7 @@ export type CourseMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   category?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  contentGuide?: Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
@@ -508,6 +529,7 @@ export type CourseMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   category?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  contentGuide?: Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrder
   price?: Prisma.SortOrder
   duration?: Prisma.SortOrder
@@ -561,6 +583,7 @@ export type CourseCreateWithoutDatesInput = {
   name: string
   category: string
   description?: string | null
+  contentGuide?: string | null
   coverImageUrl?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: string | null
@@ -577,6 +600,7 @@ export type CourseUncheckedCreateWithoutDatesInput = {
   name: string
   category: string
   description?: string | null
+  contentGuide?: string | null
   coverImageUrl?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: string | null
@@ -609,6 +633,7 @@ export type CourseUpdateWithoutDatesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentGuide?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -625,6 +650,7 @@ export type CourseUncheckedUpdateWithoutDatesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentGuide?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -641,6 +667,7 @@ export type CourseCreateWithoutEnrollmentsInput = {
   name: string
   category: string
   description?: string | null
+  contentGuide?: string | null
   coverImageUrl?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: string | null
@@ -657,6 +684,7 @@ export type CourseUncheckedCreateWithoutEnrollmentsInput = {
   name: string
   category: string
   description?: string | null
+  contentGuide?: string | null
   coverImageUrl?: string | null
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: string | null
@@ -689,6 +717,7 @@ export type CourseUpdateWithoutEnrollmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentGuide?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -705,6 +734,7 @@ export type CourseUncheckedUpdateWithoutEnrollmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentGuide?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   duration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -761,6 +791,7 @@ export type CourseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name?: boolean
   category?: boolean
   description?: boolean
+  contentGuide?: boolean
   coverImageUrl?: boolean
   price?: boolean
   duration?: boolean
@@ -779,6 +810,7 @@ export type CourseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   name?: boolean
   category?: boolean
   description?: boolean
+  contentGuide?: boolean
   coverImageUrl?: boolean
   price?: boolean
   duration?: boolean
@@ -794,6 +826,7 @@ export type CourseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   name?: boolean
   category?: boolean
   description?: boolean
+  contentGuide?: boolean
   coverImageUrl?: boolean
   price?: boolean
   duration?: boolean
@@ -809,6 +842,7 @@ export type CourseSelectScalar = {
   name?: boolean
   category?: boolean
   description?: boolean
+  contentGuide?: boolean
   coverImageUrl?: boolean
   price?: boolean
   duration?: boolean
@@ -819,7 +853,7 @@ export type CourseSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CourseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "category" | "description" | "coverImageUrl" | "price" | "duration" | "maxSpots" | "status" | "isFeatured" | "createdAt" | "updatedAt", ExtArgs["result"]["course"]>
+export type CourseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "category" | "description" | "contentGuide" | "coverImageUrl" | "price" | "duration" | "maxSpots" | "status" | "isFeatured" | "createdAt" | "updatedAt", ExtArgs["result"]["course"]>
 export type CourseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   dates?: boolean | Prisma.Course$datesArgs<ExtArgs>
   enrollments?: boolean | Prisma.Course$enrollmentsArgs<ExtArgs>
@@ -839,6 +873,7 @@ export type $CoursePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     name: string
     category: string
     description: string | null
+    contentGuide: string | null
     coverImageUrl: string | null
     price: runtime.Decimal
     duration: string | null
@@ -1276,6 +1311,7 @@ export interface CourseFieldRefs {
   readonly name: Prisma.FieldRef<"Course", 'String'>
   readonly category: Prisma.FieldRef<"Course", 'String'>
   readonly description: Prisma.FieldRef<"Course", 'String'>
+  readonly contentGuide: Prisma.FieldRef<"Course", 'String'>
   readonly coverImageUrl: Prisma.FieldRef<"Course", 'String'>
   readonly price: Prisma.FieldRef<"Course", 'Decimal'>
   readonly duration: Prisma.FieldRef<"Course", 'String'>

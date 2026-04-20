@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Calendar, Scissors, Users, LayoutDashboard,
   Clock, DollarSign, CheckCircle2, XCircle,
-  AlertCircle, ChevronRight, Star, Activity, LogOut, Plus, Quote, User, MessageCircle, Image
+  AlertCircle, ChevronRight, Star, Activity, LogOut, Plus, Quote, User, MessageCircle, Image, GraduationCap
 } from 'lucide-react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import PrivateRoute from './components/PrivateRoute'
@@ -21,6 +21,7 @@ import LandingPage from './pages/LandingPage'
 import PublicBookingPage from './pages/PublicBookingPage'
 import PublicPortfolioPage from './pages/PublicPortfolioPage'
 import AdminPortfolioPage from './pages/AdminPortfolioPage'
+import AdminCoursesPage from './pages/AdminCoursesPage'
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -354,6 +355,7 @@ function AppLayout() {
   if (user?.role === 'ADMIN') {
     navItems.push({ path: '/admin/appointments', label: 'Gestión Reservas', icon: <CheckCircle2 className="w-4 h-4" /> })
     navItems.push({ path: '/admin/services', label: 'Gestión Servicios', icon: <Scissors className="w-4 h-4" /> })
+    navItems.push({ path: '/admin/courses', label: 'Gestión Cursos', icon: <GraduationCap className="w-4 h-4" /> })
     navItems.push({ path: '/admin/portfolio', label: 'Gestión Portfolio', icon: <Image className="w-4 h-4" /> })
     navItems.push({ path: '/admin/reminders', label: 'Recordatorios', icon: <MessageCircle className="w-4 h-4" /> })
     navItems.push({ path: '/users', label: 'Usuarios', icon: <Users className="w-4 h-4" /> })
@@ -492,6 +494,16 @@ function AppLayout() {
                 <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
                   {user?.role === 'ADMIN' ? (
                     <AdminPortfolioPage />
+                  ) : (
+                    <Navigate to="/" replace />
+                  )}
+                </motion.div>
+              } />
+
+              <Route path="/admin/courses" element={
+                <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
+                  {user?.role === 'ADMIN' ? (
+                    <AdminCoursesPage />
                   ) : (
                     <Navigate to="/" replace />
                   )}

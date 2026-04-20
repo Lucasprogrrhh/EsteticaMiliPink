@@ -20,8 +20,18 @@ export type PortfolioItemModel = runtime.Types.Result.DefaultSelection<Prisma.$P
 
 export type AggregatePortfolioItem = {
   _count: PortfolioItemCountAggregateOutputType | null
+  _avg: PortfolioItemAvgAggregateOutputType | null
+  _sum: PortfolioItemSumAggregateOutputType | null
   _min: PortfolioItemMinAggregateOutputType | null
   _max: PortfolioItemMaxAggregateOutputType | null
+}
+
+export type PortfolioItemAvgAggregateOutputType = {
+  order: number | null
+}
+
+export type PortfolioItemSumAggregateOutputType = {
+  order: number | null
 }
 
 export type PortfolioItemMinAggregateOutputType = {
@@ -31,6 +41,8 @@ export type PortfolioItemMinAggregateOutputType = {
   specialistName: string | null
   clientId: string | null
   description: string | null
+  altText: string | null
+  order: number | null
   status: string | null
   isFeatured: boolean | null
   createdAt: Date | null
@@ -44,6 +56,8 @@ export type PortfolioItemMaxAggregateOutputType = {
   specialistName: string | null
   clientId: string | null
   description: string | null
+  altText: string | null
+  order: number | null
   status: string | null
   isFeatured: boolean | null
   createdAt: Date | null
@@ -57,6 +71,8 @@ export type PortfolioItemCountAggregateOutputType = {
   specialistName: number
   clientId: number
   description: number
+  altText: number
+  order: number
   status: number
   isFeatured: number
   createdAt: number
@@ -65,6 +81,14 @@ export type PortfolioItemCountAggregateOutputType = {
 }
 
 
+export type PortfolioItemAvgAggregateInputType = {
+  order?: true
+}
+
+export type PortfolioItemSumAggregateInputType = {
+  order?: true
+}
+
 export type PortfolioItemMinAggregateInputType = {
   id?: true
   imageUrl?: true
@@ -72,6 +96,8 @@ export type PortfolioItemMinAggregateInputType = {
   specialistName?: true
   clientId?: true
   description?: true
+  altText?: true
+  order?: true
   status?: true
   isFeatured?: true
   createdAt?: true
@@ -85,6 +111,8 @@ export type PortfolioItemMaxAggregateInputType = {
   specialistName?: true
   clientId?: true
   description?: true
+  altText?: true
+  order?: true
   status?: true
   isFeatured?: true
   createdAt?: true
@@ -98,6 +126,8 @@ export type PortfolioItemCountAggregateInputType = {
   specialistName?: true
   clientId?: true
   description?: true
+  altText?: true
+  order?: true
   status?: true
   isFeatured?: true
   createdAt?: true
@@ -143,6 +173,18 @@ export type PortfolioItemAggregateArgs<ExtArgs extends runtime.Types.Extensions.
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: PortfolioItemAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: PortfolioItemSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: PortfolioItemMinAggregateInputType
@@ -173,6 +215,8 @@ export type PortfolioItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   _count?: PortfolioItemCountAggregateInputType | true
+  _avg?: PortfolioItemAvgAggregateInputType
+  _sum?: PortfolioItemSumAggregateInputType
   _min?: PortfolioItemMinAggregateInputType
   _max?: PortfolioItemMaxAggregateInputType
 }
@@ -180,15 +224,19 @@ export type PortfolioItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 export type PortfolioItemGroupByOutputType = {
   id: string
   imageUrl: string
-  serviceCategory: string
-  specialistName: string
+  serviceCategory: string | null
+  specialistName: string | null
   clientId: string | null
   description: string | null
+  altText: string | null
+  order: number
   status: string
   isFeatured: boolean
   createdAt: Date
   updatedAt: Date
   _count: PortfolioItemCountAggregateOutputType | null
+  _avg: PortfolioItemAvgAggregateOutputType | null
+  _sum: PortfolioItemSumAggregateOutputType | null
   _min: PortfolioItemMinAggregateOutputType | null
   _max: PortfolioItemMaxAggregateOutputType | null
 }
@@ -214,10 +262,12 @@ export type PortfolioItemWhereInput = {
   NOT?: Prisma.PortfolioItemWhereInput | Prisma.PortfolioItemWhereInput[]
   id?: Prisma.StringFilter<"PortfolioItem"> | string
   imageUrl?: Prisma.StringFilter<"PortfolioItem"> | string
-  serviceCategory?: Prisma.StringFilter<"PortfolioItem"> | string
-  specialistName?: Prisma.StringFilter<"PortfolioItem"> | string
+  serviceCategory?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
+  specialistName?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
   clientId?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
   description?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
+  altText?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
+  order?: Prisma.IntFilter<"PortfolioItem"> | number
   status?: Prisma.StringFilter<"PortfolioItem"> | string
   isFeatured?: Prisma.BoolFilter<"PortfolioItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PortfolioItem"> | Date | string
@@ -228,10 +278,12 @@ export type PortfolioItemWhereInput = {
 export type PortfolioItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
-  serviceCategory?: Prisma.SortOrder
-  specialistName?: Prisma.SortOrder
+  serviceCategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  specialistName?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  altText?: Prisma.SortOrderInput | Prisma.SortOrder
+  order?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -245,10 +297,12 @@ export type PortfolioItemWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PortfolioItemWhereInput[]
   NOT?: Prisma.PortfolioItemWhereInput | Prisma.PortfolioItemWhereInput[]
   imageUrl?: Prisma.StringFilter<"PortfolioItem"> | string
-  serviceCategory?: Prisma.StringFilter<"PortfolioItem"> | string
-  specialistName?: Prisma.StringFilter<"PortfolioItem"> | string
+  serviceCategory?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
+  specialistName?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
   clientId?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
   description?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
+  altText?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
+  order?: Prisma.IntFilter<"PortfolioItem"> | number
   status?: Prisma.StringFilter<"PortfolioItem"> | string
   isFeatured?: Prisma.BoolFilter<"PortfolioItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PortfolioItem"> | Date | string
@@ -259,17 +313,21 @@ export type PortfolioItemWhereUniqueInput = Prisma.AtLeast<{
 export type PortfolioItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
-  serviceCategory?: Prisma.SortOrder
-  specialistName?: Prisma.SortOrder
+  serviceCategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  specialistName?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  altText?: Prisma.SortOrderInput | Prisma.SortOrder
+  order?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PortfolioItemCountOrderByAggregateInput
+  _avg?: Prisma.PortfolioItemAvgOrderByAggregateInput
   _max?: Prisma.PortfolioItemMaxOrderByAggregateInput
   _min?: Prisma.PortfolioItemMinOrderByAggregateInput
+  _sum?: Prisma.PortfolioItemSumOrderByAggregateInput
 }
 
 export type PortfolioItemScalarWhereWithAggregatesInput = {
@@ -278,10 +336,12 @@ export type PortfolioItemScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PortfolioItemScalarWhereWithAggregatesInput | Prisma.PortfolioItemScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"PortfolioItem"> | string
   imageUrl?: Prisma.StringWithAggregatesFilter<"PortfolioItem"> | string
-  serviceCategory?: Prisma.StringWithAggregatesFilter<"PortfolioItem"> | string
-  specialistName?: Prisma.StringWithAggregatesFilter<"PortfolioItem"> | string
+  serviceCategory?: Prisma.StringNullableWithAggregatesFilter<"PortfolioItem"> | string | null
+  specialistName?: Prisma.StringNullableWithAggregatesFilter<"PortfolioItem"> | string | null
   clientId?: Prisma.StringNullableWithAggregatesFilter<"PortfolioItem"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"PortfolioItem"> | string | null
+  altText?: Prisma.StringNullableWithAggregatesFilter<"PortfolioItem"> | string | null
+  order?: Prisma.IntWithAggregatesFilter<"PortfolioItem"> | number
   status?: Prisma.StringWithAggregatesFilter<"PortfolioItem"> | string
   isFeatured?: Prisma.BoolWithAggregatesFilter<"PortfolioItem"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PortfolioItem"> | Date | string
@@ -291,9 +351,11 @@ export type PortfolioItemScalarWhereWithAggregatesInput = {
 export type PortfolioItemCreateInput = {
   id?: string
   imageUrl: string
-  serviceCategory: string
-  specialistName: string
+  serviceCategory?: string | null
+  specialistName?: string | null
   description?: string | null
+  altText?: string | null
+  order?: number
   status?: string
   isFeatured?: boolean
   createdAt?: Date | string
@@ -304,10 +366,12 @@ export type PortfolioItemCreateInput = {
 export type PortfolioItemUncheckedCreateInput = {
   id?: string
   imageUrl: string
-  serviceCategory: string
-  specialistName: string
+  serviceCategory?: string | null
+  specialistName?: string | null
   clientId?: string | null
   description?: string | null
+  altText?: string | null
+  order?: number
   status?: string
   isFeatured?: boolean
   createdAt?: Date | string
@@ -317,9 +381,11 @@ export type PortfolioItemUncheckedCreateInput = {
 export type PortfolioItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceCategory?: Prisma.StringFieldUpdateOperationsInput | string
-  specialistName?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialistName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -330,10 +396,12 @@ export type PortfolioItemUpdateInput = {
 export type PortfolioItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceCategory?: Prisma.StringFieldUpdateOperationsInput | string
-  specialistName?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialistName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -343,10 +411,12 @@ export type PortfolioItemUncheckedUpdateInput = {
 export type PortfolioItemCreateManyInput = {
   id?: string
   imageUrl: string
-  serviceCategory: string
-  specialistName: string
+  serviceCategory?: string | null
+  specialistName?: string | null
   clientId?: string | null
   description?: string | null
+  altText?: string | null
+  order?: number
   status?: string
   isFeatured?: boolean
   createdAt?: Date | string
@@ -356,9 +426,11 @@ export type PortfolioItemCreateManyInput = {
 export type PortfolioItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceCategory?: Prisma.StringFieldUpdateOperationsInput | string
-  specialistName?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialistName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -368,10 +440,12 @@ export type PortfolioItemUpdateManyMutationInput = {
 export type PortfolioItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceCategory?: Prisma.StringFieldUpdateOperationsInput | string
-  specialistName?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialistName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -395,10 +469,16 @@ export type PortfolioItemCountOrderByAggregateInput = {
   specialistName?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  altText?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type PortfolioItemAvgOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type PortfolioItemMaxOrderByAggregateInput = {
@@ -408,6 +488,8 @@ export type PortfolioItemMaxOrderByAggregateInput = {
   specialistName?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  altText?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -421,10 +503,16 @@ export type PortfolioItemMinOrderByAggregateInput = {
   specialistName?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  altText?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type PortfolioItemSumOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type PortfolioItemCreateNestedManyWithoutClientInput = {
@@ -472,9 +560,11 @@ export type PortfolioItemUncheckedUpdateManyWithoutClientNestedInput = {
 export type PortfolioItemCreateWithoutClientInput = {
   id?: string
   imageUrl: string
-  serviceCategory: string
-  specialistName: string
+  serviceCategory?: string | null
+  specialistName?: string | null
   description?: string | null
+  altText?: string | null
+  order?: number
   status?: string
   isFeatured?: boolean
   createdAt?: Date | string
@@ -484,9 +574,11 @@ export type PortfolioItemCreateWithoutClientInput = {
 export type PortfolioItemUncheckedCreateWithoutClientInput = {
   id?: string
   imageUrl: string
-  serviceCategory: string
-  specialistName: string
+  serviceCategory?: string | null
+  specialistName?: string | null
   description?: string | null
+  altText?: string | null
+  order?: number
   status?: string
   isFeatured?: boolean
   createdAt?: Date | string
@@ -524,10 +616,12 @@ export type PortfolioItemScalarWhereInput = {
   NOT?: Prisma.PortfolioItemScalarWhereInput | Prisma.PortfolioItemScalarWhereInput[]
   id?: Prisma.StringFilter<"PortfolioItem"> | string
   imageUrl?: Prisma.StringFilter<"PortfolioItem"> | string
-  serviceCategory?: Prisma.StringFilter<"PortfolioItem"> | string
-  specialistName?: Prisma.StringFilter<"PortfolioItem"> | string
+  serviceCategory?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
+  specialistName?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
   clientId?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
   description?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
+  altText?: Prisma.StringNullableFilter<"PortfolioItem"> | string | null
+  order?: Prisma.IntFilter<"PortfolioItem"> | number
   status?: Prisma.StringFilter<"PortfolioItem"> | string
   isFeatured?: Prisma.BoolFilter<"PortfolioItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PortfolioItem"> | Date | string
@@ -537,9 +631,11 @@ export type PortfolioItemScalarWhereInput = {
 export type PortfolioItemCreateManyClientInput = {
   id?: string
   imageUrl: string
-  serviceCategory: string
-  specialistName: string
+  serviceCategory?: string | null
+  specialistName?: string | null
   description?: string | null
+  altText?: string | null
+  order?: number
   status?: string
   isFeatured?: boolean
   createdAt?: Date | string
@@ -549,9 +645,11 @@ export type PortfolioItemCreateManyClientInput = {
 export type PortfolioItemUpdateWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceCategory?: Prisma.StringFieldUpdateOperationsInput | string
-  specialistName?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialistName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -561,9 +659,11 @@ export type PortfolioItemUpdateWithoutClientInput = {
 export type PortfolioItemUncheckedUpdateWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceCategory?: Prisma.StringFieldUpdateOperationsInput | string
-  specialistName?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialistName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -573,9 +673,11 @@ export type PortfolioItemUncheckedUpdateWithoutClientInput = {
 export type PortfolioItemUncheckedUpdateManyWithoutClientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceCategory?: Prisma.StringFieldUpdateOperationsInput | string
-  specialistName?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialistName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -591,6 +693,8 @@ export type PortfolioItemSelect<ExtArgs extends runtime.Types.Extensions.Interna
   specialistName?: boolean
   clientId?: boolean
   description?: boolean
+  altText?: boolean
+  order?: boolean
   status?: boolean
   isFeatured?: boolean
   createdAt?: boolean
@@ -605,6 +709,8 @@ export type PortfolioItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   specialistName?: boolean
   clientId?: boolean
   description?: boolean
+  altText?: boolean
+  order?: boolean
   status?: boolean
   isFeatured?: boolean
   createdAt?: boolean
@@ -619,6 +725,8 @@ export type PortfolioItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   specialistName?: boolean
   clientId?: boolean
   description?: boolean
+  altText?: boolean
+  order?: boolean
   status?: boolean
   isFeatured?: boolean
   createdAt?: boolean
@@ -633,13 +741,15 @@ export type PortfolioItemSelectScalar = {
   specialistName?: boolean
   clientId?: boolean
   description?: boolean
+  altText?: boolean
+  order?: boolean
   status?: boolean
   isFeatured?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PortfolioItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "imageUrl" | "serviceCategory" | "specialistName" | "clientId" | "description" | "status" | "isFeatured" | "createdAt" | "updatedAt", ExtArgs["result"]["portfolioItem"]>
+export type PortfolioItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "imageUrl" | "serviceCategory" | "specialistName" | "clientId" | "description" | "altText" | "order" | "status" | "isFeatured" | "createdAt" | "updatedAt", ExtArgs["result"]["portfolioItem"]>
 export type PortfolioItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   client?: boolean | Prisma.PortfolioItem$clientArgs<ExtArgs>
 }
@@ -658,10 +768,12 @@ export type $PortfolioItemPayload<ExtArgs extends runtime.Types.Extensions.Inter
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     imageUrl: string
-    serviceCategory: string
-    specialistName: string
+    serviceCategory: string | null
+    specialistName: string | null
     clientId: string | null
     description: string | null
+    altText: string | null
+    order: number
     status: string
     isFeatured: boolean
     createdAt: Date
@@ -1096,6 +1208,8 @@ export interface PortfolioItemFieldRefs {
   readonly specialistName: Prisma.FieldRef<"PortfolioItem", 'String'>
   readonly clientId: Prisma.FieldRef<"PortfolioItem", 'String'>
   readonly description: Prisma.FieldRef<"PortfolioItem", 'String'>
+  readonly altText: Prisma.FieldRef<"PortfolioItem", 'String'>
+  readonly order: Prisma.FieldRef<"PortfolioItem", 'Int'>
   readonly status: Prisma.FieldRef<"PortfolioItem", 'String'>
   readonly isFeatured: Prisma.FieldRef<"PortfolioItem", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"PortfolioItem", 'DateTime'>

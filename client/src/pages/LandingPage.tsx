@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -9,6 +9,15 @@ export default function LandingPage() {
     const handleReserveClick = () => {
         navigate('/reservar');
     };
+
+    const [courses, setCourses] = useState<any[]>([]);
+
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/courses`)
+            .then(res => res.json())
+            .then(data => setCourses(data))
+            .catch(console.error);
+    }, []);
 
     return (
         <div className="bg-surface text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden w-full m-0 p-0">
@@ -168,12 +177,57 @@ export default function LandingPage() {
                                     </div>
                                 </div>
                                 <div className="pt-8">
-                                    <a className="inline-flex items-center gap-3 text-primary font-bold text-xl group hover:gap-5 transition-all" href="#">
+                                    <a className="inline-flex items-center gap-3 text-primary font-bold text-xl group hover:gap-5 transition-all" href="https://www.instagram.com/mili.bellezastudy?igsh=MXVzdGMwN2tkYjZ6Ng==" target="_blank" rel="noopener noreferrer">
                                         <span>Ver mis trabajos en Instagram</span>
                                         <span className="material-symbols-outlined">arrow_forward</span>
                                     </a>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Cursos Section */}
+                <section id="cursos" className="py-24 px-6 bg-surface-container-lowest">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-center mb-16">
+                            <h2 className="text-sm font-label font-bold uppercase tracking-[0.3em] text-tertiary mb-4">Capacitaciones</h2>
+                            <h3 className="text-4xl lg:text-5xl font-headline font-black text-on-surface">Cursos Disponibles</h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {courses.map(course => (
+                                <div key={course.id} className="bg-surface rounded-2xl overflow-hidden border border-outline-variant/30 shadow-lg group hover:shadow-xl transition-all">
+                                    {course.coverImageUrl ? (
+                                        <div className="aspect-video w-full overflow-hidden">
+                                            <img src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001'}${course.coverImageUrl}`} alt={course.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        </div>
+                                    ) : (
+                                        <div className="aspect-video w-full bg-surface-container-high flex items-center justify-center">
+                                            <span className="material-symbols-outlined text-4xl text-on-surface-variant/50">school</span>
+                                        </div>
+                                    )}
+                                    <div className="p-6 space-y-4">
+                                        <div className="flex justify-between items-start gap-4">
+                                            <h4 className="text-xl font-bold font-headline text-on-surface">{course.name}</h4>
+                                            <span className="shrink-0 px-3 py-1 bg-primary-container text-on-primary-container text-xs font-bold rounded-full">{course.category}</span>
+                                        </div>
+                                        {course.description && <p className="text-on-surface-variant text-sm line-clamp-3">{course.description}</p>}
+                                        
+                                        <div className="pt-4 border-t border-outline-variant/30 flex justify-between items-center text-sm font-medium">
+                                            <div className="text-on-surface-variant flex items-center gap-1"><span className="material-symbols-outlined text-sm pt-0.5">schedule</span>{course.duration || '-'}</div>
+                                            <div className="text-primary font-bold text-lg">${course.price}</div>
+                                        </div>
+                                        <button onClick={() => window.open(`https://wa.me/5492664734034?text=Hola, quiero info sobre el curso: ${course.name}`, '_blank')} className="w-full mt-4 bg-primary text-on-primary py-3 rounded-xl font-bold hover:opacity-90 transition-opacity">
+                                            Consultar por WhatsApp
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                            {courses.length === 0 && (
+                                <div className="col-span-full text-center py-12 text-on-surface-variant">
+                                    Próximamente nuevas fechas disponibles.
+                                </div>
+                            )}
                         </div>
                     </div>
                 </section>
@@ -188,10 +242,22 @@ export default function LandingPage() {
                     </div>
                     <div className="flex flex-col space-y-4">
                         <span className="font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest text-pink-600">Navegación</span>
-                        <a className="text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="#">Instagram</a>
-                        <a className="text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="#">WhatsApp</a>
-                        <a className="text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="#">Ubicación</a>
-                        <a className="text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="#">Términos</a>
+                        <a className="flex items-center gap-2 text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="https://www.instagram.com/mili.bellezastudy?igsh=MXVzdGMwN2tkYjZ6Ng==" target="_blank" rel="noopener noreferrer">
+                            <span className="material-symbols-outlined text-lg">photo_camera</span>
+                            Instagram
+                        </a>
+                        <a className="flex items-center gap-2 text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="https://wa.me/5492664734034" target="_blank" rel="noopener noreferrer">
+                            <span className="material-symbols-outlined text-lg">chat</span>
+                            WhatsApp
+                        </a>
+                        <a className="flex items-center gap-2 text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="https://maps.google.com/?q=Zoilo+Concha,+M5529+San+Luis,+San+Luis,+Argentina" target="_blank" rel="noopener noreferrer">
+                            <span className="material-symbols-outlined text-lg">location_on</span>
+                            Ubicación
+                        </a>
+                        <a className="flex items-center gap-2 text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="#">
+                            <span className="material-symbols-outlined text-lg">description</span>
+                            Términos
+                        </a>
                     </div>
                     <div className="flex flex-col space-y-4">
                         <span className="font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest text-pink-600">Newsletter</span>
