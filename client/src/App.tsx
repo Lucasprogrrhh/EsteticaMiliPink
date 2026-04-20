@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Calendar, Scissors, Users, LayoutDashboard,
@@ -317,6 +317,7 @@ function Dashboard({ services, appointments, reviews = [] }: { services: Service
 function AppLayout() {
   const { user, token, logout } = useAuth()
   const location = useLocation()
+  const navigate = useNavigate()
   const [services, setServices] = useState<Service[]>([])
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [reviews, setReviews] = useState<Review[]>([])
@@ -413,7 +414,7 @@ function AppLayout() {
           <button
             onClick={() => {
               logout()
-              window.location.href = '/login'
+              navigate('/login')
             }}
             className={`w-full flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${user?.role === 'CLIENT' ? 'text-on-surface-variant hover:text-error hover:bg-error-container' : 'text-slate-400 hover:text-red-400 hover:bg-red-500/10'}`}
           >
