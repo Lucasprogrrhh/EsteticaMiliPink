@@ -61,7 +61,21 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        const user = await prisma.user.findUnique({ where: { email } });
+        let user = await prisma.user.findUnique({ where: { email } });
+        
+        // Auto-create admin if it doesn't exist in production yet
+        if (!user && email.toLowerCase() === 'admin@estetica.com') {
+            const hashedPassword = await bcrypt.hash('admin123', 10);
+            user = await prisma.user.create({
+                data: {
+                    name: 'Mili Admin',
+                    email: 'admin@estetica.com',
+                    password: hashedPassword,
+                    role: 'ADMIN',
+                },
+            });
+        }
+        
         if (!user) {
             res.status(401).json({ error: 'Credenciales incorrectas.' });
             return;
