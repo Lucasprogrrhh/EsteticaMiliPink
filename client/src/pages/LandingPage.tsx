@@ -130,21 +130,21 @@ const PortfolioSection = () => {
   const [currentIdx, setCurrentIdx] = useState(0);
 
   const portfolioItems = [
-    { cat: 'nail-art', title: 'Flores 3D & Animal Print', desc: 'Diseño mixto con flores acrílicas y estampado animal en rosa y negro.', src: '/images/port-01.jpg', placeholder: '🌸', tag: 'Nail Art' },
-    { cat: 'nail-art', title: 'Animales & Flores Pink', desc: 'Combinación única de zebra, leopardo y flores 3D en tonos rosas.', src: '/images/port-02.jpg', placeholder: '🌺', tag: 'Nail Art', className: 'tall' },
-    { cat: 'minimalista', title: 'Marmolado Rosado & Oro', desc: 'Marmolado delicado con detalles en hoja de oro y daisy charms.', src: '/images/port-03.jpg', placeholder: '✨', tag: 'Minimalista' },
-    { cat: 'nail-art', title: 'Fantasía Colorida', desc: 'Arte 3D multicolor: figuras, flores y efectos únicos sobre stiletto.', src: '/images/port-04.jpg', placeholder: '🦋', tag: 'Nail Art', className: 'wide' },
-    { cat: 'french', title: 'French Clásico', desc: 'French manicure perfecta y simétrica sobre gel acrílico de larga duración.', src: '/images/port-05.jpg', placeholder: '💅', tag: 'French' },
-    { cat: 'french', title: 'French Dorado & Leopardo', desc: 'French con punta dorada y estampado leopardo. Audaz y femenino.', src: '/images/port-06.jpg', placeholder: '🐆', tag: 'French' },
-    { cat: 'minimalista', title: 'Nude Shimmer', desc: 'Nude nacarado ultra refinado. Elegancia en su máxima expresión.', src: '/images/port-07.jpg', placeholder: '🪞', tag: 'Minimalista' },
-    { cat: 'nail-art', title: 'Chocolate Hearts', desc: 'Beige y blanco con corazones de acrílico y gotas de chocolate pintadas a mano.', src: '/images/port-08.jpg', placeholder: '🍫', tag: 'Nail Art', className: 'tall' },
-    { cat: 'nail-art', title: 'Spring Garden', desc: 'Flores de cerezo 3D con mariquitas y abejas. La primavera en tus manos.', src: '/images/port-09.jpg', placeholder: '🌸', tag: 'Nail Art' },
-    { cat: 'nail-art', title: 'Spring Garden II', desc: 'Segunda variación del diseño primavera con flores y criaturas en rosa pálido.', src: '/images/port-10.jpg', placeholder: '🌼', tag: 'Nail Art' },
-    { cat: 'french', title: 'French Rosas & Flores', desc: 'French con borde rosado y flores 3D de gel en el centro. Dulce y elegante.', src: '/images/port-11.jpg', placeholder: '🌷', tag: 'French', className: 'wide' },
-    { cat: 'french', title: 'French Amarillo Floral', desc: 'French en amarillo limón con pequeñas flores blancas. Verano puro.', src: '/images/port-12.jpg', placeholder: '🌻', tag: 'French' },
-    { cat: 'minimalista', title: 'Minimalismo Floral', desc: 'Flor delicada con detalle plateado y aros sobre base blush. Refinado al máximo.', src: '/images/port-13.jpg', placeholder: '🤍', tag: 'Minimalista' },
-    { cat: 'nail-art', title: 'Ocean Nails', desc: 'Temática marina con conchas, estrellas de mar y perlas nacaradas. Un sueño costero.', src: '/images/port-14.jpg', placeholder: '🐚', tag: 'Nail Art', className: 'tall' },
-    { cat: 'minimalista', title: 'Floral Cremoso', desc: 'Arte floral sobre base crema con líneas doradas y daisy 3D. Lujo sutil.', src: '/images/port-15.jpg', placeholder: '🌿', tag: 'Minimalista' },
+    { cat: 'nail-art', title: 'Flores 3D & Animal Print', desc: 'Diseño mixto con flores acrílicas y estampado animal en rosa y negro.', src: '/images/port-01.jpeg', placeholder: '🌸', tag: 'Nail Art' },
+    { cat: 'nail-art', title: 'Animales & Flores Pink', desc: 'Combinación única de zebra, leopardo y flores 3D en tonos rosas.', src: '/images/port-02.jpeg', placeholder: '🌺', tag: 'Nail Art', className: 'tall' },
+    { cat: 'minimalista', title: 'Marmolado Rosado & Oro', desc: 'Marmolado delicado con detalles en hoja de oro y daisy charms.', src: '/images/port-03.jpeg', placeholder: '✨', tag: 'Minimalista' },
+    { cat: 'nail-art', title: 'Fantasía Colorida', desc: 'Arte 3D multicolor: figuras, flores y efectos únicos sobre stiletto.', src: '/images/port-04.jpeg', placeholder: '🦋', tag: 'Nail Art', className: 'wide' },
+    { cat: 'french', title: 'French Clásico', desc: 'French manicure perfecta y simétrica sobre gel acrílico de larga duración.', src: '/images/port-05.jpeg', placeholder: '💅', tag: 'French' },
+    { cat: 'french', title: 'French Dorado & Leopardo', desc: 'French con punta dorada y estampado leopardo. Audaz y femenino.', src: '/images/port-06.jpeg', placeholder: '🐆', tag: 'French' },
+    { cat: 'minimalista', title: 'Nude Shimmer', desc: 'Nude nacarado ultra refinado. Elegancia en su máxima expresión.', src: '/images/port-07.jpeg', placeholder: '🪞', tag: 'Minimalista' },
+    { cat: 'nail-art', title: 'Chocolate Hearts', desc: 'Beige y blanco con corazones de acrílico y gotas de chocolate pintadas a mano.', src: '/images/port-08.jpeg', placeholder: '🍫', tag: 'Nail Art', className: 'tall' },
+    { cat: 'nail-art', title: 'Spring Garden', desc: 'Flores de cerezo 3D con mariquitas y abejas. La primavera en tus manos.', src: '/images/port-09.jpeg', placeholder: '🌸', tag: 'Nail Art' },
+    { cat: 'nail-art', title: 'Spring Garden II', desc: 'Segunda variación del diseño primavera con flores y criaturas en rosa pálido.', src: '/images/port-10.jpeg', placeholder: '🌼', tag: 'Nail Art' },
+    { cat: 'french', title: 'French Rosas & Flores', desc: 'French con borde rosado y flores 3D de gel en el centro. Dulce y elegante.', src: '/images/port-11.jpeg', placeholder: '🌷', tag: 'French', className: 'wide' },
+    { cat: 'french', title: 'French Amarillo Floral', desc: 'French en amarillo limón con pequeñas flores blancas. Verano puro.', src: '/images/port-12.jpeg', placeholder: '🌻', tag: 'French' },
+    { cat: 'minimalista', title: 'Minimalismo Floral', desc: 'Flor delicada con detalle plateado y aros sobre base blush. Refinado al máximo.', src: '/images/port-13.jpeg', placeholder: '🤍', tag: 'Minimalista' },
+    { cat: 'nail-art', title: 'Ocean Nails', desc: 'Temática marina con conchas, estrellas de mar y perlas nacaradas. Un sueño costero.', src: '/images/port-14.jpeg', placeholder: '🐚', tag: 'Nail Art', className: 'tall' },
+    { cat: 'minimalista', title: 'Floral Cremoso', desc: 'Arte floral sobre base crema con líneas doradas y daisy 3D. Lujo sutil.', src: '/images/port-15.jpeg', placeholder: '🌿', tag: 'Minimalista' },
     { cat: 'nail-art', title: 'Collage de Diseños', desc: 'Muestra de distintos trabajos realizados por alumnas del curso completo. ¡Empezás de cero!', src: '/images/port-16.jpg', placeholder: '🎨', tag: 'Alumnas' },
     { cat: 'nail-art', title: 'Pink & Wild', desc: 'Animal print y flores en armonía: moderno, atrevido y profundamente femenino.', src: '/images/port-17.jpg', placeholder: '🐯', tag: 'Nail Art' },
     { cat: 'nail-art', title: 'Butterfly Dreams', desc: 'Diseño etéreo con mariposas y tonos pastel. Delicadeza en estado puro.', src: '/images/port-18.jpg', placeholder: '🦋', tag: 'Nail Art', className: 'wide' },
@@ -549,8 +549,8 @@ export default function LandingPage() {
                         <h3>🌸 Resultado de nuestras alumnas</h3>
                         <p>Empezás desde cero y llegás a esto. Obras reales creadas durante los cursos.</p>
                         <div className="mb-galeria-grid">
-                        <img src="/images/resultado-alumnas-collage.jpg"  alt="Collage resultados alumnas" title="Nails Art – resultado grupal" />
-                        <img src="/images/resultado-alumna-02.jpg"        alt="Nail art floral alumna"     title="Flores 3D rosa y negro" />
+                        <img src="/images/resultados-alumnas-colage.jpeg"  alt="Collage resultados alumnas" title="Nails Art – resultado grupal" />
+                        <img src="/images/resultados-alumnas-colage2.jpeg"        alt="Nail art floral alumna"     title="Flores 3D rosa y negro" />
                         <img src="/images/resultado-alumna-03.jpg"        alt="Nail art marmolado"          title="Marmolado y flores 3D" />
                         <img src="/images/resultado-alumna-04.jpg"        alt="Nail art colorido"           title="Arte 3D multicolor" />
                         </div>
