@@ -1,6 +1,248 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import './LandingStyles.css';
+
+const PromocionesSection = () => {
+    const [codigo, setCodigo] = useState('');
+    const [verifResult, setVerifResult] = useState<{status: 'ok' | 'err' | null, message: React.ReactNode}>({ status: null, message: null });
+
+    const MB_CUPONES: Record<string, { desc: string, tipo: string }> = {
+      'MILI-REF-0001': { desc: '15% OFF por referida — presentalo al inscribirte', tipo: 'referida' },
+      'MILI-REF-0002': { desc: '15% OFF por referida — presentalo al inscribirte', tipo: 'referida' },
+      'COMBO-CURSOS':  { desc: '20% OFF al inscribirte en 2 cursos juntos',        tipo: 'combo'    },
+      'PUNTOS-500':    { desc: '10% OFF en tu próximo servicio (500 puntos)',       tipo: 'puntos'   },
+      'PUNTOS-1000':   { desc: 'Sesión de uñas gratis (1 000 puntos)',             tipo: 'puntos'   },
+      'EARLY-CEJAS':   { desc: 'Precio especial lista de espera – Laminado de Cejas', tipo: 'early' },
+      'CUOTA3X':       { desc: '3 cuotas sin interés en cualquier curso',          tipo: 'cuotas'   },
+    };
+
+    const verificarCodigo = () => {
+        const key = codigo.trim().toUpperCase().replace(/\s+/g, '-');
+        if (!key) {
+            setVerifResult({
+                status: 'err',
+                message: '⚠️ Ingresá un código para verificar.'
+            });
+            return;
+        }
+
+        const cupon = MB_CUPONES[key];
+        if (cupon) {
+            setVerifResult({
+                status: 'ok',
+                message: <><strong>¡Código válido!</strong> {cupon.desc}. Mostráselo a Mili al momento de la reserva o inscripción.</>
+            });
+        } else {
+            setVerifResult({
+                status: 'err',
+                message: <>❌ Código no encontrado. Verificá que esté bien escrito o <a href="https://wa.me/5492664734034?text=Hola!%20Tengo%20una%20consulta%20sobre%20un%20cup%C3%B3n" target="_blank" rel="noreferrer" style={{color:'#ff6b81', textDecoration:'underline'}}>consultá por WhatsApp</a>.</>
+            });
+        }
+    };
+
+    return (
+        <section id="promociones" className="mb-promos">
+            <p className="mb-eyebrow">✦ Beneficios exclusivos</p>
+            <h2 className="mb-section-title" style={{fontFamily:"'Playfair Display',Georgia,serif", fontSize:"clamp(2rem,3.5vw,2.75rem)", fontWeight:900, lineHeight:1.08, marginBottom:".6rem"}}>Sistema de Promociones</h2>
+            <p className="mb-section-sub" style={{fontSize:".95rem", lineHeight:1.7}}>Porque confiás en nosotras, queremos recompensarte. Elegí la promo que más te conviene.</p>
+
+            <div className="mb-promo-grid">
+                {/* 1. Referidas */}
+                <div className="mb-promo-card">
+                    <span className="mb-promo-emoji">👯‍♀️</span>
+                    <div className="mb-promo-name">Traé una amiga, ganan las dos</div>
+                    <div className="mb-promo-desc">Referís a una amiga al curso y las dos obtienen un <strong>15% OFF</strong> sobre el precio. Sin límite de referidas — cuantas más traés, más acumulás.</div>
+                    <div className="mb-promo-tag">📌 Al inscribirse tu amiga menciona tu nombre y listo</div>
+                </div>
+
+                {/* 2. Club Puntos */}
+                <div className="mb-promo-card">
+                    <span className="mb-promo-emoji">⭐</span>
+                    <div className="mb-promo-name">Club de Puntos Mili</div>
+                    <div className="mb-promo-desc">Cada servicio o curso te da puntos que canjeás en descuentos, productos o servicios. <strong>¡Los puntos no vencen!</strong></div>
+                    <div className="mb-promo-tag">💛 1 servicio = 100 pts · 1 curso = 500 pts</div>
+                </div>
+
+                {/* 3. Cuotas */}
+                <div className="mb-promo-card">
+                    <span className="mb-promo-emoji">💳</span>
+                    <div className="mb-promo-name">Cuotas sin interés</div>
+                    <div className="mb-promo-desc">Inscribite en cualquier curso en hasta <strong>3 cuotas sin interés</strong>. Tu formación no puede esperar.</div>
+                    <div className="mb-promo-tag">💰 Consultá disponibilidad por WhatsApp</div>
+                </div>
+
+                {/* 4. Combo */}
+                <div className="mb-promo-card">
+                    <span className="mb-promo-emoji">🎓</span>
+                    <div className="mb-promo-name">Combo Formación Completa</div>
+                    <div className="mb-promo-desc">Anotate en 2 o más cursos juntos y obtenés <strong>20% OFF</strong> sobre el total. La inversión más inteligente.</div>
+                    <div className="mb-promo-tag">🚀 Válido: Manicura + Lifting de Pestañas</div>
+                </div>
+            </div>
+
+            {/* ── TABLA DE PUNTOS + VERIFICADOR ── */}
+            <div className="mb-puntos-panel">
+                <div className="mb-puntos-title">⭐ Tabla de Canje – Club de Puntos Mili</div>
+
+                <table className="mb-puntos-tabla">
+                    <thead>
+                        <tr>
+                            <th>Puntos</th>
+                            <th>Beneficio</th>
+                            <th>Equivale a</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>500 pts</td><td>10% OFF en próximo servicio</td><td>≈ 5 servicios</td></tr>
+                        <tr><td>1 000 pts</td><td>Sesión de uñas gratis</td><td>≈ 10 servicios</td></tr>
+                        <tr><td>2 000 pts</td><td>25% OFF en cualquier curso</td><td>≈ 4 cursos</td></tr>
+                        <tr><td>3 000 pts</td><td>Kit de productos Mili</td><td>Regalo premium</td></tr>
+                        <tr><td>5 000 pts</td><td>Curso completo de regalo <span className="badge-top">🏆 TOP</span></td><td>Clienta VIP</td></tr>
+                    </tbody>
+                </table>
+
+                {/* Verificador */}
+                <span className="mb-verif-label">¿Tenés un código de referida o cupón? Verificalo acá:</span>
+                <div className="mb-verif-form">
+                    <input
+                        className="mb-verif-input"
+                        type="text"
+                        placeholder="Ej: MILI-REF-0001"
+                        autoComplete="off"
+                        value={codigo}
+                        onChange={(e) => setCodigo(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && verificarCodigo()}
+                    />
+                    <button className="mb-btn-gold" onClick={verificarCodigo}>Verificar →</button>
+                </div>
+                {verifResult.status && (
+                    <div className={`mb-verif-result ${verifResult.status}`}>{verifResult.message}</div>
+                )}
+            </div>
+        </section>
+    );
+};
+
+const PortfolioSection = () => {
+  const [filter, setFilter] = useState('all');
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentIdx, setCurrentIdx] = useState(0);
+
+  const portfolioItems = [
+    { cat: 'nail-art', title: 'Flores 3D & Animal Print', desc: 'Diseño mixto con flores acrílicas y estampado animal en rosa y negro.', src: '/images/port-01.jpg', placeholder: '🌸', tag: 'Nail Art' },
+    { cat: 'nail-art', title: 'Animales & Flores Pink', desc: 'Combinación única de zebra, leopardo y flores 3D en tonos rosas.', src: '/images/port-02.jpg', placeholder: '🌺', tag: 'Nail Art', className: 'tall' },
+    { cat: 'minimalista', title: 'Marmolado Rosado & Oro', desc: 'Marmolado delicado con detalles en hoja de oro y daisy charms.', src: '/images/port-03.jpg', placeholder: '✨', tag: 'Minimalista' },
+    { cat: 'nail-art', title: 'Fantasía Colorida', desc: 'Arte 3D multicolor: figuras, flores y efectos únicos sobre stiletto.', src: '/images/port-04.jpg', placeholder: '🦋', tag: 'Nail Art', className: 'wide' },
+    { cat: 'french', title: 'French Clásico', desc: 'French manicure perfecta y simétrica sobre gel acrílico de larga duración.', src: '/images/port-05.jpg', placeholder: '💅', tag: 'French' },
+    { cat: 'french', title: 'French Dorado & Leopardo', desc: 'French con punta dorada y estampado leopardo. Audaz y femenino.', src: '/images/port-06.jpg', placeholder: '🐆', tag: 'French' },
+    { cat: 'minimalista', title: 'Nude Shimmer', desc: 'Nude nacarado ultra refinado. Elegancia en su máxima expresión.', src: '/images/port-07.jpg', placeholder: '🪞', tag: 'Minimalista' },
+    { cat: 'nail-art', title: 'Chocolate Hearts', desc: 'Beige y blanco con corazones de acrílico y gotas de chocolate pintadas a mano.', src: '/images/port-08.jpg', placeholder: '🍫', tag: 'Nail Art', className: 'tall' },
+    { cat: 'nail-art', title: 'Spring Garden', desc: 'Flores de cerezo 3D con mariquitas y abejas. La primavera en tus manos.', src: '/images/port-09.jpg', placeholder: '🌸', tag: 'Nail Art' },
+    { cat: 'nail-art', title: 'Spring Garden II', desc: 'Segunda variación del diseño primavera con flores y criaturas en rosa pálido.', src: '/images/port-10.jpg', placeholder: '🌼', tag: 'Nail Art' },
+    { cat: 'french', title: 'French Rosas & Flores', desc: 'French con borde rosado y flores 3D de gel en el centro. Dulce y elegante.', src: '/images/port-11.jpg', placeholder: '🌷', tag: 'French', className: 'wide' },
+    { cat: 'french', title: 'French Amarillo Floral', desc: 'French en amarillo limón con pequeñas flores blancas. Verano puro.', src: '/images/port-12.jpg', placeholder: '🌻', tag: 'French' },
+    { cat: 'minimalista', title: 'Minimalismo Floral', desc: 'Flor delicada con detalle plateado y aros sobre base blush. Refinado al máximo.', src: '/images/port-13.jpg', placeholder: '🤍', tag: 'Minimalista' },
+    { cat: 'nail-art', title: 'Ocean Nails', desc: 'Temática marina con conchas, estrellas de mar y perlas nacaradas. Un sueño costero.', src: '/images/port-14.jpg', placeholder: '🐚', tag: 'Nail Art', className: 'tall' },
+    { cat: 'minimalista', title: 'Floral Cremoso', desc: 'Arte floral sobre base crema con líneas doradas y daisy 3D. Lujo sutil.', src: '/images/port-15.jpg', placeholder: '🌿', tag: 'Minimalista' },
+    { cat: 'nail-art', title: 'Collage de Diseños', desc: 'Muestra de distintos trabajos realizados por alumnas del curso completo. ¡Empezás de cero!', src: '/images/port-16.jpg', placeholder: '🎨', tag: 'Alumnas' },
+    { cat: 'nail-art', title: 'Pink & Wild', desc: 'Animal print y flores en armonía: moderno, atrevido y profundamente femenino.', src: '/images/port-17.jpg', placeholder: '🐯', tag: 'Nail Art' },
+    { cat: 'nail-art', title: 'Butterfly Dreams', desc: 'Diseño etéreo con mariposas y tonos pastel. Delicadeza en estado puro.', src: '/images/port-18.jpg', placeholder: '🦋', tag: 'Nail Art', className: 'wide' },
+  ];
+
+  const visibleItems = portfolioItems.filter(item => filter === 'all' || item.cat === filter);
+
+  const openLightbox = (idx: number) => {
+    setCurrentIdx(idx);
+    setLightboxOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    document.body.style.overflow = '';
+  };
+
+  const prevLightbox = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIdx((currentIdx - 1 + visibleItems.length) % visibleItems.length);
+  };
+
+  const nextLightbox = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIdx((currentIdx + 1) % visibleItems.length);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!lightboxOpen) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') setCurrentIdx((prevIdx) => (prevIdx - 1 + visibleItems.length) % visibleItems.length);
+      if (e.key === 'ArrowRight') setCurrentIdx((prevIdx) => (prevIdx + 1) % visibleItems.length);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen, visibleItems.length]);
+
+  return (
+    <section id="portfolio" className="mb-portfolio">
+      <div className="mb-port-header">
+        <div>
+          <p className="mb-eyebrow" style={{fontSize:".72rem", fontWeight:700, letterSpacing:".18em", textTransform:"uppercase", color:"#c2185b", marginBottom:".6rem"}}>✦ Nuestro trabajo</p>
+          <h2 className="mb-section-title" style={{fontFamily:"'Playfair Display',Georgia,serif", fontSize:"clamp(2rem,3.5vw,2.75rem)", fontWeight:900, color:"#1a0a10", lineHeight:1.08, marginBottom:".6rem"}}>Portfolio</h2>
+          <p style={{fontSize:".95rem", color:"#7a4a5a", lineHeight:1.7, maxWidth:"420px"}}>Cada uña es un lienzo. Mirá algunos de nuestros trabajos más recientes y dejate inspirar.</p>
+        </div>
+        <div className="mb-port-filters">
+          <button className={`mb-filter-btn ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>Todos</button>
+          <button className={`mb-filter-btn ${filter === 'nail-art' ? 'active' : ''}`} onClick={() => setFilter('nail-art')}>Nail Art</button>
+          <button className={`mb-filter-btn ${filter === 'french' ? 'active' : ''}`} onClick={() => setFilter('french')}>French</button>
+          <button className={`mb-filter-btn ${filter === 'minimalista' ? 'active' : ''}`} onClick={() => setFilter('minimalista')}>Minimalista</button>
+        </div>
+      </div>
+
+      <div className="mb-port-grid">
+        {visibleItems.map((item, idx) => (
+          <div key={idx} className={`mb-port-item ${item.className || ''}`} onClick={() => openLightbox(idx)}>
+            <img 
+              className="mb-port-img" 
+              src={item.src} 
+              alt={item.title}
+              onError={(e) => { e.currentTarget.style.display='none'; if(e.currentTarget.nextElementSibling) (e.currentTarget.nextElementSibling as HTMLElement).style.display='flex'; }}
+            />
+            <div className="mb-port-img-placeholder" style={{display:'none'}}>{item.placeholder}</div>
+            <div className="mb-port-zoom">🔍</div>
+            <div className="mb-port-overlay">
+              <span className="mb-port-tag">{item.tag}</span>
+              <div className="mb-port-title">{item.title}</div>
+              <div className="mb-port-desc">{item.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mb-port-cta">
+        <h3>¿Querés este resultado?</h3>
+        <p>Reservá tu turno hoy y transformá tus manos en obras de arte. Más de 500 clientas ya lo eligieron.</p>
+        <a href="https://wa.me/5492664734034?text=Hola!%20Vi%20el%20portfolio%20y%20quiero%20reservar%20un%20turno%20%F0%9F%92..." target="_blank" rel="noreferrer" className="mb-btn-white">
+          Reservar mi turno →
+        </a>
+      </div>
+
+      {lightboxOpen && visibleItems[currentIdx] && (
+        <div className="mb-lightbox open" onClick={closeLightbox}>
+          <button className="mb-lb-close" onClick={closeLightbox} aria-label="Cerrar">✕</button>
+          <button className="mb-lb-nav mb-lb-prev" onClick={prevLightbox} aria-label="Anterior">‹</button>
+          <img className="mb-lightbox-img" src={visibleItems[currentIdx].src} alt={visibleItems[currentIdx].title} onClick={(e) => e.stopPropagation()} />
+          <div className="mb-lightbox-caption" onClick={(e) => e.stopPropagation()}>
+            <strong>{visibleItems[currentIdx].title}</strong>
+            {visibleItems[currentIdx].desc}
+          </div>
+          <button className="mb-lb-nav mb-lb-next" onClick={nextLightbox} aria-label="Siguiente">›</button>
+        </div>
+      )}
+    </section>
+  );
+};
 
 export default function LandingPage() {
     const { user } = useAuth();
@@ -188,49 +430,136 @@ export default function LandingPage() {
                 </section>
 
                 {/* Cursos Section */}
-                <section id="cursos" className="py-24 px-6 bg-surface-container-lowest">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="text-center mb-16">
-                            <h2 className="text-sm font-label font-bold uppercase tracking-[0.3em] text-tertiary mb-4">Capacitaciones</h2>
-                            <h3 className="text-4xl lg:text-5xl font-headline font-black text-on-surface">Cursos Disponibles</h3>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {courses.map(course => (
-                                <div key={course.id} className="bg-surface rounded-2xl overflow-hidden border border-outline-variant/30 shadow-lg group hover:shadow-xl transition-all">
-                                    {course.coverImageUrl ? (
-                                        <div className="aspect-video w-full overflow-hidden">
-                                            <img src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001'}${course.coverImageUrl}`} alt={course.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                        </div>
-                                    ) : (
-                                        <div className="aspect-video w-full bg-surface-container-high flex items-center justify-center">
-                                            <span className="material-symbols-outlined text-4xl text-on-surface-variant/50">school</span>
-                                        </div>
-                                    )}
-                                    <div className="p-6 space-y-4">
-                                        <div className="flex justify-between items-start gap-4">
-                                            <h4 className="text-xl font-bold font-headline text-on-surface">{course.name}</h4>
-                                            <span className="shrink-0 px-3 py-1 bg-primary-container text-on-primary-container text-xs font-bold rounded-full">{course.category}</span>
-                                        </div>
-                                        {course.description && <p className="text-on-surface-variant text-sm line-clamp-3">{course.description}</p>}
-                                        
-                                        <div className="pt-4 border-t border-outline-variant/30 flex justify-between items-center text-sm font-medium">
-                                            <div className="text-on-surface-variant flex items-center gap-1"><span className="material-symbols-outlined text-sm pt-0.5">schedule</span>{course.duration || '-'}</div>
-                                            <div className="text-primary font-bold text-lg">${course.price}</div>
-                                        </div>
-                                        <button onClick={() => window.open(`https://wa.me/5492664734034?text=Hola, quiero info sobre el curso: ${course.name}`, '_blank')} className="w-full mt-4 bg-primary text-on-primary py-3 rounded-xl font-bold hover:opacity-90 transition-opacity">
-                                            Consultar por WhatsApp
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                            {courses.length === 0 && (
-                                <div className="col-span-full text-center py-12 text-on-surface-variant">
-                                    Próximamente nuevas fechas disponibles.
-                                </div>
-                            )}
+                <section id="cursos" className="mb-cursos">
+                    <div className="mb-cursos-header">
+                        <div>
+                        <p className="mb-eyebrow">✦ Capacitaciones</p>
+                        <h2 className="mb-section-title">Cursos Disponibles</h2>
+                        <p className="mb-section-sub">Aprendé con las mejores técnicas y comenzá tu carrera en el mundo de la belleza.</p>
                         </div>
                     </div>
+
+                    <div className="mb-cursos-grid">
+
+                        {/* ── CARD 1: Manicura Completo ── */}
+                        <div className="mb-curso-card">
+                        <span className="mb-curso-badge disponible">Disponible</span>
+                        <img
+                            className="mb-curso-img"
+                            src="/images/curso-manicura.jpg"
+                            alt="Curso Manicura Completo"
+                            onError={(e) => { e.currentTarget.style.display='none'; if(e.currentTarget.nextElementSibling) (e.currentTarget.nextElementSibling as HTMLElement).style.display='flex'; }}
+                        />
+                        <div className="mb-curso-img-placeholder" style={{display:'none',background:'linear-gradient(135deg,#f8bbd9,#fce4ec)'}}>💅</div>
+
+                        <div className="mb-curso-body">
+                            <div className="mb-curso-icon">💅</div>
+                            <div className="mb-curso-name">Manicura Completo</div>
+                            <div className="mb-curso-desc">
+                            Desde la base hasta técnicas avanzadas de nail art: acrílico, gel, decoración 3D, flores, marmolado, francés y mucho más. Incluye práctica intensiva y certificado oficial.
+                            </div>
+                            <div className="mb-curso-pills">
+                            <span className="mb-curso-pill">📅 Fechas a confirmar</span>
+                            <span className="mb-curso-pill">📜 Certificado incluido</span>
+                            <span className="mb-curso-pill">🎨 Teoría + Práctica</span>
+                            <span className="mb-curso-pill">🏠 Presencial</span>
+                            </div>
+                            <a
+                            href="https://wa.me/5492664734034?text=Hola!%20Me%20interesa%20el%20Curso%20de%20Manicura%20Completo%20%F0%9F%92%85%20%C2%BFpod%C3%A9s%20darme%20m%C3%A1s%20info%3F"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mb-curso-cta active"
+                            >
+                            Consultar por WhatsApp →
+                            </a>
+                        </div>
+                        </div>
+
+                        {/* ── CARD 2: Lifting de Pestañas ── */}
+                        <div className="mb-curso-card">
+                        <span className="mb-curso-badge disponible">Disponible</span>
+                        <img
+                            className="mb-curso-img"
+                            src="/images/curso-lifting.jpg"
+                            alt="Lifting de Pestañas"
+                            onError={(e) => { e.currentTarget.style.display='none'; if(e.currentTarget.nextElementSibling) (e.currentTarget.nextElementSibling as HTMLElement).style.display='flex'; }}
+                        />
+                        <div className="mb-curso-img-placeholder" style={{display:'none',background:'linear-gradient(135deg,#e1bee7,#f3e5f5)'}}>👁️</div>
+
+                        <div className="mb-curso-body">
+                            <div className="mb-curso-icon">👁️</div>
+                            <div className="mb-curso-name">Lifting de Pestañas</div>
+                            <div className="mb-curso-desc">
+                            Aprendé la técnica de lifting y permanente de pestañas más demandada del mercado. Efecto natural, duradero y sin extensiones. Ideal para emprender desde casa o insertarte en salones premium.
+                            </div>
+                            <div className="mb-curso-pills">
+                            <span className="mb-curso-pill">📅 Fechas a confirmar</span>
+                            <span className="mb-curso-pill">📜 Certificado incluido</span>
+                            <span className="mb-curso-pill">⚡ Alta demanda laboral</span>
+                            <span className="mb-curso-pill">🏠 Presencial</span>
+                            </div>
+                            <a
+                            href="https://wa.me/5492664734034?text=Hola!%20Me%20interesa%20el%20Curso%20de%20Lifting%20de%20Pesta%C3%B1as%20%F0%9F%91%81%EF%B8%8F%20%C2%BFpod%C3%A9s%20darme%20m%C3%A1s%20info%3F"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mb-curso-cta active"
+                            >
+                            Consultar por WhatsApp →
+                            </a>
+                        </div>
+                        </div>
+
+                        {/* ── CARD 3: Laminado de Cejas (próximamente) ── */}
+                        <div className="mb-curso-card" style={{opacity:.8}}>
+                        <span className="mb-curso-badge proximamente">Próximamente ✦</span>
+                        <img
+                            className="mb-curso-img"
+                            src="/images/curso-cejas.jpg"
+                            alt="Laminado de Cejas"
+                            onError={(e) => { e.currentTarget.style.display='none'; if(e.currentTarget.nextElementSibling) (e.currentTarget.nextElementSibling as HTMLElement).style.display='flex'; }}
+                        />
+                        <div className="mb-curso-img-placeholder" style={{display:'none',background:'linear-gradient(135deg,#fff9c4,#fff8e1)'}}>✦</div>
+
+                        <div className="mb-curso-body">
+                            <div className="mb-curso-icon">✦</div>
+                            <div className="mb-curso-name">Laminado de Cejas</div>
+                            <div className="mb-curso-desc">
+                            Muy pronto: laminado profesional, diseño y pigmentación de cejas perfectas. Anotate en la lista de espera y recibís precio early bird exclusivo antes que nadie.
+                            </div>
+                            <div className="mb-curso-pills">
+                            <span className="mb-curso-pill">🔔 Lista de espera abierta</span>
+                            <span className="mb-curso-pill">💛 Precio early bird</span>
+                            <span className="mb-curso-pill">📜 Certificado incluido</span>
+                            </div>
+                            <a
+                            href="https://wa.me/5492664734034?text=Hola!%20Quiero%20anotarme%20en%20la%20lista%20de%20espera%20para%20el%20curso%20de%20Laminado%20de%20Cejas%20%E2%9C%A6"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mb-curso-cta waiting"
+                            >
+                            Anotarme en lista de espera →
+                            </a>
+                        </div>
+                        </div>
+
+                    </div>{/* /grid */}
+
+                    {/* ── GALERÍA RESULTADO DE ALUMNAS ── */}
+                    <div className="mb-galeria-wrap">
+                        <h3>🌸 Resultado de nuestras alumnas</h3>
+                        <p>Empezás desde cero y llegás a esto. Obras reales creadas durante los cursos.</p>
+                        <div className="mb-galeria-grid">
+                        <img src="/images/resultado-alumnas-collage.jpg"  alt="Collage resultados alumnas" title="Nails Art – resultado grupal" />
+                        <img src="/images/resultado-alumna-02.jpg"        alt="Nail art floral alumna"     title="Flores 3D rosa y negro" />
+                        <img src="/images/resultado-alumna-03.jpg"        alt="Nail art marmolado"          title="Marmolado y flores 3D" />
+                        <img src="/images/resultado-alumna-04.jpg"        alt="Nail art colorido"           title="Arte 3D multicolor" />
+                        </div>
+                    </div>
+
                 </section>
+                
+                <PortfolioSection />
+                <PromocionesSection />
             </main>
 
             {/* Footer */}
