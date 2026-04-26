@@ -345,7 +345,7 @@ export default function LandingPage() {
                         <div className="lg:col-span-5 order-1 lg:order-2 relative">
                             <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden group">
                                 {/* Main Hero Image */}
-                                <img alt="Mili professional portrait" className="w-full h-full object-cover rounded-lg transform transition-transform duration-700 group-hover:scale-110" data-alt="Professional portrait of Mili, a stylish aesthetician in a modern pink-themed studio." src="/images/hero-image.png" />
+                                <img alt="Mili professional portrait" className="w-full h-full object-cover rounded-lg transform transition-transform duration-700 group-hover:scale-110" data-alt="Professional portrait of Mili, a stylish aesthetician in a modern pink-themed studio." src="/images/imagen01.jpg" />
                                 {/* Floating Glass Cards */}
                                 <div className="absolute -bottom-6 -left-6 glass-card p-6 rounded-lg border border-white/30 shadow-2xl hidden md:block">
                                     <div className="flex items-center gap-4">
@@ -386,7 +386,7 @@ export default function LandingPage() {
                             <div className="md:col-span-5 relative">
                                 <div className="sticky top-24">
                                     <div className="rounded-lg overflow-hidden h-[600px] shadow-2xl">
-                                        <img alt="Professional manicure and nail art session" className="w-full h-full object-cover" data-alt="Close-up of professional nail artist hands working with golden details and intricate artistic patterns in a high-end luxury spa" src="/images/about-image.png" />
+                                        <img alt="Professional manicure and nail art session" className="w-full h-full object-cover top" data-alt="Close-up of professional nail artist hands working with golden details and intricate artistic patterns in a high-end luxury spa" src="/images/imagen02.jpg" />
                                     </div>
                                     {/* "Story Ring" Decoration */}
                                     <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full border-4 border-dashed border-primary/30 animate-spin-slow"></div>
@@ -446,7 +446,7 @@ export default function LandingPage() {
                         <span className="mb-curso-badge disponible">Disponible</span>
                         <img
                             className="mb-curso-img"
-                            src="/images/curso-manicura.jpg"
+                            src="/images/imagen04.jpg"
                             alt="Curso Manicura Completo"
                             onError={(e) => { e.currentTarget.style.display='none'; if(e.currentTarget.nextElementSibling) (e.currentTarget.nextElementSibling as HTMLElement).style.display='flex'; }}
                         />
@@ -480,7 +480,7 @@ export default function LandingPage() {
                         <span className="mb-curso-badge disponible">Disponible</span>
                         <img
                             className="mb-curso-img"
-                            src="/images/curso-lifting.jpg"
+                            src="/images/imagen05.jpg"
                             alt="Lifting de Pestañas"
                             onError={(e) => { e.currentTarget.style.display='none'; if(e.currentTarget.nextElementSibling) (e.currentTarget.nextElementSibling as HTMLElement).style.display='flex'; }}
                         />

@@ -62,10 +62,8 @@ export default function LoginPage() {
             >
                 {/* Logo */}
                 <div className="flex flex-col items-center mb-8 text-center pt-8">
-                    <div className="w-16 h-16 bg-gradient-to-br from-primary-fixed to-primary-container rounded-2xl flex items-center justify-center mb-4 shadow-xl shadow-primary-container/20 border border-white/50">
-                        <span className="material-symbols-outlined text-white text-3xl" style={{fontVariationSettings: "'FILL' 1"}}>spa</span>
-                    </div>
-                    <div className="text-3xl font-['Noto_Serif'] italic font-black text-primary mb-2">
+                    <img src="/images/logo.jpg" alt="Mili Belleza Studio" className="h-28 w-auto object-contain rounded-2xl mb-2 shadow-xl border-2 border-white/50" />
+                    <div className="text-3xl font-['Noto_Serif'] italic font-black text-primary mb-2 hidden">
                         Mili Belleza Study
                     </div>
                     <p className="text-on-surface-variant font-medium">Iniciá sesión para continuar</p>

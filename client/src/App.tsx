@@ -322,6 +322,7 @@ function AppLayout() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     const headers = { 'Authorization': `Bearer ${token}` }
@@ -344,6 +345,10 @@ function AppLayout() {
     fetchData()
   }, [token, location.pathname]) // re-fetch when route changes as well
 
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
     { path: '/services', label: 'Servicios', icon: <Scissors className="w-4 h-4" /> },
@@ -363,18 +368,17 @@ function AppLayout() {
   }
 
   return (
-    <div className={`min-h-screen ${user?.role === 'CLIENT' ? 'bg-surface mesh-gradient' : 'bg-slate-900'} text-on-surface flex font-body`}>
+    <div className={`h-[100dvh] w-full ${user?.role === 'CLIENT' ? 'bg-surface mesh-gradient' : 'bg-slate-900'} text-on-surface flex font-body overflow-hidden`}>
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* Sidebar */}
-      <aside className={`w-64 ${user?.role === 'CLIENT' ? 'bg-white/80 border-r border-outline-variant/30 backdrop-blur-md' : 'bg-slate-800/50 border-r border-slate-700/50'} flex flex-col p-4 shrink-0 shadow-lg`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 md:relative md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${user?.role === 'CLIENT' ? 'bg-white/80 border-r border-outline-variant/30 backdrop-blur-md' : 'bg-slate-800/95 md:bg-slate-800/50 border-r border-slate-700/50'} flex flex-col p-4 shadow-lg shrink-0 overflow-y-auto`}>
         {/* Logo */}
-        <div className="flex items-center gap-3 px-2 py-4 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary-fixed to-primary-container rounded-xl flex items-center justify-center shadow-md">
-            <Scissors className={`w-5 h-5 ${user?.role === 'CLIENT' ? 'text-primary' : 'text-white'}`} />
-          </div>
-          <div>
-            <div className={`text-sm font-bold ${user?.role === 'CLIENT' ? 'text-on-surface' : 'text-white'} leading-tight font-headline italic`}>Mili Belleza</div>
-            <div className={`text-xs ${user?.role === 'CLIENT' ? 'text-on-surface-variant font-medium' : 'text-slate-400'} leading-tight tracking-wider`}>STUDY</div>
-          </div>
+        <div className="flex items-center justify-center py-4 mb-6">
+          <img src="/images/logo.jpg" alt="Mili Belleza Studio" className="h-20 w-auto object-contain rounded-xl shadow-md border-2 border-pink-500/20" />
         </div>
 
         {/* Nav */}
@@ -432,7 +436,18 @@ function AppLayout() {
       </aside>
 
       {/* Main */}
-      <main className="flex-1 p-8 overflow-auto">
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+        {/* Mobile Header */}
+        <div className={`md:hidden flex items-center justify-between p-4 border-b ${user?.role === 'CLIENT' ? 'border-outline-variant/30 bg-surface/50' : 'border-slate-700/50 bg-slate-900/50'} backdrop-blur-md sticky top-0 z-30`}>
+           <button onClick={() => setSidebarOpen(true)} className={`p-2 rounded-lg ${user?.role === 'CLIENT' ? 'hover:bg-surface-container' : 'hover:bg-slate-800'}`}>
+             <div className={`w-6 h-0.5 mb-1.5 ${user?.role === 'CLIENT' ? 'bg-on-surface' : 'bg-white'}`} />
+             <div className={`w-6 h-0.5 mb-1.5 ${user?.role === 'CLIENT' ? 'bg-on-surface' : 'bg-white'}`} />
+             <div className={`w-6 h-0.5 ${user?.role === 'CLIENT' ? 'bg-on-surface' : 'bg-white'}`} />
+           </button>
+           <span className={`font-bold italic ${user?.role === 'CLIENT' ? 'text-primary' : 'text-pink-400'}`}>Mili Belleza</span>
+        </div>
+        
+        <div className="flex-1 p-4 md:p-8 overflow-y-auto overflow-x-hidden">
         {loading ? (
           <div className="flex items-center justify-center h-full">
             <div className="w-8 h-8 border-2 border-pink-400 border-t-transparent rounded-full animate-spin" />
@@ -542,6 +557,7 @@ function AppLayout() {
             </Routes>
           </AnimatePresence>
         )}
+        </div>
       </main>
     </div>
   )
