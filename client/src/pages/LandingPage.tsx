@@ -145,9 +145,6 @@ const PortfolioSection = () => {
     { cat: 'minimalista', title: 'Minimalismo Floral', desc: 'Flor delicada con detalle plateado y aros sobre base blush. Refinado al máximo.', src: '/images/port-13.jpeg', placeholder: '🤍', tag: 'Minimalista' },
     { cat: 'nail-art', title: 'Ocean Nails', desc: 'Temática marina con conchas, estrellas de mar y perlas nacaradas. Un sueño costero.', src: '/images/port-14.jpeg', placeholder: '🐚', tag: 'Nail Art', className: 'tall' },
     { cat: 'minimalista', title: 'Floral Cremoso', desc: 'Arte floral sobre base crema con líneas doradas y daisy 3D. Lujo sutil.', src: '/images/port-15.jpeg', placeholder: '🌿', tag: 'Minimalista' },
-    { cat: 'nail-art', title: 'Collage de Diseños', desc: 'Muestra de distintos trabajos realizados por alumnas del curso completo. ¡Empezás de cero!', src: '/images/port-16.jpg', placeholder: '🎨', tag: 'Alumnas' },
-    { cat: 'nail-art', title: 'Pink & Wild', desc: 'Animal print y flores en armonía: moderno, atrevido y profundamente femenino.', src: '/images/port-17.jpg', placeholder: '🐯', tag: 'Nail Art' },
-    { cat: 'nail-art', title: 'Butterfly Dreams', desc: 'Diseño etéreo con mariposas y tonos pastel. Delicadeza en estado puro.', src: '/images/port-18.jpg', placeholder: '🦋', tag: 'Nail Art', className: 'wide' },
   ];
 
   const visibleItems = portfolioItems.filter(item => filter === 'all' || item.cat === filter);

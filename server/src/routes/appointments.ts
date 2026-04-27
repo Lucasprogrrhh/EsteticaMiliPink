@@ -165,6 +165,26 @@ router.patch('/:id/status', async (req, res) => {
                 client: { select: { id: true, name: true, email: true, phone: true } }
             }
         });
+
+        // Points logic
+        if (status === 'COMPLETED' && existing.status !== 'COMPLETED') {
+            await prisma.$transaction([
+                prisma.user.update({
+                    where: { id: appointment.clientId },
+                    data: { points: { increment: 100 } }
+                }),
+                prisma.pointsTransaction.create({
+                    data: {
+                        amount: 100,
+                        type: 'earned',
+                        description: `Servicio completado: ${appointment.service.name}`,
+                        userId: appointment.clientId,
+                        serviceId: appointment.serviceId
+                    }
+                })
+            ]);
+        }
+
         res.json(appointment);
     } catch (error) {
         res.status(500).json({ error: 'Error updating appointment status' });

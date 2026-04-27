@@ -5,7 +5,7 @@ import { requireAuth } from '../middleware/auth';
 const router = Router();
 const prisma = new PrismaClient();
 
-// GET all services
+// GET all services (active only for clients)
 router.get('/', async (req, res) => {
     try {
         const services = await prisma.service.findMany({
@@ -15,6 +15,20 @@ router.get('/', async (req, res) => {
         res.json(services);
     } catch (error) {
         res.status(500).json({ error: 'Error fetching services' });
+    }
+});
+
+// GET all services for admin (including inactive)
+router.get('/all', requireAuth, async (req, res) => {
+    try {
+        if (req.user?.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden.' });
+        
+        const services = await prisma.service.findMany({
+            orderBy: { name: 'asc' },
+        });
+        res.json(services);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching all services' });
     }
 });
 

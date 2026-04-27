@@ -29,13 +29,13 @@ export default function ServicesAdminPage() {
 
     const fetchServices = async () => {
         try {
-            const response = await fetch(`${API}/services`);
+            const response = await fetch(`${API}/services/all`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!response.ok) throw new Error('Error al cargar servicios');
             const data = await response.json();
-            // Mostrar todos los servicios para admin, incluso si tuvieran endpoint solo de activos,
-            // pero el GET /api/services actual solo devuelve activos. 
-            // Para admin, deberíamos ver todos pero como el API filtra por active=true, 
-            // veremos los activos.
             setServices(data);
         } catch (err: any) {
             setError(err.message);

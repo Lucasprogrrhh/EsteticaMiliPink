@@ -7,8 +7,8 @@ const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 export default function ProfilePage() {
   const { token, user: authUser } = useAuth();
   
-  const [profile, setProfile] = useState<{name: string, email: string, phone: string, photoUrl: string | null, paymentAlias: string, adminPhone: string, depositPercentage: number, reminderTime: string, remindersActive: boolean}>({
-    name: '', email: '', phone: '', photoUrl: null, paymentAlias: '', adminPhone: '', depositPercentage: 50, reminderTime: '10:00', remindersActive: true
+  const [profile, setProfile] = useState<{name: string, email: string, phone: string, photoUrl: string | null, paymentAlias: string, adminPhone: string, depositPercentage: number, reminderTime: string, remindersActive: boolean, points: number, pointTransactions: any[], stats: any}>({
+    name: '', email: '', phone: '', photoUrl: null, paymentAlias: '', adminPhone: '', depositPercentage: 50, reminderTime: '10:00', remindersActive: true, points: 0, pointTransactions: [], stats: { services: 0, courses: 0, redemptions: 0 }
   });
   
   const [password, setPassword] = useState('');
@@ -37,7 +37,14 @@ export default function ProfilePage() {
             adminPhone: data.adminPhone || '',
             depositPercentage: data.depositPercentage ?? 50,
             reminderTime: data.reminderTime || '10:00',
-            remindersActive: data.remindersActive ?? true
+            remindersActive: data.remindersActive ?? true,
+            points: data.points || 0,
+            pointTransactions: data.pointTransactions || [],
+            stats: {
+              services: data._count?.clientAppointments || 0,
+              courses: data._count?.courseEnrollments || 0,
+              redemptions: data._count?.pointTransactions || 0
+            }
           });
         }
       } catch (error) {
@@ -374,6 +381,176 @@ export default function ProfilePage() {
           </form>
         </div>
       </div>
+
+      {/* Club de Puntos Mili Panel */}
+      {authUser?.role === 'CLIENT' && (
+        <div 
+          className="rounded-2xl p-6 md:p-8 overflow-hidden relative shadow-[0_10px_30px_rgba(0,0,0,0.5)]" 
+          style={{ background: 'linear-gradient(135deg, #3d0f1e 0%, #5a1a2a 100%)', border: '1px solid #c9a227' }}
+        >
+          {/* Decorative Background Elements */}
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <span className="material-symbols-outlined text-[150px] text-[#e8b84b]">stars</span>
+          </div>
+
+          <div className="relative z-10">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold mb-2 tracking-wide" style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#fff8e7' }}>
+                Club de Puntos Mili
+              </h2>
+              <p style={{ color: '#e8b84b', fontFamily: "'Plus Jakarta Sans', sans-serif" }} className="text-sm font-medium uppercase tracking-widest">
+                Tus recompensas exclusivas
+              </p>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-8 items-center md:items-start justify-between">
+              
+              {/* Points Display & Progress */}
+              <div className="flex-1 w-full text-center md:text-left flex flex-col items-center md:items-start">
+                <div className="mb-2">
+                  <span className="text-6xl font-black drop-shadow-md" style={{ color: '#e8b84b', fontFamily: "'Playfair Display', Georgia, serif" }}>
+                    {profile.points}
+                  </span>
+                  <span className="text-xl ml-2 font-medium" style={{ color: '#fff8e7', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    pts
+                  </span>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="w-full max-w-sm mt-4">
+                  <div className="flex justify-between text-xs mb-2 font-bold" style={{ color: '#e8b84b', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    <span>0 pts</span>
+                    <span>Meta: 500 pts</span>
+                  </div>
+                  <div className="w-full h-3 rounded-full bg-black/40 overflow-hidden border border-[#c9a227]/30">
+                    <div 
+                      className="h-full rounded-full transition-all duration-1000 ease-out relative"
+                      style={{ 
+                        width: `${Math.min((profile.points / 500) * 100, 100)}%`, 
+                        background: 'linear-gradient(90deg, #c9a227 0%, #e8b84b 100%)',
+                        boxShadow: '0 0 10px rgba(232, 184, 75, 0.5)'
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-white/20 w-full animate-pulse"></div>
+                    </div>
+                  </div>
+                  <p className="text-xs mt-3 opacity-80" style={{ color: '#fff8e7', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    {profile.points >= 500 
+                      ? '¡Felicidades! Ya podés canjear un premio.' 
+                      : `Te faltan ${500 - profile.points} pts para tu próximo beneficio.`}
+                  </p>
+                </div>
+
+                <div className="flex gap-4 mt-8 w-full justify-center md:justify-start">
+                  <button 
+                    onClick={() => window.open('https://wa.me/5492664734034?text=Hola!%20Quiero%20canjear%20mis%20puntos%20del%20Club%20Mili', '_blank')}
+                    className="px-6 py-3 rounded-xl font-bold transition-transform hover:scale-105 shadow-lg flex items-center gap-2"
+                    style={{ background: 'linear-gradient(90deg, #c9a227 0%, #e8b84b 100%)', color: '#3d0f1e', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                  >
+                    <span className="material-symbols-outlined text-[20px]">redeem</span>
+                    Canjear Puntos
+                  </button>
+                  <a 
+                    href="/#promociones"
+                    className="px-6 py-3 rounded-xl font-bold transition-all border hover:bg-white/10 flex items-center gap-2"
+                    style={{ borderColor: '#c9a227', color: '#e8b84b', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                  >
+                    ¿Cómo sumar?
+                  </a>
+                </div>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="w-full md:w-auto flex flex-row md:flex-col gap-4 justify-center">
+                <div className="bg-black/20 p-4 rounded-xl border border-[#c9a227]/30 flex flex-col items-center w-28 backdrop-blur-sm">
+                  <span className="material-symbols-outlined text-[28px] mb-1" style={{ color: '#e8b84b' }}>spa</span>
+                  <span className="text-2xl font-bold" style={{ color: '#fff8e7', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{profile.stats.services}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-center mt-1" style={{ color: '#c9a227' }}>Servicios</span>
+                </div>
+                <div className="bg-black/20 p-4 rounded-xl border border-[#c9a227]/30 flex flex-col items-center w-28 backdrop-blur-sm">
+                  <span className="material-symbols-outlined text-[28px] mb-1" style={{ color: '#e8b84b' }}>school</span>
+                  <span className="text-2xl font-bold" style={{ color: '#fff8e7', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{profile.stats.courses}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-center mt-1" style={{ color: '#c9a227' }}>Cursos</span>
+                </div>
+                <div className="bg-black/20 p-4 rounded-xl border border-[#c9a227]/30 flex flex-col items-center w-28 backdrop-blur-sm">
+                  <span className="material-symbols-outlined text-[28px] mb-1" style={{ color: '#e8b84b' }}>stars</span>
+                  <span className="text-2xl font-bold" style={{ color: '#fff8e7', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{profile.stats.redemptions}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-center mt-1" style={{ color: '#c9a227' }}>Canjes</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Reward Table & History */}
+            <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+              
+              {/* Rewards Table */}
+              <div>
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#fff8e7', fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  <span className="material-symbols-outlined text-[#e8b84b]">military_tech</span>
+                  Niveles de Canje
+                </h3>
+                <div className="space-y-3">
+                  {[
+                    { pts: 500, desc: '10% OFF en próximo servicio' },
+                    { pts: 1000, desc: 'Sesión de uñas gratis' },
+                    { pts: 2000, desc: '25% OFF en cualquier curso' },
+                    { pts: 3000, desc: 'Kit de productos Mili' },
+                    { pts: 5000, desc: 'Curso completo de regalo' }
+                  ].map((reward, i) => {
+                    const achieved = profile.points >= reward.pts;
+                    return (
+                      <div key={i} className={`p-3 rounded-lg border flex items-center justify-between transition-colors ${achieved ? 'bg-[#e8b84b]/10 border-[#e8b84b]/50' : 'bg-black/20 border-white/5 opacity-60'}`}>
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${achieved ? 'bg-[#e8b84b] text-[#3d0f1e]' : 'bg-black/40 text-white/50'}`}>
+                            {achieved ? '✓' : '🔒'}
+                          </div>
+                          <div>
+                            <p className="font-bold text-sm" style={{ color: achieved ? '#e8b84b' : '#fff8e7', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{reward.pts} pts</p>
+                            <p className="text-xs" style={{ color: '#fff8e7', opacity: 0.8 }}>{reward.desc}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Transaction History */}
+              <div>
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#fff8e7', fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  <span className="material-symbols-outlined text-[#e8b84b]">history</span>
+                  Últimos Movimientos
+                </h3>
+                
+                {profile.pointTransactions.length === 0 ? (
+                  <div className="bg-black/20 border border-white/10 rounded-xl p-6 text-center">
+                    <p style={{ color: '#fff8e7', opacity: 0.7, fontFamily: "'Plus Jakarta Sans', sans-serif" }} className="text-sm">
+                      Aún no tenés movimientos de puntos. ¡Completá un servicio o curso para empezar a sumar!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {profile.pointTransactions.map((tx, i) => (
+                      <div key={i} className="bg-black/20 border border-[#c9a227]/20 p-3 rounded-lg flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium" style={{ color: '#fff8e7', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{tx.description || (tx.type === 'earned' ? 'Puntos ganados' : 'Canje de puntos')}</p>
+                          <p className="text-[10px] mt-1" style={{ color: '#c9a227', opacity: 0.8 }}>
+                            {new Date(tx.date).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                          </p>
+                        </div>
+                        <div className={`font-bold text-lg ${tx.type === 'earned' ? '' : 'text-red-400'}`} style={{ color: tx.type === 'earned' ? '#e8b84b' : undefined, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                          {tx.type === 'earned' ? '+' : '-'}{tx.amount}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
