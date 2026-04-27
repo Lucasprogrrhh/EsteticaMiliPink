@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 
 // GET all services (active only for clients)
 router.get('/', async (req, res) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     try {
         const services = await prisma.service.findMany({
             where: { active: true },
@@ -20,6 +21,7 @@ router.get('/', async (req, res) => {
 
 // GET all services for admin (including inactive)
 router.get('/all', requireAuth, async (req, res) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     try {
         if (req.user?.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden.' });
         

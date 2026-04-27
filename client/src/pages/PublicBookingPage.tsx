@@ -13,6 +13,7 @@ interface Service {
 interface UserRes {
     id: string;
     name: string;
+    phone?: string | null;
 }
 
 const PublicBookingPage: React.FC = () => {
@@ -135,9 +136,12 @@ const PublicBookingPage: React.FC = () => {
                 const depositAmount = (selectedService.price * (adminSettings.depositPercentage / 100)).toFixed(2);
                 const formatDate = new Date(dateTime).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
                 
+                const selectedSpecialist = specialists.find(s => s.id === specialistId);
+                const targetPhone = selectedSpecialist?.phone || adminSettings.adminPhone;
+                
                 const message = `✅ ¡Tu turno está casi confirmado!\n\n📅 Servicio: ${selectedService.name}\n🗓️ Fecha y hora: ${formatDate}\n\n💰 Para confirmar tu turno, abonás una seña de:\n$${depositAmount} (${adminSettings.depositPercentage}% del servicio)\n\n🏦 Transferí al alias: ${adminSettings.paymentAlias || 'No especificado'}\n\n📲 Una vez realizado el pago, enviá el comprobante por aquí.\n\n¡Gracias! Te esperamos 💅`;
                 
-                const cleanPhone = adminSettings.adminPhone.replace(/\D/g, ''); // leave only numbers
+                const cleanPhone = targetPhone.replace(/\D/g, ''); // leave only numbers
                 const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
                 window.open(waUrl, '_blank');
             }
@@ -332,7 +336,7 @@ const PublicBookingPage: React.FC = () => {
                                                 <p className="mb-1 flex justify-between"><span className="text-on-surface-variant font-medium">Monto a abonar:</span> <strong className="text-primary text-base">${(selectedService.price * (adminSettings.depositPercentage / 100)).toFixed(2)}</strong></p>
                                                 {adminSettings.paymentAlias && <p className="flex justify-between"><span className="text-on-surface-variant font-medium">Alias bancario:</span> <strong className="text-on-surface">{adminSettings.paymentAlias}</strong></p>}
                                             </div>
-                                            <p className="text-xs font-medium opacity-80">Al confirmar, serás redirigida a WhatsApp para enviar el comprobante directamente a la administración.</p>
+                                            <p className="text-xs font-medium opacity-80">Al confirmar, serás redirigida a WhatsApp para enviar el comprobante directamente a la administración. (Alias: <strong>{adminSettings.paymentAlias || 'No especificado'}</strong>)</p>
                                         </div>
                                     </div>
                                 )}

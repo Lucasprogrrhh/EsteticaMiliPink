@@ -450,13 +450,6 @@ export default function ProfilePage() {
                     <span className="material-symbols-outlined text-[20px]">redeem</span>
                     Canjear Puntos
                   </button>
-                  <a 
-                    href="/#promociones"
-                    className="px-6 py-3 rounded-xl font-bold transition-all border hover:bg-white/10 flex items-center gap-2"
-                    style={{ borderColor: '#c9a227', color: '#e8b84b', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-                  >
-                    ¿Cómo sumar?
-                  </a>
                 </div>
               </div>
 
