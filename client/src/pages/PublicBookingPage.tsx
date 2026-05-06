@@ -132,21 +132,24 @@ const PublicBookingPage: React.FC = () => {
             const selectedService = services.find(s => s.id === serviceId);
 
             // WhatsApp Redirection
-            if (adminSettings?.adminPhone && selectedService) {
-                const depositAmount = (selectedService.price * (adminSettings.depositPercentage / 100)).toFixed(2);
+            const selectedSpecialist = specialists.find(s => s.id === specialistId);
+            const targetPhone = selectedSpecialist?.phone || adminSettings?.adminPhone;
+
+            if (targetPhone && selectedService) {
+                const depositAmount = (selectedService.price * ((adminSettings?.depositPercentage || 50) / 100)).toFixed(2);
                 const formatDate = new Date(dateTime).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
                 
-                const selectedSpecialist = specialists.find(s => s.id === specialistId);
-                const targetPhone = selectedSpecialist?.phone || adminSettings.adminPhone;
-                
-                const message = `✅ ¡Tu turno está casi confirmado!\n\n📅 Servicio: ${selectedService.name}\n🗓️ Fecha y hora: ${formatDate}\n\n💰 Para confirmar tu turno, abonás una seña de:\n$${depositAmount} (${adminSettings.depositPercentage}% del servicio)\n\n🏦 Transferí al alias: ${adminSettings.paymentAlias || 'No especificado'}\n\n📲 Una vez realizado el pago, enviá el comprobante por aquí.\n\n¡Gracias! Te esperamos 💅`;
+                const message = ` *¡Tu turno está casi confirmado!*\n\n 🎀Servicio: ${selectedService.name}\n 🕐Fecha y hora: ${formatDate}\n\n✅ Para confirmar tu turno, abonás una seña de:\n$${depositAmount} (${adminSettings?.depositPercentage || 50}% del servicio)\n\n🩷 Transferí al alias: ${adminSettings?.paymentAlias || 'No especificado'}\n\n🎉Una vez realizado el pago, enviá el comprobante por aquí.\n\n¡Gracias! Te esperamos 🌸`;
                 
                 const cleanPhone = targetPhone.replace(/\D/g, ''); // leave only numbers
-                const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-                window.open(waUrl, '_blank');
+                if (cleanPhone) {
+                    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+                    window.location.href = waUrl;
+                    return; // Stop execution to avoid navigating to dashboard immediately
+                }
             }
 
-            // Redirect to appointments list
+            // Redirect to appointments list if no whatsapp redirection
             navigate('/dashboard');
         } catch (err: any) {
             setError(err.message);

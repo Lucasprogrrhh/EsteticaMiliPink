@@ -80,6 +80,25 @@ const AdminAppointmentsPage: React.FC = () => {
         }
     };
 
+    const handleDelete = async (id: string) => {
+        if (!window.confirm('¿Estás seguro de que deseas eliminar esta reserva permanentemente?')) return;
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/appointments/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Error al eliminar la reserva');
+
+            setAppointments(prev => prev.filter(app => app.id !== id));
+        } catch (err: any) {
+            alert(err.message);
+        }
+    };
+
     if (loading) return <div className="text-center mt-10">Loading appointments...</div>;
 
     return (
@@ -153,6 +172,14 @@ const AdminAppointmentsPage: React.FC = () => {
                                                 <option value="COMPLETED">COMPLETED</option>
                                                 <option value="CANCELLED">CANCELLED</option>
                                             </select>
+                                            <button
+                                                onClick={() => handleDelete(app.id)}
+                                                className="mt-1 text-red-500 hover:text-red-400 text-[10px] uppercase font-bold flex items-center gap-1 transition"
+                                                title="Eliminar Reserva"
+                                            >
+                                                <span className="material-symbols-outlined text-[14px]">delete</span>
+                                                Eliminar
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>

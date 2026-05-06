@@ -353,7 +353,6 @@ function AppLayout() {
     { path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
     { path: '/services', label: 'Servicios', icon: <Scissors className="w-4 h-4" /> },
     { path: '/appointments', label: 'Mis Citas', icon: <Calendar className="w-4 h-4" /> },
-    { path: '/booking', label: 'Agendar Cita', icon: <Plus className="w-4 h-4" /> },
     { path: '/profile', label: 'Mi Perfil', icon: <User className="w-4 h-4" /> },
   ]
 
