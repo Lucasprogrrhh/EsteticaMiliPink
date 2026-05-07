@@ -130,7 +130,7 @@ const BookingPage: React.FC = () => {
                 const formatTime = new Date(dateTime).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
                 const clientName = user?.name || 'Cliente';
                 
-                const message = `Hola! Acabo de reservar un turno en Mili Belleza Study 💅\n📋 *Datos de mi reserva:*\n- Nombre: ${clientName}\n- Servicio: ${selectedService.name}\n- Fecha: ${formatDate}\n- Hora: ${formatTime}\nTe envío el comprobante de transferencia a continuación. ¡Gracias!`;
+                const message = `Hola! Acabo de reservar un turno en Mili Belleza Study 💅🏻\n✅ *Datos de mi reserva:*\n* Nombre: ${clientName}\n🎀Servicio: ${selectedService.name}\n🗓️Fecha: ${formatDate}\n🕐Hora: ${formatTime}\nTe envío el comprobante de transferencia a continuación. ¡Gracias!🌸`;
                 
                 const cleanPhone = targetPhone.replace(/\D/g, ''); // leave only numbers
                 if (cleanPhone) {
