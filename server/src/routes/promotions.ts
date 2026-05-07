@@ -144,7 +144,7 @@ router.get('/history/:userId', requireAuth, async (req, res) => {
         }
 
         const txs = await prisma.pointsTransaction.findMany({
-            where: { userId },
+            where: { userId: userId as string },
             orderBy: { date: 'desc' }
         });
 

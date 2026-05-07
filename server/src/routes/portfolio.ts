@@ -151,7 +151,7 @@ router.patch('/:id/status', requireAuth, async (req, res) => {
         if (isFeatured !== undefined) dataUpdate.isFeatured = isFeatured;
 
         const item = await prisma.portfolioItem.update({
-            where: { id },
+            where: { id: id as string },
             data: dataUpdate
         });
 
@@ -171,7 +171,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
         const { id } = req.params;
 
         await prisma.portfolioItem.delete({
-            where: { id }
+            where: { id: id as string }
         });
 
         res.json({ message: 'Eliminado con éxito' });

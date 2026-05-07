@@ -50,7 +50,7 @@ router.patch('/:id', requireAuth, requireRole('ADMIN'), async (req: Request, res
         const { active, time } = req.body;
 
         const updated = await prisma.timeSlot.update({
-            where: { id },
+            where: { id: id as string },
             data: { active, time },
         });
         res.json(updated);
@@ -64,7 +64,7 @@ router.patch('/:id', requireAuth, requireRole('ADMIN'), async (req: Request, res
 router.delete('/:id', requireAuth, requireRole('ADMIN'), async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        await prisma.timeSlot.delete({ where: { id } });
+        await prisma.timeSlot.delete({ where: { id: id as string } });
         res.json({ success: true });
     } catch (error) {
         console.error(error);

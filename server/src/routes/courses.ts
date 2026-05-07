@@ -94,7 +94,7 @@ router.patch('/:id', requireAuth, upload.single('coverImage'), async (req, res) 
         }
 
         const course = await prisma.course.update({
-            where: { id },
+            where: { id: id as string },
             data
         });
 
@@ -110,8 +110,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
     try {
         const user = req.user;
         if (!user || user.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
-        
-        await prisma.course.delete({ where: { id: req.params.id } });
+        await prisma.course.delete({ where: { id: req.params.id as string } });
         res.json({ success: true });
     } catch (err) {
         console.error(err);
