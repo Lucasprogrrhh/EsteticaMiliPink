@@ -17,7 +17,7 @@ interface UserRes {
 }
 
 const BookingPage: React.FC = () => {
-    const { token } = useAuth();
+    const { token, user } = useAuth();
     const navigate = useNavigate();
 
     const [services, setServices] = useState<Service[]>([]);
@@ -34,6 +34,7 @@ const BookingPage: React.FC = () => {
     const [notes, setNotes] = useState('');
     const [error, setError] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [successModal, setSuccessModal] = useState<{show: boolean, waUrl: string}>({show: false, waUrl: ''});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -122,20 +123,30 @@ const BookingPage: React.FC = () => {
             const selectedService = services.find(s => s.id === serviceId);
 
             // WhatsApp Redirection
-            const selectedSpecialist = specialists.find(s => s.id === specialistId);
-            const targetPhone = selectedSpecialist?.phone || adminSettings?.adminPhone;
+            const targetPhone = adminSettings?.adminPhone;
 
             if (targetPhone && selectedService) {
-                const depositAmount = (selectedService.price * ((adminSettings?.depositPercentage || 50) / 100)).toFixed(2);
-                const formatDate = new Date(dateTime).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
+                const formatDate = new Date(dateTime).toLocaleDateString('es-AR');
+                const formatTime = new Date(dateTime).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                const clientName = user?.name || 'Cliente';
                 
-                const message = ` *¡Tu turno está casi confirmado!*\n\n 🎀Servicio: ${selectedService.name}\n 🕐Fecha y hora: ${formatDate}\n\n✅ Para confirmar tu turno, abonás una seña de:\n$${depositAmount} (${adminSettings?.depositPercentage || 50}% del servicio)\n\n🩷 Transferí al alias: ${adminSettings?.paymentAlias || 'No especificado'}\n\n🎉Una vez realizado el pago, enviá el comprobante por aquí.\n\n¡Gracias! Te esperamos 🌸`;
+                const message = `Hola! Acabo de reservar un turno en Mili Belleza Study 💅\n📋 *Datos de mi reserva:*\n- Nombre: ${clientName}\n- Servicio: ${selectedService.name}\n- Fecha: ${formatDate}\n- Hora: ${formatTime}\nTe envío el comprobante de transferencia a continuación. ¡Gracias!`;
                 
                 const cleanPhone = targetPhone.replace(/\D/g, ''); // leave only numbers
                 if (cleanPhone) {
                     const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-                    window.location.href = waUrl;
-                    return; // Stop execution to avoid navigating to dashboard immediately
+                    
+                    try {
+                        const newWindow = window.open(waUrl, '_blank');
+                        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                            // Popup blocked
+                        }
+                    } catch (e) {
+                        // Error opening window
+                    }
+                    
+                    setSuccessModal({ show: true, waUrl });
+                    return; // Stop execution to avoid navigating immediately
                 }
             }
 
@@ -281,6 +292,40 @@ const BookingPage: React.FC = () => {
                     </button>
                 </div>
             </form>
+
+            {/* Success Modal */}
+            {successModal.show && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                    <div className="bg-neutral-900 rounded-3xl p-8 max-w-md w-full shadow-2xl border border-pink-500/20 text-center animate-in fade-in zoom-in duration-300">
+                        <div className="w-20 h-20 bg-[#25D366]/20 text-[#25D366] rounded-full flex items-center justify-center mx-auto mb-6">
+                            <span className="material-symbols-outlined text-4xl">check_circle</span>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-2">¡Reserva Confirmada!</h3>
+                        <p className="text-neutral-400 mb-8">
+                            Tu turno ha sido guardado exitosamente. Se abrió WhatsApp para que envíes el comprobante de pago.
+                            <br /><br />
+                            <span className="text-sm">¿No se abrió automáticamente?</span>
+                        </p>
+                        <div className="flex flex-col gap-3">
+                            <a 
+                                href={successModal.waUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-lg shadow-lg shadow-[#25D366]/30"
+                            >
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-6 h-6 invert brightness-0" style={{ filter: 'brightness(0) invert(1)' }} />
+                                Enviar comprobante
+                            </a>
+                            <button
+                                onClick={() => navigate('/appointments')}
+                                className="w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold py-4 rounded-xl transition-all duration-200 border border-neutral-700"
+                            >
+                                Ir a mis turnos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
