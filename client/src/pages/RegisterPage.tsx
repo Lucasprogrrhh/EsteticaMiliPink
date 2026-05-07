@@ -12,6 +12,7 @@ export default function RegisterPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirm, setConfirm] = useState('')
+    const [phone, setPhone] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
@@ -30,7 +31,7 @@ export default function RegisterPage() {
 
         setLoading(true)
         try {
-            await register(name, email, password)
+            await register(name, email, password, phone)
             navigate('/login')
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Error al registrarse')
@@ -84,6 +85,22 @@ export default function RegisterPage() {
                                     onChange={e => setName(e.target.value)}
                                     required
                                     placeholder="María García"
+                                    className="w-full bg-white/60 border border-outline-variant rounded-xl pl-12 pr-4 py-3 text-on-surface placeholder-outline font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Phone */}
+                        <div>
+                            <label className="block text-sm font-bold text-on-surface mb-2 font-['Plus_Jakarta_Sans']">Teléfono</label>
+                            <div className="relative">
+                                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-outline flex items-center justify-center text-[18px]">phone</span>
+                                <input
+                                    type="tel"
+                                    value={phone}
+                                    onChange={e => setPhone(e.target.value)}
+                                    required
+                                    placeholder="Ej: +54 9 11 1234-5678"
                                     className="w-full bg-white/60 border border-outline-variant rounded-xl pl-12 pr-4 py-3 text-on-surface placeholder-outline font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
                                 />
                             </div>

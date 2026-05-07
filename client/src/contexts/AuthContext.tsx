@@ -15,7 +15,7 @@ interface AuthContextValue {
     isAuthenticated: boolean
     isLoading: boolean
     login: (email: string, password: string) => Promise<void>
-    register: (name: string, email: string, password: string) => Promise<void>
+    register: (name: string, email: string, password: string, phone: string) => Promise<void>
     logout: () => void
 }
 
@@ -66,11 +66,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         saveSession(data.token, data.user)
     }, [])
 
-    const register = useCallback(async (name: string, email: string, password: string) => {
+    const register = useCallback(async (name: string, email: string, password: string, phone: string) => {
         const res = await fetch(`${API}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password }),
+            body: JSON.stringify({ name, email, password, phone }),
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error || 'Error al registrarse')

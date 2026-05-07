@@ -22,6 +22,7 @@ const BookingPage: React.FC = () => {
 
     const [services, setServices] = useState<Service[]>([]);
     const [specialists, setSpecialists] = useState<UserRes[]>([]);
+    const [timeSlots, setTimeSlots] = useState<{id:string, time:string}[]>([]);
     const [adminSettings, setAdminSettings] = useState<{paymentAlias: string, adminPhone: string, depositPercentage: number} | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -37,27 +38,30 @@ const BookingPage: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [servicesRes, specialistsRes, settingsRes] = await Promise.all([
+                const [servicesRes, specialistsRes, settingsRes, timeSlotsRes] = await Promise.all([
                     fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/services`),
                     fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/users/specialists`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
                     fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/users/admin-settings`, {
                         headers: { 'Authorization': `Bearer ${token}` }
-                    })
+                    }),
+                    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/time-slots`)
                 ]);
                 
-                if (!servicesRes.ok || !specialistsRes.ok) {
+                if (!servicesRes.ok || !specialistsRes.ok || !timeSlotsRes.ok) {
                     throw new Error('Failed to fetch data');
                 }
                 
                 const servicesData = await servicesRes.json();
                 const specialistsData = await specialistsRes.json();
                 const settingsData = await settingsRes.json();
+                const timeSlotsData = await timeSlotsRes.json();
                 
                 setServices(servicesData.filter((s: any) => s.active));
                 setSpecialists(specialistsData);
                 setAdminSettings(settingsData);
+                setTimeSlots(timeSlotsData.filter((ts: any) => ts.active));
             } catch (err: any) {
                 setError(err.message || 'Could not load required data.');
             } finally {
@@ -223,13 +227,23 @@ const BookingPage: React.FC = () => {
                             <label className="block text-sm font-medium text-neutral-300 mb-2">
                                 Time <span className="text-pink-500">*</span>
                             </label>
-                            <input
-                                type="time"
-                                value={timeString}
-                                onChange={(e) => setTimeString(e.target.value)}
-                                required
-                                className="w-full bg-neutral-900 border border-neutral-700 rounded p-3 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition"
-                            />
+                            {timeSlots.length === 0 ? (
+                                <div className="text-sm text-pink-500 bg-pink-500/10 p-3 rounded">
+                                    No hay horarios disponibles. Consultá con la administración.
+                                </div>
+                            ) : (
+                                <select
+                                    value={timeString}
+                                    onChange={(e) => setTimeString(e.target.value)}
+                                    required
+                                    className="w-full bg-neutral-900 border border-neutral-700 rounded p-3 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition"
+                                >
+                                    <option value="" disabled>-- Choose a time --</option>
+                                    {timeSlots.map(ts => (
+                                        <option key={ts.id} value={ts.time}>{ts.time}</option>
+                                    ))}
+                                </select>
+                            )}
                         </div>
                     </div>
 

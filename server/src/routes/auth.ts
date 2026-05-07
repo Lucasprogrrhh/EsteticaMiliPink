@@ -16,10 +16,10 @@ const generateToken = (userId: string, email: string, role: string): string => {
 // POST /api/auth/register
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, phone } = req.body;
 
-        if (!name || !email || !password) {
-            res.status(400).json({ error: 'name, email y password son requeridos.' });
+        if (!name || !email || !password || !phone) {
+            res.status(400).json({ error: 'name, email, password y phone son requeridos.' });
             return;
         }
 
@@ -36,6 +36,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
                 email,
                 password: hashedPassword,
                 role: role || 'CLIENT',
+                phone,
             },
         });
 

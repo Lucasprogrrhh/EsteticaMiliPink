@@ -21,7 +21,9 @@ import LandingPage from './pages/LandingPage'
 import PublicBookingPage from './pages/PublicBookingPage'
 import PublicPortfolioPage from './pages/PublicPortfolioPage'
 import AdminPortfolioPage from './pages/AdminPortfolioPage'
+import AdminPortfolioPage from './pages/AdminPortfolioPage'
 import AdminCoursesPage from './pages/AdminCoursesPage'
+import AdminTimeSlotsPage from './pages/AdminTimeSlotsPage'
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -359,6 +361,7 @@ function AppLayout() {
   // Add Users and Global Appointments tabs only if user is ADMIN
   if (user?.role === 'ADMIN') {
     navItems.push({ path: '/admin/appointments', label: 'Gestión Reservas', icon: <CheckCircle2 className="w-4 h-4" /> })
+    navItems.push({ path: '/admin/time-slots', label: 'Gestión de Horarios', icon: <Clock className="w-4 h-4" /> })
     navItems.push({ path: '/admin/services', label: 'Gestión Servicios', icon: <Scissors className="w-4 h-4" /> })
     navItems.push({ path: '/admin/courses', label: 'Gestión Cursos', icon: <GraduationCap className="w-4 h-4" /> })
     navItems.push({ path: '/admin/portfolio', label: 'Gestión Portfolio', icon: <Image className="w-4 h-4" /> })
@@ -496,6 +499,16 @@ function AppLayout() {
                 <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
                   {user?.role === 'ADMIN' ? (
                     <AdminAppointmentsPage />
+                  ) : (
+                    <Navigate to="/" replace />
+                  )}
+                </motion.div>
+              } />
+
+              <Route path="/admin/time-slots" element={
+                <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
+                  {user?.role === 'ADMIN' ? (
+                    <AdminTimeSlotsPage />
                   ) : (
                     <Navigate to="/" replace />
                   )}

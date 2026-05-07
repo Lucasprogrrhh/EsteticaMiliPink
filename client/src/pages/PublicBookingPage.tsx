@@ -22,6 +22,7 @@ const PublicBookingPage: React.FC = () => {
 
     const [services, setServices] = useState<Service[]>([]);
     const [specialists, setSpecialists] = useState<UserRes[]>([]);
+    const [timeSlots, setTimeSlots] = useState<{id:string, time:string}[]>([]);
     const [adminSettings, setAdminSettings] = useState<{paymentAlias: string, adminPhone: string, depositPercentage: number} | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -37,27 +38,30 @@ const PublicBookingPage: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [servicesRes, specialistsRes, settingsRes] = await Promise.all([
+                const [servicesRes, specialistsRes, settingsRes, timeSlotsRes] = await Promise.all([
                     fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/services`),
                     fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/users/specialists`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
                     fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/users/admin-settings`, {
                         headers: { 'Authorization': `Bearer ${token}` }
-                    })
+                    }),
+                    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/time-slots`)
                 ]);
                 
-                if (!servicesRes.ok || !specialistsRes.ok) {
+                if (!servicesRes.ok || !specialistsRes.ok || !timeSlotsRes.ok) {
                     throw new Error('Failed to fetch data');
                 }
                 
                 const servicesData = await servicesRes.json();
                 const specialistsData = await specialistsRes.json();
                 const settingsData = await settingsRes.json();
+                const timeSlotsData = await timeSlotsRes.json();
                 
                 setServices(servicesData.filter((s: any) => s.active));
                 setSpecialists(specialistsData);
                 setAdminSettings(settingsData);
+                setTimeSlots(timeSlotsData.filter((ts: any) => ts.active));
             } catch (err: any) {
                 setError(err.message || 'Could not load required data.');
             } finally {
@@ -302,13 +306,28 @@ const PublicBookingPage: React.FC = () => {
                                         <label className="block text-sm font-bold text-on-surface mb-2 font-['Plus_Jakarta_Sans']">
                                             Hora <span className="text-primary">*</span>
                                         </label>
-                                        <input
-                                            type="time"
-                                            value={timeString}
-                                            onChange={(e) => setTimeString(e.target.value)}
-                                            required
-                                            className="w-full bg-white/60 border border-outline-variant rounded-xl p-3.5 text-on-surface font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
-                                        />
+                                        {timeSlots.length === 0 ? (
+                                            <div className="text-sm text-primary font-medium bg-error-container/20 p-3.5 rounded-xl border border-error-container/50">
+                                                No hay horarios disponibles. Consultá con la administración.
+                                            </div>
+                                        ) : (
+                                            <div className="relative">
+                                                <select
+                                                    value={timeString}
+                                                    onChange={(e) => setTimeString(e.target.value)}
+                                                    required
+                                                    className="w-full bg-white/60 border border-outline-variant rounded-xl p-3.5 pl-4 pr-10 text-on-surface font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm appearance-none cursor-pointer"
+                                                >
+                                                    <option value="" disabled>-- Elegí un horario --</option>
+                                                    {timeSlots.map(ts => (
+                                                        <option key={ts.id} value={ts.time}>{ts.time}</option>
+                                                    ))}
+                                                </select>
+                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+                                                    <span className="material-symbols-outlined text-[20px]">expand_more</span>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
