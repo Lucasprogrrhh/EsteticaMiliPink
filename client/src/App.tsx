@@ -21,9 +21,9 @@ import LandingPage from './pages/LandingPage'
 import PublicBookingPage from './pages/PublicBookingPage'
 import PublicPortfolioPage from './pages/PublicPortfolioPage'
 import AdminPortfolioPage from './pages/AdminPortfolioPage'
-import AdminPortfolioPage from './pages/AdminPortfolioPage'
 import AdminCoursesPage from './pages/AdminCoursesPage'
 import AdminTimeSlotsPage from './pages/AdminTimeSlotsPage'
+
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
