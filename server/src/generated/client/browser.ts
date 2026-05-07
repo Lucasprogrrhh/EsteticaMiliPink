@@ -82,3 +82,8 @@ export type CourseEnrollment = Prisma.CourseEnrollmentModel
  * 
  */
 export type NewsletterSubscriber = Prisma.NewsletterSubscriberModel
+/**
+ * Model TimeSlot
+ * 
+ */
+export type TimeSlot = Prisma.TimeSlotModel
