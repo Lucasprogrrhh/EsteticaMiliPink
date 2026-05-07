@@ -353,10 +353,15 @@ function AppLayout() {
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
-    { path: '/services', label: 'Servicios', icon: <Scissors className="w-4 h-4" /> },
-    { path: '/appointments', label: 'Mis Citas', icon: <Calendar className="w-4 h-4" /> },
     { path: '/profile', label: 'Mi Perfil', icon: <User className="w-4 h-4" /> },
   ]
+
+  if (user?.role !== 'ADMIN') {
+    navItems.splice(1, 0, 
+      { path: '/services', label: 'Servicios', icon: <Scissors className="w-4 h-4" /> },
+      { path: '/appointments', label: 'Mis Citas', icon: <Calendar className="w-4 h-4" /> }
+    )
+  }
 
   // Add Users and Global Appointments tabs only if user is ADMIN
   if (user?.role === 'ADMIN') {

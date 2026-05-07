@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '../generated/client/client';
-import { requireAuth, requireAdmin } from '../middleware/auth';
+import { requireAuth, requireRole } from '../middleware/auth';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -19,7 +19,7 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 });
 
 // POST /api/time-slots - Crear un nuevo horario (solo admin)
-router.post('/', requireAuth, requireAdmin, async (req: Request, res: Response): Promise<void> => {
+router.post('/', requireAuth, requireRole('ADMIN'), async (req: Request, res: Response): Promise<void> => {
     try {
         const { time } = req.body;
         if (!time) {
@@ -44,7 +44,7 @@ router.post('/', requireAuth, requireAdmin, async (req: Request, res: Response):
 });
 
 // PATCH /api/time-slots/:id - Actualizar un horario (solo admin)
-router.patch('/:id', requireAuth, requireAdmin, async (req: Request, res: Response): Promise<void> => {
+router.patch('/:id', requireAuth, requireRole('ADMIN'), async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
         const { active, time } = req.body;
@@ -61,7 +61,7 @@ router.patch('/:id', requireAuth, requireAdmin, async (req: Request, res: Respon
 });
 
 // DELETE /api/time-slots/:id - Eliminar un horario (solo admin)
-router.delete('/:id', requireAuth, requireAdmin, async (req: Request, res: Response): Promise<void> => {
+router.delete('/:id', requireAuth, requireRole('ADMIN'), async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
         await prisma.timeSlot.delete({ where: { id } });
