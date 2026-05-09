@@ -540,6 +540,7 @@ export type CourseEnrollmentCreateOrConnectWithoutUserInput = {
 
 export type CourseEnrollmentCreateManyUserInputEnvelope = {
   data: Prisma.CourseEnrollmentCreateManyUserInput | Prisma.CourseEnrollmentCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type CourseEnrollmentUpsertWithWhereUniqueWithoutUserInput = {
@@ -599,6 +600,7 @@ export type CourseEnrollmentCreateOrConnectWithoutCourseInput = {
 
 export type CourseEnrollmentCreateManyCourseInputEnvelope = {
   data: Prisma.CourseEnrollmentCreateManyCourseInput | Prisma.CourseEnrollmentCreateManyCourseInput[]
+  skipDuplicates?: boolean
 }
 
 export type CourseEnrollmentUpsertWithWhereUniqueWithoutCourseInput = {
@@ -644,6 +646,7 @@ export type CourseEnrollmentCreateOrConnectWithoutCourseDateInput = {
 
 export type CourseEnrollmentCreateManyCourseDateInputEnvelope = {
   data: Prisma.CourseEnrollmentCreateManyCourseDateInput | Prisma.CourseEnrollmentCreateManyCourseDateInput[]
+  skipDuplicates?: boolean
 }
 
 export type CourseEnrollmentUpsertWithWhereUniqueWithoutCourseDateInput = {
@@ -1533,6 +1536,7 @@ export type CourseEnrollmentCreateManyArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many CourseEnrollments.
    */
   data: Prisma.CourseEnrollmentCreateManyInput | Prisma.CourseEnrollmentCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1551,6 +1555,7 @@ export type CourseEnrollmentCreateManyAndReturnArgs<ExtArgs extends runtime.Type
    * The data used to create many CourseEnrollments.
    */
   data: Prisma.CourseEnrollmentCreateManyInput | Prisma.CourseEnrollmentCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

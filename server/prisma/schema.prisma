@@ -31,6 +31,10 @@ model User {
   pointTransactions      PointsTransaction[]
   portfolioItems         PortfolioItem[]
   courseEnrollments      CourseEnrollment[]
+  referralCode           String?       @unique
+  referredBy             String?
+  referralCount          Int           @default(0)
+  lastDiscountUsed       DateTime?
 }
 
 model Service {

@@ -67,6 +67,37 @@ router.put('/profile', requireAuth, async (req, res) => {
     }
 });
 
+// POST claim referral discount
+router.post('/claim-discount', requireAuth, async (req, res) => {
+    try {
+        const userId = req.user!.userId;
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        
+        if (!user || user.referralCount < 1) {
+            return res.status(400).json({ error: 'No tienes suficientes referidas.' });
+        }
+
+        const now = new Date();
+        if (user.lastDiscountUsed) {
+            const lastDate = new Date(user.lastDiscountUsed);
+            if (lastDate.getMonth() === now.getMonth() && lastDate.getFullYear() === now.getFullYear()) {
+                return res.status(400).json({ error: 'Ya usaste tu descuento este mes.' });
+            }
+        }
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: { lastDiscountUsed: now }
+        });
+
+        const discountCode = `REF15-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+        res.json({ discountCode, lastDiscountUsed: now });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al reclamar el descuento' });
+    }
+});
+
 // POST upload profile photo
 router.post('/profile/photo', requireAuth, upload.single('photo'), async (req, res) => {
     try {

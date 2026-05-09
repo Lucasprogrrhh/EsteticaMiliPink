@@ -13,6 +13,7 @@ export default function RegisterPage() {
     const [password, setPassword] = useState('')
     const [confirm, setConfirm] = useState('')
     const [phone, setPhone] = useState('')
+    const [referredBy, setReferredBy] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
@@ -31,7 +32,7 @@ export default function RegisterPage() {
 
         setLoading(true)
         try {
-            await register(name, email, password, phone)
+            await register(name, email, password, phone, referredBy)
             navigate('/login')
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Error al registrarse')
@@ -150,6 +151,21 @@ export default function RegisterPage() {
                                     required
                                     placeholder="Repetí la contraseña"
                                     className="w-full bg-white/60 border border-outline-variant rounded-xl pl-12 pr-4 py-3 text-on-surface placeholder-outline font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Referral Code */}
+                        <div>
+                            <label className="block text-sm font-bold text-on-surface mb-2 font-['Plus_Jakarta_Sans']">Código de Referido (opcional)</label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[18px]">🎟️</span>
+                                <input
+                                    type="text"
+                                    value={referredBy}
+                                    onChange={e => setReferredBy(e.target.value.toUpperCase())}
+                                    placeholder="Ej: MARIA2024"
+                                    className="w-full bg-white/60 border border-outline-variant rounded-xl pl-12 pr-4 py-3 text-on-surface placeholder-outline font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm uppercase"
                                 />
                             </div>
                         </div>

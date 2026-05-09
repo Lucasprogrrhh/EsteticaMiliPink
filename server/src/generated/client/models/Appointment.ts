@@ -695,6 +695,7 @@ export type AppointmentCreateOrConnectWithoutSpecialistInput = {
 
 export type AppointmentCreateManySpecialistInputEnvelope = {
   data: Prisma.AppointmentCreateManySpecialistInput | Prisma.AppointmentCreateManySpecialistInput[]
+  skipDuplicates?: boolean
 }
 
 export type AppointmentCreateWithoutClientInput = {
@@ -732,6 +733,7 @@ export type AppointmentCreateOrConnectWithoutClientInput = {
 
 export type AppointmentCreateManyClientInputEnvelope = {
   data: Prisma.AppointmentCreateManyClientInput | Prisma.AppointmentCreateManyClientInput[]
+  skipDuplicates?: boolean
 }
 
 export type AppointmentUpsertWithWhereUniqueWithoutSpecialistInput = {
@@ -817,6 +819,7 @@ export type AppointmentCreateOrConnectWithoutServiceInput = {
 
 export type AppointmentCreateManyServiceInputEnvelope = {
   data: Prisma.AppointmentCreateManyServiceInput | Prisma.AppointmentCreateManyServiceInput[]
+  skipDuplicates?: boolean
 }
 
 export type AppointmentUpsertWithWhereUniqueWithoutServiceInput = {
@@ -1937,6 +1940,7 @@ export type AppointmentCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many Appointments.
    */
   data: Prisma.AppointmentCreateManyInput | Prisma.AppointmentCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1955,6 +1959,7 @@ export type AppointmentCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many Appointments.
    */
   data: Prisma.AppointmentCreateManyInput | Prisma.AppointmentCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

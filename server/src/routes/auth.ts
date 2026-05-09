@@ -16,7 +16,7 @@ const generateToken = (userId: string, email: string, role: string): string => {
 // POST /api/auth/register
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { name, email, password, role, phone } = req.body;
+        const { name, email, password, role, phone, referredBy } = req.body;
 
         if (!name || !email || !password || !phone) {
             res.status(400).json({ error: 'name, email, password y phone son requeridos.' });
@@ -29,6 +29,22 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
+        let finalReferredBy = null;
+        if (referredBy) {
+            const referrer = await prisma.user.findUnique({ where: { referralCode: referredBy } });
+            if (referrer) {
+                finalReferredBy = referrer.referralCode;
+                await prisma.user.update({
+                    where: { id: referrer.id },
+                    data: { referralCount: { increment: 1 } }
+                });
+            }
+        }
+
+        const baseName = name.replace(/[^a-zA-Z]/g, '').substring(0, 4).toUpperCase();
+        const codeSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+        const referralCode = `${baseName}${new Date().getFullYear()}${codeSuffix}`;
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await prisma.user.create({
             data: {
@@ -37,6 +53,8 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
                 password: hashedPassword,
                 role: role || 'CLIENT',
                 phone,
+                referralCode,
+                referredBy: finalReferredBy
             },
         });
 
@@ -44,7 +62,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 
         res.status(201).json({
             token,
-            user: { id: user.id, name: user.name, email: user.email, phone: user.phone, photoUrl: user.photoUrl, role: user.role },
+            user: { id: user.id, name: user.name, email: user.email, phone: user.phone, photoUrl: user.photoUrl, role: user.role, referralCode: user.referralCode },
         });
     } catch (error) {
         console.error(error);
@@ -122,7 +140,7 @@ router.get('/me', requireAuth, async (req: Request, res: Response): Promise<void
             where: { id: req.user!.userId },
             select: { 
                 id: true, name: true, email: true, phone: true, photoUrl: true, role: true, createdAt: true, paymentAlias: true, adminPhone: true, depositPercentage: true,
-                points: true,
+                points: true, referralCode: true, referralCount: true, lastDiscountUsed: true,
                 pointTransactions: {
                     orderBy: { date: 'desc' },
                     take: 5

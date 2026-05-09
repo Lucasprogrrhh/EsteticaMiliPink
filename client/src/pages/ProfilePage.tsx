@@ -7,9 +7,11 @@ const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 export default function ProfilePage() {
   const { token, user: authUser } = useAuth();
   
-  const [profile, setProfile] = useState<{name: string, email: string, phone: string, photoUrl: string | null, paymentAlias: string, adminPhone: string, depositPercentage: number, reminderTime: string, remindersActive: boolean, points: number, pointTransactions: any[], stats: any}>({
-    name: '', email: '', phone: '', photoUrl: null, paymentAlias: '', adminPhone: '', depositPercentage: 50, reminderTime: '10:00', remindersActive: true, points: 0, pointTransactions: [], stats: { services: 0, courses: 0, redemptions: 0 }
+  const [profile, setProfile] = useState<{name: string, email: string, phone: string, photoUrl: string | null, paymentAlias: string, adminPhone: string, depositPercentage: number, reminderTime: string, remindersActive: boolean, points: number, pointTransactions: any[], stats: any, referralCount: number, lastDiscountUsed: string | null, referralCode: string}>({
+    name: '', email: '', phone: '', photoUrl: null, paymentAlias: '', adminPhone: '', depositPercentage: 50, reminderTime: '10:00', remindersActive: true, points: 0, pointTransactions: [], stats: { services: 0, courses: 0, redemptions: 0 }, referralCount: 0, lastDiscountUsed: null, referralCode: ''
   });
+  
+  const [discountCode, setDiscountCode] = useState('');
   
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -40,6 +42,9 @@ export default function ProfilePage() {
             remindersActive: data.remindersActive ?? true,
             points: data.points || 0,
             pointTransactions: data.pointTransactions || [],
+            referralCount: data.referralCount || 0,
+            lastDiscountUsed: data.lastDiscountUsed || null,
+            referralCode: data.referralCode || '',
             stats: {
               services: data._count?.clientAppointments || 0,
               courses: data._count?.courseEnrollments || 0,
@@ -84,6 +89,45 @@ export default function ProfilePage() {
       }
     } catch (error) {
       setMessage({ type: 'error', text: 'Ocurrió un error al subir la foto' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const canUseDiscount = () => {
+    if (profile.referralCount < 1) return false;
+    if (!profile.lastDiscountUsed) return true;
+    const lastDate = new Date(profile.lastDiscountUsed);
+    const now = new Date();
+    return lastDate.getMonth() !== now.getMonth() || lastDate.getFullYear() !== now.getFullYear();
+  };
+
+  const getDiscountButtonText = () => {
+    if (profile.referralCount < 1) return "Referí a una amiga para desbloquear";
+    if (canUseDiscount()) return "Usar 15% de descuento";
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    return `Disponible en ${nextMonth.toLocaleString('es-AR', { month: 'long' })}`;
+  };
+
+  const handleClaimDiscount = async () => {
+    if (!canUseDiscount()) return;
+    try {
+      setIsSaving(true);
+      const res = await fetch(`${API}/users/claim-discount`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setProfile(prev => ({...prev, lastDiscountUsed: data.lastDiscountUsed}));
+        setDiscountCode(data.discountCode);
+        setMessage({ type: 'success', text: '¡Descuento generado con éxito!' });
+      } else {
+        setMessage({ type: 'error', text: 'Error al generar descuento' });
+      }
+    } catch (e) {
+      setMessage({ type: 'error', text: 'Error de red' });
     } finally {
       setIsSaving(false);
     }
@@ -469,6 +513,60 @@ export default function ProfilePage() {
                   <span className="material-symbols-outlined text-[28px] mb-1" style={{ color: '#e8b84b' }}>stars</span>
                   <span className="text-2xl font-bold" style={{ color: '#fff8e7', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{profile.stats.redemptions}</span>
                   <span className="text-[10px] uppercase tracking-wider text-center mt-1" style={{ color: '#c9a227' }}>Canjes</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Referrals Module */}
+            <div className="mt-12 bg-black/20 border border-[#c9a227]/30 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-3xl">👥</span>
+                <h3 className="text-2xl font-bold" style={{ color: '#fff8e7', fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  Mis Referidas
+                </h3>
+              </div>
+              <div className="flex flex-col md:flex-row gap-8 items-center">
+                <div className="flex flex-col items-center">
+                  <div className="text-6xl font-black drop-shadow-md" style={{ color: '#e8b84b', fontFamily: "'Playfair Display', Georgia, serif" }}>
+                    {profile.referralCount}
+                  </div>
+                  <span className="text-sm mt-1 uppercase tracking-wider" style={{ color: '#c9a227', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    Amigas Registradas
+                  </span>
+                </div>
+                <div className="flex-1 w-full max-w-sm">
+                  <div className="flex justify-between text-xs mb-2 font-bold" style={{ color: '#e8b84b', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    <span>Mi Código: {profile.referralCode}</span>
+                    <span>1 amigx = 15% OFF</span>
+                  </div>
+                  <div className="w-full h-3 rounded-full bg-black/40 overflow-hidden border border-[#c9a227]/30">
+                    <div 
+                      className="h-full rounded-full transition-all duration-1000 ease-out"
+                      style={{ 
+                        width: `${Math.min((profile.referralCount / 1) * 100, 100)}%`, 
+                        background: 'linear-gradient(90deg, #d81b60 0%, #ff6b81 100%)',
+                        boxShadow: '0 0 10px rgba(216, 27, 96, 0.5)'
+                      }}
+                    />
+                  </div>
+                  <button 
+                    onClick={handleClaimDiscount}
+                    disabled={!canUseDiscount() || isSaving}
+                    className="mt-6 w-full py-3 rounded-xl font-bold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ 
+                      background: canUseDiscount() ? 'linear-gradient(90deg, #d81b60 0%, #ff6b81 100%)' : '#333', 
+                      color: '#fff', 
+                      fontFamily: "'Plus Jakarta Sans', sans-serif" 
+                    }}
+                  >
+                    {isSaving ? 'Generando...' : getDiscountButtonText()}
+                  </button>
+                  {discountCode && (
+                    <div className="mt-4 p-4 rounded-xl border border-dashed border-[#e8b84b] text-center bg-black/30">
+                      <p className="text-xs text-[#e8b84b] uppercase tracking-wider mb-1">Tu cupón válido por 30 días</p>
+                      <p className="text-xl font-mono font-bold text-white tracking-widest">{discountCode}</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

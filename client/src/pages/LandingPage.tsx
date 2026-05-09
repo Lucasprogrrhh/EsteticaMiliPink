@@ -4,8 +4,25 @@ import { useAuth } from '../contexts/AuthContext';
 import './LandingStyles.css';
 
 const PromocionesSection = () => {
+    const { user } = useAuth();
     const [codigo, setCodigo] = useState('');
     const [verifResult, setVerifResult] = useState<{status: 'ok' | 'err' | null, message: React.ReactNode}>({ status: null, message: null });
+
+    const handleReferralClick = () => {
+        if (!user) {
+            alert('Por favor, iniciá sesión para referir a una amiga y obtener tu código.');
+            return;
+        }
+        
+        const referralCode = (user as any).referralCode;
+        if (!referralCode) {
+            alert('Aún no tenés un código de referida. Asegurate de estar registrada correctamente.');
+            return;
+        }
+
+        const msg = `✨ ¡Registrate en Mili Belleza Study! 💅🌸\nUsá mi código al registrarte y las dos obtenemos un 15% OFF 🎉\n👉 https://esteticamilipink-1.onrender.com\n🎟️ Mi código: ${referralCode}`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    };
 
     const MB_CUPONES: Record<string, { desc: string, tipo: string }> = {
       'MILI-REF-0001': { desc: '15% OFF por referida — presentalo al inscribirte', tipo: 'referida' },
@@ -53,7 +70,12 @@ const PromocionesSection = () => {
                     <span className="mb-promo-emoji">👯‍♀️</span>
                     <div className="mb-promo-name">Traé una amiga, ganan las dos</div>
                     <div className="mb-promo-desc">Referís a una amiga al curso y las dos obtienen un <strong>15% OFF</strong> sobre el precio. Sin límite de referidas — cuantas más traés, más acumulás.</div>
-                    <div className="mb-promo-tag">📌 Al inscribirse tu amiga menciona tu nombre y listo</div>
+                    <button 
+                        onClick={handleReferralClick}
+                        className="mt-4 w-full bg-[#d81b60] hover:bg-[#ad1457] text-white font-bold py-2.5 px-4 rounded-xl transition-all shadow-md active:scale-95"
+                    >
+                        Referí a tu amiga 💌
+                    </button>
                 </div>
 
                 {/* 2. Club Puntos */}

@@ -452,6 +452,7 @@ export type CourseDateCreateOrConnectWithoutCourseInput = {
 
 export type CourseDateCreateManyCourseInputEnvelope = {
   data: Prisma.CourseDateCreateManyCourseInput | Prisma.CourseDateCreateManyCourseInput[]
+  skipDuplicates?: boolean
 }
 
 export type CourseDateUpsertWithWhereUniqueWithoutCourseInput = {
@@ -1311,6 +1312,7 @@ export type CourseDateCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * The data used to create many CourseDates.
    */
   data: Prisma.CourseDateCreateManyInput | Prisma.CourseDateCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1329,6 +1331,7 @@ export type CourseDateCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * The data used to create many CourseDates.
    */
   data: Prisma.CourseDateCreateManyInput | Prisma.CourseDateCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */
