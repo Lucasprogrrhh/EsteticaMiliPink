@@ -194,7 +194,7 @@ const BookingPage: React.FC = () => {
                         {selectedService && (
                             <div className="mt-2 text-sm text-neutral-400 bg-neutral-900/50 p-2 rounded">
                                 <p><span className="text-pink-400 font-medium">Duration:</span> {selectedService.durationMinutes} min</p>
-                                <p><span className="text-pink-400 font-medium">Price:</span> ${Number(selectedService.price).toFixed(2)}</p>
+                                <p><span className="text-pink-400 font-medium">Price:</span> ${Math.round(Number(selectedService.price))}</p>
                                 {selectedService.description && <p className="mt-1 italic">{selectedService.description}</p>}
                             </div>
                         )}
@@ -277,7 +277,7 @@ const BookingPage: React.FC = () => {
                         <div className="bg-pink-500/10 border border-pink-500/20 rounded-xl p-4 text-sm text-neutral-300 mt-4">
                             <h4 className="font-semibold text-pink-400 mb-2">Información de Pago (Seña)</h4>
                             <p className="mb-1">Para confirmar el turno se requiere una seña del <strong>{adminSettings.depositPercentage}%</strong>.</p>
-                            <p className="mb-1">Monto a transferir: <strong className="text-white text-base">${(selectedService.price * (adminSettings.depositPercentage / 100)).toFixed(2)}</strong></p>
+                            <p className="mb-1">Monto a transferir: <strong className="text-white text-base">${Math.round(selectedService.price * (adminSettings.depositPercentage / 100))}</strong></p>
                             {adminSettings.paymentAlias && <p className="mb-1">Alias: <strong className="text-white">{adminSettings.paymentAlias}</strong></p>}
                             <p className="text-xs text-neutral-400 mt-2">Al confirmar, serás redirigida a WhatsApp para enviar el comprobante directamente a la administración. (Alias: <strong>{adminSettings.paymentAlias || 'No especificado'}</strong>)</p>
                         </div>

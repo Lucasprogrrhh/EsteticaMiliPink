@@ -282,7 +282,7 @@ const AppointmentsPage: React.FC = () => {
 
                                 <div className="flex gap-6 mt-3 text-sm text-on-surface-variant font-medium">
                                     <p className="flex items-center gap-1.5"><span className="material-symbols-outlined text-[18px]">schedule</span> {appointment.service.durationMinutes} min</p>
-                                    <p className="flex items-center gap-1.5"><span className="material-symbols-outlined text-[18px]">payments</span> ${Number(appointment.service.price).toFixed(2)}</p>
+                                    <p className="flex items-center gap-1.5"><span className="material-symbols-outlined text-[18px]">payments</span> ${Math.round(Number(appointment.service.price))}</p>
                                 </div>
 
                                 {appointment.notes && (

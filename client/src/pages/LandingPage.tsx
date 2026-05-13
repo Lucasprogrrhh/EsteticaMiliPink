@@ -20,7 +20,7 @@ const PromocionesSection = () => {
             return;
         }
 
-        const msg = `✨ ¡Registrate en Mili Belleza Study! 💅🌸\nUsá mi código al registrarte y las dos obtenemos un 15% OFF 🎉\n👉 https://esteticamilipink-1.onrender.com\n🎟️ Mi código: ${referralCode}`;
+        const msg = `🎀 ¡Registrate en Mili Belleza Study!\nUsá este código al registrarte y las dos obtenemos un 15% OFF\n🌷https://esteticamilipink-1.onrender.com\n👩🏻‍💻Mi código: ${referralCode}`;
         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     };
 
@@ -598,7 +598,7 @@ export default function LandingPage() {
                             <span className="material-symbols-outlined text-lg">chat</span>
                             WhatsApp
                         </a>
-                        <a className="flex items-center gap-2 text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="https://maps.google.com/?q=Zoilo+Concha,+M5529+San+Luis,+San+Luis,+Argentina" target="_blank" rel="noopener noreferrer">
+                        <a className="flex items-center gap-2 text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="https://maps.app.goo.gl/mwt6LGtU8CbzuJrPA?g_st=ic" target="_blank" rel="noopener noreferrer">
                             <span className="material-symbols-outlined text-lg">location_on</span>
                             Ubicación
                         </a>

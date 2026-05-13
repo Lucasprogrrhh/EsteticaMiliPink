@@ -144,7 +144,7 @@ const AdminAppointmentsPage: React.FC = () => {
                                             {app.status === 'PENDING' ? 'Pendiente pago' : app.status}
                                         </span>
                                         {app.status === 'PENDING' && app.depositAmount && (
-                                            <div className="text-xs text-neutral-400 mt-2">Seña: ${Number(app.depositAmount).toFixed(2)}</div>
+                                            <div className="text-xs text-neutral-400 mt-2">Seña: ${Math.round(Number(app.depositAmount))}</div>
                                         )}
                                         {app.notes && (
                                             <div className="text-xs text-pink-400 mt-2 italic max-w-[150px] mx-auto truncate" title={app.notes}>

@@ -250,7 +250,7 @@ const PublicBookingPage: React.FC = () => {
                                             <option value="" disabled>-- Elegí un servicio --</option>
                                             {services.map(service => (
                                                 <option key={service.id} value={service.id}>
-                                                    {service.name} (${Number(service.price).toFixed(2)})
+                                                    {service.name} (${Math.round(Number(service.price))})
                                                 </option>
                                             ))}
                                         </select>
@@ -267,7 +267,7 @@ const PublicBookingPage: React.FC = () => {
                                             </div>
                                             <div className="flex justify-between items-center">
                                                 <span className="font-bold text-on-surface">Precio total:</span>
-                                                <span className="bg-white/50 px-2 py-0.5 rounded-md font-medium text-primary">${Number(selectedService.price).toFixed(2)}</span>
+                                                <span className="bg-white/50 px-2 py-0.5 rounded-md font-medium text-primary">${Math.round(Number(selectedService.price))}</span>
                                             </div>
                                             {selectedService.description && <p className="mt-2 text-xs italic opacity-80 border-t border-outline-variant/30 pt-2">{selectedService.description}</p>}
                                         </div>
@@ -366,7 +366,7 @@ const PublicBookingPage: React.FC = () => {
                                             <h4 className="font-bold text-on-surface mb-1">Información de Pago (Seña)</h4>
                                             <p className="mb-1 leading-relaxed">Para confirmar el turno se requiere abonar una seña del <strong>{adminSettings.depositPercentage}%</strong> del valor total.</p>
                                             <div className="my-3 bg-white/50 p-3 rounded-lg border border-white/80">
-                                                <p className="mb-1 flex justify-between"><span className="text-on-surface-variant font-medium">Monto a abonar:</span> <strong className="text-primary text-base">${(selectedService.price * (adminSettings.depositPercentage / 100)).toFixed(2)}</strong></p>
+                                                <p className="mb-1 flex justify-between"><span className="text-on-surface-variant font-medium">Monto a abonar:</span> <strong className="text-primary text-base">${Math.round(selectedService.price * (adminSettings.depositPercentage / 100))}</strong></p>
                                                 {adminSettings.paymentAlias && <p className="flex justify-between"><span className="text-on-surface-variant font-medium">Alias bancario:</span> <strong className="text-on-surface">{adminSettings.paymentAlias}</strong></p>}
                                             </div>
                                             <p className="text-xs font-medium opacity-80">Al confirmar, serás redirigida a WhatsApp para enviar el comprobante directamente a la administración. (Alias: <strong>{adminSettings.paymentAlias || 'No especificado'}</strong>)</p>
