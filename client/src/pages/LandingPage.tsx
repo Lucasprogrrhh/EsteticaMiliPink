@@ -262,6 +262,142 @@ const PortfolioSection = () => {
     </section>
   );
 };
+const MobileDrawer = ({ user, handleReserveClick }: { user: any, handleReserveClick: () => void }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const drawerRef = React.useRef<HTMLDivElement>(null);
+  const btnRef = React.useRef<HTMLButtonElement>(null);
+
+  const toggleDrawer = () => setIsOpen(!isOpen);
+  const closeDrawer = () => setIsOpen(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => {
+        const firstLink = drawerRef.current?.querySelector('a, button') as HTMLElement;
+        if (firstLink) firstLink.focus();
+      }, 100);
+    } else {
+      document.body.style.overflow = '';
+      if (document.activeElement && drawerRef.current?.contains(document.activeElement)) {
+        btnRef.current?.focus();
+      }
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) closeDrawer();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
+  const onTouchStart = (e: React.TouchEvent) => setTouchStart(e.targetTouches[0].clientX);
+  const onTouchMove = (e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX);
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    if (distance > 60) closeDrawer();
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
+  return (
+    <div className="md:hidden block">
+      {/* Top Bar */}
+      <div className="fixed top-0 left-0 w-full h-[70px] bg-white/90 dark:bg-zinc-900/90 backdrop-blur z-[200] flex justify-between items-center px-4 shadow-sm border-b border-[#f0d0e0] dark:border-zinc-800">
+        <button 
+          ref={btnRef}
+          onClick={toggleDrawer}
+          className="p-2 flex flex-col justify-center items-center w-10 h-10 gap-[5px]"
+          aria-expanded={isOpen}
+          aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+        >
+          <span className={`h-[2px] w-6 bg-zinc-800 dark:bg-white transition-all duration-300 origin-center ${isOpen ? 'rotate-45 translate-y-[7px]' : ''}`}></span>
+          <span className={`h-[2px] w-6 bg-zinc-800 dark:bg-white transition-opacity duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+          <span className={`h-[2px] w-6 bg-zinc-800 dark:bg-white transition-all duration-300 origin-center ${isOpen ? '-rotate-45 -translate-y-[7px]' : ''}`}></span>
+        </button>
+        <div className="text-xl font-['Playfair_Display'] font-black text-[#c2185b] dark:text-[#f0b0cc]">
+          Mili Belleza Study
+        </div>
+        <button 
+          onClick={handleReserveClick}
+          className="bg-[#c2185b] text-white px-5 py-2 rounded-[22px] text-sm font-bold shadow-md active:scale-95 transition-transform"
+        >
+          Reservar
+        </button>
+      </div>
+
+      {/* Overlay */}
+      <div 
+        className={`fixed inset-0 bg-[rgba(20,4,12,0.5)] z-[300] transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto backdrop-blur-[2px]' : 'opacity-0 pointer-events-none'}`}
+        onClick={closeDrawer}
+        aria-hidden="true"
+      ></div>
+
+      {/* Drawer */}
+      <div 
+        ref={drawerRef}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        className={`fixed top-0 left-0 h-full w-[280px] bg-white dark:bg-zinc-950 z-[400] transform transition-transform duration-[320ms] ease-[cubic-bezier(0.4,0,0.2,1)] shadow-2xl flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        aria-hidden={!isOpen}
+      >
+        <div className="flex items-center justify-between p-5 border-b border-[#f0d0e0] dark:border-zinc-800">
+           <div className="font-['Playfair_Display'] font-black text-xl text-[#c2185b] dark:text-[#f0b0cc]">Mili Belleza</div>
+           <button onClick={closeDrawer} className="w-8 h-8 rounded-full bg-[#fce8f0] dark:bg-zinc-800 flex items-center justify-center text-[#c2185b] dark:text-[#f0b0cc] hover:bg-[#f0b0cc] transition-colors font-bold" aria-label="Cerrar">✕</button>
+        </div>
+        
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-2">
+          {/* Links */}
+          <LinkItem href="#" icon="home" title="Inicio" subtitle="Volver a la portada" onClick={closeDrawer} isActive={true} />
+          <LinkItem href="#servicios" icon="spa" title="Servicios" subtitle="Lo que hacemos" onClick={closeDrawer} />
+          <LinkItem href="#cursos" icon="school" title="Cursos" subtitle="Capacitaciones" onClick={closeDrawer} />
+          <LinkItem href="#portfolio" icon="photo_library" title="Portfolio" subtitle="Nuestros trabajos" onClick={closeDrawer} />
+          <LinkItem href="#promociones" icon="local_offer" title="Promociones" subtitle="Descuentos y beneficios" onClick={closeDrawer} />
+          {user && <LinkItem href="/dashboard" icon="dashboard" title="Mi Panel" subtitle="Gestión de perfil" onClick={closeDrawer} isRouterLink />}
+        </nav>
+
+        <div className="p-5 border-t border-[#f0d0e0] dark:border-zinc-800 space-y-3 bg-zinc-50 dark:bg-zinc-900/50">
+          <button onClick={() => { closeDrawer(); handleReserveClick(); }} className="w-full bg-[#c2185b] text-white py-3.5 rounded-[24px] font-bold text-center flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform">
+            Reservar turno
+          </button>
+          {!user && (
+            <Link to="/login" onClick={closeDrawer} className="w-full bg-transparent text-[#c2185b] dark:text-[#f0b0cc] border-2 border-[#c2185b] dark:border-[#f0b0cc] py-3 rounded-[24px] font-bold text-center block active:scale-95 transition-transform">
+              Iniciar sesión
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const LinkItem = ({ href, icon, title, subtitle, onClick, isActive = false, isRouterLink = false }: any) => {
+  const baseClasses = `flex items-center p-3 rounded-xl mb-1 transition-all duration-200 ${isActive ? 'bg-[#fce8f0] dark:bg-[#8b0a3e]/30 text-[#c2185b] dark:text-[#f0b0cc]' : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`;
+  const borderClass = isActive ? 'border-l-[3px] border-[#c2185b] pl-[9px]' : 'pl-3';
+  
+  const content = (
+    <div className={`w-full flex items-center gap-3 ${borderClass}`}>
+      <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}>{icon}</span>
+      <div className="flex-1 flex flex-col">
+        <span className="font-bold text-sm tracking-tight">{title}</span>
+        <span className="text-[11px] opacity-70 tracking-wide">{subtitle}</span>
+      </div>
+      <span className="material-symbols-outlined text-sm opacity-50">chevron_right</span>
+    </div>
+  );
+
+  if (isRouterLink) {
+    return <Link to={href} onClick={onClick} className={baseClasses}>{content}</Link>;
+  }
+  return <a href={href} onClick={onClick} className={baseClasses}>{content}</a>;
+};
 
 export default function LandingPage() {
     const { user } = useAuth();
@@ -282,8 +418,11 @@ export default function LandingPage() {
 
     return (
         <div className="bg-surface text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden w-full m-0 p-0">
+            {/* Mobile Drawer */}
+            <MobileDrawer user={user} handleReserveClick={handleReserveClick} />
+
             {/* TopNavBar */}
-            <nav className="fixed top-0 w-full z-50 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md shadow-[0px_10px_30px_rgba(179,0,105,0.08)] border-none">
+            <nav className="hidden md:block fixed top-0 w-full z-50 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md shadow-[0px_10px_30px_rgba(179,0,105,0.08)] border-none">
                 <div className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
                     <div className="text-2xl font-['Noto_Serif'] italic font-black text-pink-700 dark:text-pink-500">
                         Mili Belleza Study
