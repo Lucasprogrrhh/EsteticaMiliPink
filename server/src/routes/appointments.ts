@@ -31,6 +31,7 @@ router.get('/', async (req, res) => {
         });
         res.json(appointments);
     } catch (error) {
+        console.error("GET /appointments error:", error);
         res.status(500).json({ error: 'Error fetching appointments' });
     }
 });

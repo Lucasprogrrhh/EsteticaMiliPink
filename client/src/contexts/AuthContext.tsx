@@ -45,6 +45,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 fetch(`${API}/auth/me`, { headers: { 'Authorization': `Bearer ${storedToken}` } })
                     .then(res => {
                         if (res.ok) return res.json();
+                        if (res.status === 401) {
+                            localStorage.removeItem('auth_token');
+                            localStorage.removeItem('auth_user');
+                            setToken(null);
+                            setUser(null);
+                        }
                         throw new Error('Session invalid');
                     })
                     .then(data => {
@@ -53,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                         localStorage.setItem('auth_user', JSON.stringify(updatedUser));
                     })
                     .catch(() => {
-                        // ignore or handle invalid session silently
+                        // ignore network errors, but 401 was handled above
                     });
             } catch {
                 localStorage.removeItem('auth_token')

@@ -81,7 +81,11 @@ const AppointmentsPage: React.FC = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch appointments');
+                    const errData = await response.json().catch(() => ({}));
+                    if (response.status === 401) {
+                        throw new Error('Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.');
+                    }
+                    throw new Error(errData.error || `Error ${response.status}: Failed to fetch appointments`);
                 }
 
                 const data = await response.json();
