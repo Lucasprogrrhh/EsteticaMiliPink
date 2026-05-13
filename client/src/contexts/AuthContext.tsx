@@ -7,6 +7,7 @@ interface AuthUser {
     name: string
     email: string
     role: 'ADMIN' | 'SPECIALIST' | 'CLIENT'
+    referralCode?: string
 }
 
 interface AuthContextValue {
@@ -40,6 +41,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             try {
                 setToken(storedToken)
                 setUser(JSON.parse(storedUser))
+                // Try to refresh user data in background to get newly added fields like referralCode
+                fetch(`${API}/auth/me`, { headers: { 'Authorization': `Bearer ${storedToken}` } })
+                    .then(res => {
+                        if (res.ok) return res.json();
+                        throw new Error('Session invalid');
+                    })
+                    .then(data => {
+                        const updatedUser: AuthUser = { id: data.id, name: data.name, email: data.email, role: data.role, referralCode: data.referralCode };
+                        setUser(updatedUser);
+                        localStorage.setItem('auth_user', JSON.stringify(updatedUser));
+                    })
+                    .catch(() => {
+                        // ignore or handle invalid session silently
+                    });
             } catch {
                 localStorage.removeItem('auth_token')
                 localStorage.removeItem('auth_user')

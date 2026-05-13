@@ -13,6 +13,24 @@ const generateToken = (userId: string, email: string, role: string): string => {
     return jwt.sign({ userId, email, role }, secret, { expiresIn } as jwt.SignOptions);
 };
 
+const generateUniqueReferralCode = async (name: string): Promise<string> => {
+    const nameParts = name.trim().split(/\s+/);
+    const firstName = nameParts[0].replace(/[^a-zA-Z]/g, '').toUpperCase();
+    const lastNameInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1].replace(/[^a-zA-Z]/g, '').charAt(0).toUpperCase() : '';
+    const baseName = `${firstName}${lastNameInitial}` || 'USER';
+    const currentYear = new Date().getFullYear();
+    let referralCode = `${baseName}${currentYear}`;
+    
+    let codeExists = await prisma.user.findUnique({ where: { referralCode } });
+    let counter = 1;
+    while (codeExists) {
+        referralCode = `${baseName}${currentYear}${counter}`;
+        codeExists = await prisma.user.findUnique({ where: { referralCode } });
+        counter++;
+    }
+    return referralCode;
+};
+
 // POST /api/auth/register
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
     try {
@@ -41,9 +59,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
             }
         }
 
-        const baseName = name.replace(/[^a-zA-Z]/g, '').substring(0, 4).toUpperCase();
-        const codeSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
-        const referralCode = `${baseName}${new Date().getFullYear()}${codeSuffix}`;
+        const referralCode = await generateUniqueReferralCode(name);
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await prisma.user.create({
@@ -121,11 +137,19 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
+        if (!user.referralCode) {
+            const newReferralCode = await generateUniqueReferralCode(user.name);
+            user = await prisma.user.update({
+                where: { id: user.id },
+                data: { referralCode: newReferralCode }
+            });
+        }
+
         const token = generateToken(user.id, user.email, user.role);
 
         res.json({
             token,
-            user: { id: user.id, name: user.name, email: user.email, phone: user.phone, photoUrl: user.photoUrl, role: user.role },
+            user: { id: user.id, name: user.name, email: user.email, phone: user.phone, photoUrl: user.photoUrl, role: user.role, referralCode: user.referralCode },
         });
     } catch (error) {
         console.error(error);
@@ -157,6 +181,14 @@ router.get('/me', requireAuth, async (req: Request, res: Response): Promise<void
         if (!user) {
             res.status(404).json({ error: 'Usuario no encontrado.' });
             return;
+        }
+        if (!user.referralCode) {
+            const newReferralCode = await generateUniqueReferralCode(user.name);
+            await prisma.user.update({
+                where: { id: user.id },
+                data: { referralCode: newReferralCode }
+            });
+            user.referralCode = newReferralCode;
         }
         res.json(user);
     } catch (error) {
