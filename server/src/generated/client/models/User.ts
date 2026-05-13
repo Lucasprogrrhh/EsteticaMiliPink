@@ -341,7 +341,8 @@ export type UserWhereInput = {
   reviews?: Prisma.ReviewListRelationFilter
   reminders?: Prisma.ReminderListRelationFilter
   pointTransactions?: Prisma.PointsTransactionListRelationFilter
-  portfolioItems?: Prisma.PortfolioItemListRelationFilter
+  uploadedPortfolioItems?: Prisma.PortfolioItemListRelationFilter
+  approvedPortfolioItems?: Prisma.PortfolioItemListRelationFilter
   courseEnrollments?: Prisma.CourseEnrollmentListRelationFilter
 }
 
@@ -370,7 +371,8 @@ export type UserOrderByWithRelationInput = {
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
   reminders?: Prisma.ReminderOrderByRelationAggregateInput
   pointTransactions?: Prisma.PointsTransactionOrderByRelationAggregateInput
-  portfolioItems?: Prisma.PortfolioItemOrderByRelationAggregateInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemOrderByRelationAggregateInput
+  approvedPortfolioItems?: Prisma.PortfolioItemOrderByRelationAggregateInput
   courseEnrollments?: Prisma.CourseEnrollmentOrderByRelationAggregateInput
 }
 
@@ -402,7 +404,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   reviews?: Prisma.ReviewListRelationFilter
   reminders?: Prisma.ReminderListRelationFilter
   pointTransactions?: Prisma.PointsTransactionListRelationFilter
-  portfolioItems?: Prisma.PortfolioItemListRelationFilter
+  uploadedPortfolioItems?: Prisma.PortfolioItemListRelationFilter
+  approvedPortfolioItems?: Prisma.PortfolioItemListRelationFilter
   courseEnrollments?: Prisma.CourseEnrollmentListRelationFilter
 }, "id" | "email" | "referralCode">
 
@@ -483,7 +486,8 @@ export type UserCreateInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentCreateNestedManyWithoutUserInput
 }
 
@@ -512,7 +516,8 @@ export type UserUncheckedCreateInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionUncheckedCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -541,7 +546,8 @@ export type UserUpdateInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUpdateManyWithoutUserNestedInput
 }
 
@@ -570,7 +576,8 @@ export type UserUncheckedUpdateInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUncheckedUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -842,20 +849,34 @@ export type UserUpdateOneRequiredWithoutPointTransactionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPointTransactionsInput, Prisma.UserUpdateWithoutPointTransactionsInput>, Prisma.UserUncheckedUpdateWithoutPointTransactionsInput>
 }
 
-export type UserCreateNestedOneWithoutPortfolioItemsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutPortfolioItemsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPortfolioItemsInput
+export type UserCreateNestedOneWithoutUploadedPortfolioItemsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutUploadedPortfolioItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedPortfolioItemsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneWithoutPortfolioItemsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutPortfolioItemsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPortfolioItemsInput
-  upsert?: Prisma.UserUpsertWithoutPortfolioItemsInput
+export type UserCreateNestedOneWithoutApprovedPortfolioItemsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApprovedPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutApprovedPortfolioItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApprovedPortfolioItemsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUploadedPortfolioItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutUploadedPortfolioItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedPortfolioItemsInput
+  upsert?: Prisma.UserUpsertWithoutUploadedPortfolioItemsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedPortfolioItemsInput, Prisma.UserUpdateWithoutUploadedPortfolioItemsInput>, Prisma.UserUncheckedUpdateWithoutUploadedPortfolioItemsInput>
+}
+
+export type UserUpdateOneWithoutApprovedPortfolioItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApprovedPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutApprovedPortfolioItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApprovedPortfolioItemsInput
+  upsert?: Prisma.UserUpsertWithoutApprovedPortfolioItemsInput
   disconnect?: Prisma.UserWhereInput | boolean
   delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPortfolioItemsInput, Prisma.UserUpdateWithoutPortfolioItemsInput>, Prisma.UserUncheckedUpdateWithoutPortfolioItemsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutApprovedPortfolioItemsInput, Prisma.UserUpdateWithoutApprovedPortfolioItemsInput>, Prisma.UserUncheckedUpdateWithoutApprovedPortfolioItemsInput>
 }
 
 export type UserCreateNestedOneWithoutCourseEnrollmentsInput = {
@@ -898,7 +919,8 @@ export type UserCreateWithoutSpecialistAppointmentsInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentCreateNestedManyWithoutUserInput
 }
 
@@ -926,7 +948,8 @@ export type UserUncheckedCreateWithoutSpecialistAppointmentsInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionUncheckedCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -959,7 +982,8 @@ export type UserCreateWithoutClientAppointmentsInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentCreateNestedManyWithoutUserInput
 }
 
@@ -987,7 +1011,8 @@ export type UserUncheckedCreateWithoutClientAppointmentsInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionUncheckedCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1031,7 +1056,8 @@ export type UserUpdateWithoutSpecialistAppointmentsInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUpdateManyWithoutUserNestedInput
 }
 
@@ -1059,7 +1085,8 @@ export type UserUncheckedUpdateWithoutSpecialistAppointmentsInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUncheckedUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1098,7 +1125,8 @@ export type UserUpdateWithoutClientAppointmentsInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUpdateManyWithoutUserNestedInput
 }
 
@@ -1126,7 +1154,8 @@ export type UserUncheckedUpdateWithoutClientAppointmentsInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUncheckedUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1154,7 +1183,8 @@ export type UserCreateWithoutReviewsInput = {
   clientAppointments?: Prisma.AppointmentCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentCreateNestedManyWithoutUserInput
 }
 
@@ -1182,7 +1212,8 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   clientAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionUncheckedCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1226,7 +1257,8 @@ export type UserUpdateWithoutReviewsInput = {
   clientAppointments?: Prisma.AppointmentUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUpdateManyWithoutUserNestedInput
 }
 
@@ -1254,7 +1286,8 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   clientAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUncheckedUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1282,7 +1315,8 @@ export type UserCreateWithoutRemindersInput = {
   clientAppointments?: Prisma.AppointmentCreateNestedManyWithoutClientInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutClientInput
   pointTransactions?: Prisma.PointsTransactionCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentCreateNestedManyWithoutUserInput
 }
 
@@ -1310,7 +1344,8 @@ export type UserUncheckedCreateWithoutRemindersInput = {
   clientAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutClientInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutClientInput
   pointTransactions?: Prisma.PointsTransactionUncheckedCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1354,7 +1389,8 @@ export type UserUpdateWithoutRemindersInput = {
   clientAppointments?: Prisma.AppointmentUpdateManyWithoutClientNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutClientNestedInput
   pointTransactions?: Prisma.PointsTransactionUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUpdateManyWithoutUserNestedInput
 }
 
@@ -1382,7 +1418,8 @@ export type UserUncheckedUpdateWithoutRemindersInput = {
   clientAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutClientNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutClientNestedInput
   pointTransactions?: Prisma.PointsTransactionUncheckedUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1410,7 +1447,8 @@ export type UserCreateWithoutPointTransactionsInput = {
   clientAppointments?: Prisma.AppointmentCreateNestedManyWithoutClientInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutAdminInput
-  portfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentCreateNestedManyWithoutUserInput
 }
 
@@ -1438,7 +1476,8 @@ export type UserUncheckedCreateWithoutPointTransactionsInput = {
   clientAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutClientInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutAdminInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1482,7 +1521,8 @@ export type UserUpdateWithoutPointTransactionsInput = {
   clientAppointments?: Prisma.AppointmentUpdateManyWithoutClientNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutAdminNestedInput
-  portfolioItems?: Prisma.PortfolioItemUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUpdateManyWithoutUserNestedInput
 }
 
@@ -1510,11 +1550,12 @@ export type UserUncheckedUpdateWithoutPointTransactionsInput = {
   clientAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutClientNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutAdminNestedInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutPortfolioItemsInput = {
+export type UserCreateWithoutUploadedPortfolioItemsInput = {
   id?: string
   email: string
   password: string
@@ -1539,10 +1580,11 @@ export type UserCreateWithoutPortfolioItemsInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionCreateNestedManyWithoutUserInput
+  approvedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutPortfolioItemsInput = {
+export type UserUncheckedCreateWithoutUploadedPortfolioItemsInput = {
   id?: string
   email: string
   password: string
@@ -1567,26 +1609,90 @@ export type UserUncheckedCreateWithoutPortfolioItemsInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionUncheckedCreateNestedManyWithoutUserInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutApprovedByInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutPortfolioItemsInput = {
+export type UserCreateOrConnectWithoutUploadedPortfolioItemsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutPortfolioItemsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutUploadedPortfolioItemsInput>
 }
 
-export type UserUpsertWithoutPortfolioItemsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutPortfolioItemsInput, Prisma.UserUncheckedUpdateWithoutPortfolioItemsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutPortfolioItemsInput>
+export type UserCreateWithoutApprovedPortfolioItemsInput = {
+  id?: string
+  email: string
+  password: string
+  name: string
+  phone?: string | null
+  photoUrl?: string | null
+  role?: $Enums.Role
+  paymentAlias?: string | null
+  adminPhone?: string | null
+  depositPercentage?: number | null
+  reminderTime?: string | null
+  remindersActive?: boolean | null
+  points?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  referralCode?: string | null
+  referredBy?: string | null
+  referralCount?: number
+  lastDiscountUsed?: Date | string | null
+  specialistAppointments?: Prisma.AppointmentCreateNestedManyWithoutSpecialistInput
+  clientAppointments?: Prisma.AppointmentCreateNestedManyWithoutClientInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutClientInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutAdminInput
+  pointTransactions?: Prisma.PointsTransactionCreateNestedManyWithoutUserInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutUploadedByInput
+  courseEnrollments?: Prisma.CourseEnrollmentCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutApprovedPortfolioItemsInput = {
+  id?: string
+  email: string
+  password: string
+  name: string
+  phone?: string | null
+  photoUrl?: string | null
+  role?: $Enums.Role
+  paymentAlias?: string | null
+  adminPhone?: string | null
+  depositPercentage?: number | null
+  reminderTime?: string | null
+  remindersActive?: boolean | null
+  points?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  referralCode?: string | null
+  referredBy?: string | null
+  referralCount?: number
+  lastDiscountUsed?: Date | string | null
+  specialistAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutSpecialistInput
+  clientAppointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutClientInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutClientInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutAdminInput
+  pointTransactions?: Prisma.PointsTransactionUncheckedCreateNestedManyWithoutUserInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutUploadedByInput
+  courseEnrollments?: Prisma.CourseEnrollmentUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutApprovedPortfolioItemsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutApprovedPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutApprovedPortfolioItemsInput>
+}
+
+export type UserUpsertWithoutUploadedPortfolioItemsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUploadedPortfolioItemsInput, Prisma.UserUncheckedUpdateWithoutUploadedPortfolioItemsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutUploadedPortfolioItemsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutPortfolioItemsInput = {
+export type UserUpdateToOneWithWhereWithoutUploadedPortfolioItemsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutPortfolioItemsInput, Prisma.UserUncheckedUpdateWithoutPortfolioItemsInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUploadedPortfolioItemsInput, Prisma.UserUncheckedUpdateWithoutUploadedPortfolioItemsInput>
 }
 
-export type UserUpdateWithoutPortfolioItemsInput = {
+export type UserUpdateWithoutUploadedPortfolioItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1611,10 +1717,11 @@ export type UserUpdateWithoutPortfolioItemsInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUpdateManyWithoutUserNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutApprovedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutPortfolioItemsInput = {
+export type UserUncheckedUpdateWithoutUploadedPortfolioItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1639,6 +1746,76 @@ export type UserUncheckedUpdateWithoutPortfolioItemsInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUncheckedUpdateManyWithoutUserNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutApprovedByNestedInput
+  courseEnrollments?: Prisma.CourseEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithoutApprovedPortfolioItemsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutApprovedPortfolioItemsInput, Prisma.UserUncheckedUpdateWithoutApprovedPortfolioItemsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutApprovedPortfolioItemsInput, Prisma.UserUncheckedCreateWithoutApprovedPortfolioItemsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutApprovedPortfolioItemsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutApprovedPortfolioItemsInput, Prisma.UserUncheckedUpdateWithoutApprovedPortfolioItemsInput>
+}
+
+export type UserUpdateWithoutApprovedPortfolioItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  paymentAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositPercentage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reminderTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remindersActive?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  points?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastDiscountUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  specialistAppointments?: Prisma.AppointmentUpdateManyWithoutSpecialistNestedInput
+  clientAppointments?: Prisma.AppointmentUpdateManyWithoutClientNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutClientNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutAdminNestedInput
+  pointTransactions?: Prisma.PointsTransactionUpdateManyWithoutUserNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutUploadedByNestedInput
+  courseEnrollments?: Prisma.CourseEnrollmentUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutApprovedPortfolioItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  paymentAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  depositPercentage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reminderTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remindersActive?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  points?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastDiscountUsed?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  specialistAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutSpecialistNestedInput
+  clientAppointments?: Prisma.AppointmentUncheckedUpdateManyWithoutClientNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutClientNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutAdminNestedInput
+  pointTransactions?: Prisma.PointsTransactionUncheckedUpdateManyWithoutUserNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutUploadedByNestedInput
   courseEnrollments?: Prisma.CourseEnrollmentUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1667,7 +1844,8 @@ export type UserCreateWithoutCourseEnrollmentsInput = {
   reviews?: Prisma.ReviewCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutCourseEnrollmentsInput = {
@@ -1695,7 +1873,8 @@ export type UserUncheckedCreateWithoutCourseEnrollmentsInput = {
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutClientInput
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutAdminInput
   pointTransactions?: Prisma.PointsTransactionUncheckedCreateNestedManyWithoutUserInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutClientInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutUploadedByInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutCourseEnrollmentsInput = {
@@ -1739,7 +1918,8 @@ export type UserUpdateWithoutCourseEnrollmentsInput = {
   reviews?: Prisma.ReviewUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCourseEnrollmentsInput = {
@@ -1767,7 +1947,8 @@ export type UserUncheckedUpdateWithoutCourseEnrollmentsInput = {
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutClientNestedInput
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutAdminNestedInput
   pointTransactions?: Prisma.PointsTransactionUncheckedUpdateManyWithoutUserNestedInput
-  portfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutClientNestedInput
+  uploadedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  approvedPortfolioItems?: Prisma.PortfolioItemUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 
@@ -1781,7 +1962,8 @@ export type UserCountOutputType = {
   reviews: number
   reminders: number
   pointTransactions: number
-  portfolioItems: number
+  uploadedPortfolioItems: number
+  approvedPortfolioItems: number
   courseEnrollments: number
 }
 
@@ -1791,7 +1973,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   reviews?: boolean | UserCountOutputTypeCountReviewsArgs
   reminders?: boolean | UserCountOutputTypeCountRemindersArgs
   pointTransactions?: boolean | UserCountOutputTypeCountPointTransactionsArgs
-  portfolioItems?: boolean | UserCountOutputTypeCountPortfolioItemsArgs
+  uploadedPortfolioItems?: boolean | UserCountOutputTypeCountUploadedPortfolioItemsArgs
+  approvedPortfolioItems?: boolean | UserCountOutputTypeCountApprovedPortfolioItemsArgs
   courseEnrollments?: boolean | UserCountOutputTypeCountCourseEnrollmentsArgs
 }
 
@@ -1843,7 +2026,14 @@ export type UserCountOutputTypeCountPointTransactionsArgs<ExtArgs extends runtim
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountPortfolioItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type UserCountOutputTypeCountUploadedPortfolioItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PortfolioItemWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountApprovedPortfolioItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PortfolioItemWhereInput
 }
 
@@ -1880,7 +2070,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   reminders?: boolean | Prisma.User$remindersArgs<ExtArgs>
   pointTransactions?: boolean | Prisma.User$pointTransactionsArgs<ExtArgs>
-  portfolioItems?: boolean | Prisma.User$portfolioItemsArgs<ExtArgs>
+  uploadedPortfolioItems?: boolean | Prisma.User$uploadedPortfolioItemsArgs<ExtArgs>
+  approvedPortfolioItems?: boolean | Prisma.User$approvedPortfolioItemsArgs<ExtArgs>
   courseEnrollments?: boolean | Prisma.User$courseEnrollmentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -1958,7 +2149,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   reminders?: boolean | Prisma.User$remindersArgs<ExtArgs>
   pointTransactions?: boolean | Prisma.User$pointTransactionsArgs<ExtArgs>
-  portfolioItems?: boolean | Prisma.User$portfolioItemsArgs<ExtArgs>
+  uploadedPortfolioItems?: boolean | Prisma.User$uploadedPortfolioItemsArgs<ExtArgs>
+  approvedPortfolioItems?: boolean | Prisma.User$approvedPortfolioItemsArgs<ExtArgs>
   courseEnrollments?: boolean | Prisma.User$courseEnrollmentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1973,7 +2165,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
     reminders: Prisma.$ReminderPayload<ExtArgs>[]
     pointTransactions: Prisma.$PointsTransactionPayload<ExtArgs>[]
-    portfolioItems: Prisma.$PortfolioItemPayload<ExtArgs>[]
+    uploadedPortfolioItems: Prisma.$PortfolioItemPayload<ExtArgs>[]
+    approvedPortfolioItems: Prisma.$PortfolioItemPayload<ExtArgs>[]
     courseEnrollments: Prisma.$CourseEnrollmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -2395,7 +2588,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   reviews<T extends Prisma.User$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reminders<T extends Prisma.User$remindersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pointTransactions<T extends Prisma.User$pointTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pointTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PointsTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  portfolioItems<T extends Prisma.User$portfolioItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$portfolioItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PortfolioItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  uploadedPortfolioItems<T extends Prisma.User$uploadedPortfolioItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedPortfolioItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PortfolioItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  approvedPortfolioItems<T extends Prisma.User$approvedPortfolioItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvedPortfolioItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PortfolioItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   courseEnrollments<T extends Prisma.User$courseEnrollmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$courseEnrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CourseEnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2674,7 +2868,6 @@ export type UserCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * The data used to create many Users.
    */
   data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -2693,7 +2886,6 @@ export type UserCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many Users.
    */
   data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -2953,9 +3145,33 @@ export type User$pointTransactionsArgs<ExtArgs extends runtime.Types.Extensions.
 }
 
 /**
- * User.portfolioItems
+ * User.uploadedPortfolioItems
  */
-export type User$portfolioItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$uploadedPortfolioItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PortfolioItem
+   */
+  select?: Prisma.PortfolioItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PortfolioItem
+   */
+  omit?: Prisma.PortfolioItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PortfolioItemInclude<ExtArgs> | null
+  where?: Prisma.PortfolioItemWhereInput
+  orderBy?: Prisma.PortfolioItemOrderByWithRelationInput | Prisma.PortfolioItemOrderByWithRelationInput[]
+  cursor?: Prisma.PortfolioItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PortfolioItemScalarFieldEnum | Prisma.PortfolioItemScalarFieldEnum[]
+}
+
+/**
+ * User.approvedPortfolioItems
+ */
+export type User$approvedPortfolioItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the PortfolioItem
    */

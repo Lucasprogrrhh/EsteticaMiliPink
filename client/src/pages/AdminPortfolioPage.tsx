@@ -6,14 +6,12 @@ interface PortfolioItem {
     id: string;
     imageUrl: string;
     serviceCategory: string;
-    specialistName: string;
     description: string | null;
-    altText: string | null;
+    status: 'pending' | 'approved' | 'rejected';
+    role: 'admin' | 'client';
     order: number;
-    status: 'PENDING' | 'PUBLISHED' | 'REJECTED';
-    isFeatured: boolean;
     createdAt: string;
-    client?: { name: string } | null;
+    uploadedBy: { name: string } | null;
 }
 
 const CATEGORIES = ['Manicuría', 'Pestañas', 'Estética facial', 'Otros'];
@@ -24,17 +22,11 @@ export default function AdminPortfolioPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // Modal state for direct Admin Upload
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [desc, setDesc] = useState('');
-    const [altText, setAltText] = useState('');
     const [category, setCategory] = useState('Manicuría');
-    const [specialist, setSpecialist] = useState('Mili Belleza');
-    const [isFeatured, setIsFeatured] = useState(false);
     const [submitting, setSubmitting] = useState(false);
-
-    const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
 
     useEffect(() => {
         fetchPortfolio();
@@ -47,8 +39,7 @@ export default function AdminPortfolioPage() {
             });
             if (!res.ok) throw new Error('Failed to fetch portfolio');
             const data = await res.json();
-            // Sort client-side explicitly just in case
-            setItems(data.sort((a: any, b: any) => a.order - b.order));
+            setItems(data);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -56,67 +47,15 @@ export default function AdminPortfolioPage() {
         }
     };
 
-    const handleDragStart = (index: number) => {
-        setDraggedItemIndex(index);
-    };
-
-    const handleDragEnter = (index: number) => {
-        if (draggedItemIndex === null || draggedItemIndex === index) return;
-        const newItems = [...items];
-        const item = newItems[draggedItemIndex];
-        newItems.splice(draggedItemIndex, 1);
-        newItems.splice(index, 0, item);
-        setDraggedItemIndex(index);
-        setItems(newItems);
-    };
-
-    const handleDragEnd = async () => {
-        setDraggedItemIndex(null);
+    const handleUpdateStatus = async (id: string, action: 'approve' | 'reject') => {
         try {
-            const updates = items.map((item, index) => ({ id: item.id, order: index }));
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/reorder`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/${id}/${action}`, {
                 method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ items: updates })
+                }
             });
-            if (!res.ok) throw new Error('Failed to save sort order');
-        } catch (err: any) {
-            alert('Error guardando el orden: ' + err.message);
-            fetchPortfolio();
-        }
-    };
-
-    const handleUpdateStatus = async (id: string, newStatus: string) => {
-        try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/${id}/status`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ status: newStatus })
-            });
-            if (!res.ok) throw new Error('Failed to update status');
-            fetchPortfolio();
-        } catch (err: any) {
-            alert(err.message);
-        }
-    };
-
-    const handleToggleFeatured = async (id: string, currentFeatured: boolean) => {
-        try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/${id}/status`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ isFeatured: !currentFeatured })
-            });
-            if (!res.ok) throw new Error('Failed to update featured status');
+            if (!res.ok) throw new Error(`Failed to ${action} item`);
             fetchPortfolio();
         } catch (err: any) {
             alert(err.message);
@@ -146,12 +85,9 @@ export default function AdminPortfolioPage() {
             const fd = new FormData();
             fd.append('photo', file);
             fd.append('description', desc);
-            fd.append('altText', altText);
             fd.append('serviceCategory', category);
-            fd.append('specialistName', specialist);
-            fd.append('isFeatured', isFeatured.toString());
 
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/admin`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/upload`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: fd
@@ -191,22 +127,16 @@ export default function AdminPortfolioPage() {
             {error && <div className="bg-red-500/20 text-red-500 p-3 rounded mb-4">{error}</div>}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {items.map((item, index) => (
+                {items.map((item) => (
                     <motion.div 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         key={item.id} 
-                        draggable
-                        onDragStart={() => handleDragStart(index)}
-                        onDragEnter={() => handleDragEnter(index)}
-                        onDragEnd={handleDragEnd}
-                        onDragOver={(e) => e.preventDefault()}
-                        className={`bg-slate-800/80 rounded-xl overflow-hidden border cursor-move ${
-                            draggedItemIndex === index ? 'opacity-50 border-pink-500 scale-[1.02]' :
-                            item.status === 'PENDING' ? 'border-yellow-500/40' : 
-                            item.status === 'REJECTED' ? 'border-red-500/40' : 
+                        className={`bg-slate-800/80 rounded-xl overflow-hidden border ${
+                            item.status === 'pending' ? 'border-yellow-500/40' : 
+                            item.status === 'rejected' ? 'border-red-500/40' : 
                             'border-slate-700/50'
-                        } flex flex-col transition-transform`}
+                        } flex flex-col`}
                     >
                         <div className="aspect-square relative">
                             <img 
@@ -214,51 +144,43 @@ export default function AdminPortfolioPage() {
                                 className="w-full h-full object-cover" 
                                 alt={item.serviceCategory} 
                             />
-                            {item.status === 'PENDING' && (
+                            {item.status === 'pending' && (
                                 <div className="absolute top-2 left-2 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded">PENDIENTE</div>
                             )}
-                            {item.isFeatured && (
-                                <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">⭐ Destacado</div>
-                            )}
+                            <div className="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded">
+                                Subido por {item.role === 'admin' ? 'Admin' : 'Cliente'}
+                            </div>
                         </div>
                         <div className="p-4 flex flex-col flex-grow">
                             <div className="flex justify-between items-start mb-2">
                                 <span className="text-xs font-bold text-pink-400 uppercase tracking-widest">{item.serviceCategory}</span>
                                 <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                                    item.status === 'PUBLISHED' ? 'bg-green-500/20 text-green-300' :
-                                    item.status === 'REJECTED' ? 'bg-red-500/20 text-red-300' :
+                                    item.status === 'approved' ? 'bg-green-500/20 text-green-300' :
+                                    item.status === 'rejected' ? 'bg-red-500/20 text-red-300' :
                                     'bg-yellow-500/20 text-yellow-300'
                                 }`}>{item.status}</span>
                             </div>
-                            <p className="text-sm text-slate-300 mb-1">Por: <span className="text-white font-medium">{item.specialistName}</span></p>
-                            {item.client && (
-                                <p className="text-xs text-slate-400 mb-2">Cliente: {item.client.name}</p>
-                            )}
+                            <p className="text-xs text-slate-400 mb-2">Autor: {item.uploadedBy?.name || 'Desconocido'}</p>
                             {item.description && (
                                 <p className="text-xs text-slate-400 italic mb-4 line-clamp-2">"{item.description}"</p>
                             )}
                             
                             <div className="mt-auto pt-4 border-t border-slate-700/50 grid grid-cols-2 gap-2 text-sm">
-                                {item.status === 'PENDING' && (
+                                {item.status === 'pending' && (
                                     <>
-                                        <button onClick={() => handleUpdateStatus(item.id, 'PUBLISHED')} className="bg-green-500/10 text-green-400 hover:bg-green-500/20 py-1.5 rounded transition">Aprobar</button>
-                                        <button onClick={() => handleUpdateStatus(item.id, 'REJECTED')} className="bg-red-500/10 text-red-400 hover:bg-red-500/20 py-1.5 rounded transition">Rechazar</button>
+                                        <button onClick={() => handleUpdateStatus(item.id, 'approve')} className="bg-green-500/10 text-green-400 hover:bg-green-500/20 py-1.5 rounded transition">Aprobar</button>
+                                        <button onClick={() => handleUpdateStatus(item.id, 'reject')} className="bg-red-500/10 text-red-400 hover:bg-red-500/20 py-1.5 rounded transition">Rechazar</button>
                                     </>
                                 )}
-                                {item.status === 'PUBLISHED' && (
+                                {item.status === 'approved' && (
                                     <>
-                                        <button 
-                                            onClick={() => handleToggleFeatured(item.id, item.isFeatured)} 
-                                            className={`py-1.5 rounded transition ${item.isFeatured ? 'bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20' : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'}`}
-                                        >
-                                            {item.isFeatured ? 'Quitar Destacado' : 'Hacer Destacado'}
-                                        </button>
+                                        <button onClick={() => handleUpdateStatus(item.id, 'reject')} className="bg-red-500/10 text-red-400 hover:bg-red-500/20 py-1.5 rounded transition">Ocultar</button>
                                         <button onClick={() => handleDelete(item.id)} className="bg-red-500/10 text-red-400 hover:bg-red-500/20 py-1.5 rounded transition">Eliminar</button>
                                     </>
                                 )}
-                                {item.status === 'REJECTED' && (
+                                {item.status === 'rejected' && (
                                     <>
-                                        <button onClick={() => handleUpdateStatus(item.id, 'PUBLISHED')} className="bg-green-500/10 text-green-400 hover:bg-green-500/20 py-1.5 rounded transition">Restaurar</button>
+                                        <button onClick={() => handleUpdateStatus(item.id, 'approve')} className="bg-green-500/10 text-green-400 hover:bg-green-500/20 py-1.5 rounded transition">Aprobar</button>
                                         <button onClick={() => handleDelete(item.id)} className="bg-red-500/10 text-red-400 hover:bg-red-500/20 py-1.5 rounded transition">Eliminar</button>
                                     </>
                                 )}
@@ -286,21 +208,9 @@ export default function AdminPortfolioPage() {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm text-slate-300 mb-1">Especialista</label>
-                                <input type="text" value={specialist} onChange={e => setSpecialist(e.target.value)} required className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-white"/>
-                            </div>
-                            <div>
-                                <label className="block text-sm text-slate-300 mb-1">Alt Text (Texto alternativo imagen)</label>
-                                <input type="text" value={altText} onChange={e => setAltText(e.target.value)} required className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-white" />
-                            </div>
-                            <div>
                                 <label className="block text-sm text-slate-300 mb-1">Descripción</label>
                                 <textarea value={desc} onChange={e => setDesc(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-white resize-none" rows={2}/>
                             </div>
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" checked={isFeatured} onChange={e => setIsFeatured(e.target.checked)} className="rounded bg-slate-800 border-slate-700 text-pink-500 focus:ring-pink-500" />
-                                <span className="text-sm text-slate-300">Marcar como Destacado (aparece primero)</span>
-                            </label>
                             <div className="flex gap-3 justify-end mt-6">
                                 <button type="button" onClick={() => setUploadModalOpen(false)} className="text-slate-400 hover:text-white">Cancelar</button>
                                 <button type="submit" disabled={submitting} className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded">

@@ -20,6 +20,12 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
   
+  const [portfolioFile, setPortfolioFile] = useState<File | null>(null);
+  const [portfolioCategory, setPortfolioCategory] = useState('Manicuría');
+  const [portfolioDesc, setPortfolioDesc] = useState('');
+  const [isUploadingPortfolio, setIsUploadingPortfolio] = useState(false);
+  const [portfolioMessage, setPortfolioMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -180,6 +186,36 @@ export default function ProfilePage() {
       setMessage({ type: 'error', text: 'Ocurrió un error inesperado' });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handlePortfolioUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!portfolioFile) return;
+    setIsUploadingPortfolio(true);
+    setPortfolioMessage(null);
+    try {
+      const fd = new FormData();
+      fd.append('photo', portfolioFile);
+      fd.append('description', portfolioDesc);
+      fd.append('serviceCategory', portfolioCategory);
+
+      const res = await fetch(`${API}/portfolio/upload`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: fd
+      });
+      if (res.ok) {
+        setPortfolioMessage({ type: 'success', text: '¡Foto enviada! Un administrador la revisará pronto.' });
+        setPortfolioFile(null);
+        setPortfolioDesc('');
+      } else {
+        setPortfolioMessage({ type: 'error', text: 'Error al subir la foto' });
+      }
+    } catch {
+      setPortfolioMessage({ type: 'error', text: 'Error de red' });
+    } finally {
+      setIsUploadingPortfolio(false);
     }
   };
 
@@ -640,6 +676,72 @@ export default function ProfilePage() {
 
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Client Portfolio Upload Module */}
+      {authUser?.role === 'CLIENT' && (
+        <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6 md:p-8">
+          <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
+            <Camera className="w-5 h-5 text-pink-400" />
+            Subí tus Resultados al Portfolio
+          </h3>
+          <p className="text-sm text-slate-400 mb-6">Compartí los resultados de tus servicios. Las fotos serán revisadas por un administrador antes de ser publicadas en el portfolio oficial.</p>
+          
+          {portfolioMessage && (
+            <div className={`p-4 rounded-xl flex items-center gap-3 mb-6 ${
+              portfolioMessage.type === 'success' 
+                ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                : 'bg-red-500/10 text-red-400 border border-red-500/20'
+            }`}>
+              {portfolioMessage.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <div className="w-5 h-5" />}
+              <p className="text-sm">{portfolioMessage.text}</p>
+            </div>
+          )}
+
+          <form onSubmit={handlePortfolioUpload} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">Tu foto</label>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={e => { if(e.target.files && e.target.files[0]) setPortfolioFile(e.target.files[0]) }}
+                required 
+                className="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-500/10 file:text-pink-400 hover:file:bg-pink-500/20 transition-all cursor-pointer" 
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">Categoría del servicio</label>
+              <select 
+                value={portfolioCategory} 
+                onChange={e => setPortfolioCategory(e.target.value)} 
+                className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-pink-500/50"
+              >
+                {['Manicuría', 'Pestañas', 'Estética facial', 'Otros'].map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">Cuentanos tu experiencia (Opcional)</label>
+              <textarea 
+                value={portfolioDesc} 
+                onChange={e => setPortfolioDesc(e.target.value)} 
+                className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-pink-500/50 resize-none h-24"
+                placeholder="¡Me encantó el resultado!"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isUploadingPortfolio}
+              className="w-full bg-pink-500 hover:bg-pink-600 text-white font-medium px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-pink-500/25 flex items-center justify-center gap-2 group disabled:opacity-75 disabled:cursor-not-allowed"
+            >
+              {isUploadingPortfolio ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Camera className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              )}
+              {isUploadingPortfolio ? 'Subiendo...' : 'Enviar Foto'}
+            </button>
+          </form>
         </div>
       )}
     </div>

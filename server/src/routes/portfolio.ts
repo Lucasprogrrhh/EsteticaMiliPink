@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { PrismaClient, PortfolioItem } from '../generated/client/client';
+import { PrismaClient } from '../generated/client/client';
 import { requireAuth } from '../middleware/auth';
 import { upload } from '../middlewares/upload';
 
@@ -11,14 +11,17 @@ router.get('/', async (req, res) => {
     try {
         const category = req.query.category as string | undefined;
         
-        const whereClause: any = { status: 'PUBLISHED' };
+        const whereClause: any = { status: 'approved' };
         if (category && typeof category === 'string' && category !== 'Todos') {
             whereClause.serviceCategory = category;
         }
 
         const items = await prisma.portfolioItem.findMany({
             where: whereClause,
-            orderBy: [{ order: 'asc' }, { isFeatured: 'desc' }, { createdAt: 'desc' }],
+            orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
+            include: {
+                uploadedBy: { select: { name: true } },
+            }
         });
 
         res.json(items);
@@ -35,9 +38,9 @@ router.get('/admin', requireAuth, async (req, res) => {
         if (!user || user.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
 
         const items = await prisma.portfolioItem.findMany({
-            orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
+            orderBy: [{ createdAt: 'desc' }],
             include: {
-                client: { select: { name: true } },
+                uploadedBy: { select: { name: true } },
             }
         });
 
@@ -48,28 +51,34 @@ router.get('/admin', requireAuth, async (req, res) => {
     }
 });
 
-// POST /api/portfolio/client - Subida por cliente (desde Mis Citas)
-router.post('/client', requireAuth, upload.single('photo'), async (req, res) => {
+// POST /api/portfolio/upload - Subir foto (admin o cliente autenticado)
+router.post('/upload', requireAuth, upload.single('photo'), async (req, res) => {
     try {
         const user = req.user;
         if (!user) return res.status(401).json({ error: 'Unauthorized' });
 
-        const { description, serviceCategory, specialistName } = req.body;
+        const { description, serviceCategory } = req.body;
         
         if (!req.file) {
             return res.status(400).json({ error: 'Es requerida una imagen' });
         }
 
         const imageUrl = `/uploads/${req.file.filename}`;
+        
+        // Determine role and status based on who uploads
+        const isAdmin = user.role === 'ADMIN';
+        const role = isAdmin ? 'admin' : 'client';
+        const status = isAdmin ? 'approved' : 'pending';
 
         const item = await prisma.portfolioItem.create({
             data: {
                 imageUrl,
-                serviceCategory: serviceCategory || 'Otros',
-                specialistName: specialistName || 'Mili Belleza',
+                serviceCategory: serviceCategory || 'Otro',
                 description,
-                status: 'PENDING',
-                clientId: user.userId
+                status,
+                role,
+                uploadedById: user.userId,
+                ...(isAdmin ? { approvedById: user.userId } : {})
             }
         });
 
@@ -80,85 +89,74 @@ router.post('/client', requireAuth, upload.single('photo'), async (req, res) => 
     }
 });
 
-// POST /api/portfolio/admin - Subida por admin (publicado directamente)
-router.post('/admin', requireAuth, upload.single('photo'), async (req, res) => {
+// PATCH /api/portfolio/:id/approve - Aprobar (solo admin)
+router.patch('/:id/approve', requireAuth, async (req, res) => {
     try {
         const user = req.user;
         if (!user || user.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
 
-        const { altText, description, serviceCategory, specialistName, isFeatured } = req.body;
-        
-        if (!req.file) {
-            return res.status(400).json({ error: 'Es requerida una imagen' });
-        }
-
-        const imageUrl = `/uploads/${req.file.filename}`;
-
-        const item = await prisma.portfolioItem.create({
-            data: {
-                imageUrl,
-                serviceCategory: serviceCategory || 'Otros',
-                specialistName: specialistName || 'Mili Belleza',
-                altText: altText || description,
-                description,
-                status: 'PUBLISHED',
-                isFeatured: isFeatured === 'true',
-                order: 999
-            }
-        });
-
-        res.status(201).json(item);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al subir la imagen (Admin)' });
-    }
-});
-
-// PATCH /api/portfolio/reorder - Admin reordena imágenes
-router.patch('/reorder', requireAuth, async (req, res) => {
-    try {
-        const user = req.user;
-        if (!user || user.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
-
-        const { items } = req.body; // Array de { id, order }
-        if (!Array.isArray(items)) return res.status(400).json({ error: 'Formato inválido' });
-
-        // Actualizamos de a uno o con transaction
-        for (const item of items) {
-            await prisma.portfolioItem.update({
-                where: { id: item.id },
-                data: { order: item.order }
-            });
-        }
-        res.json({ success: true });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al reordenar el portfolio' });
-    }
-});
-
-// PATCH /api/portfolio/:id/status - Admin cambia estado (Aprobar/Rechazar)
-router.patch('/:id/status', requireAuth, async (req, res) => {
-    try {
-        const user = req.user;
-        if (!user || user.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
-
-        const { status, isFeatured } = req.body;
         const { id } = req.params;
-
-        const dataUpdate: any = {};
-        if (status) dataUpdate.status = status;
-        if (isFeatured !== undefined) dataUpdate.isFeatured = isFeatured;
 
         const item = await prisma.portfolioItem.update({
             where: { id: id as string },
-            data: dataUpdate
+            data: { 
+                status: 'approved',
+                approvedById: user.userId
+            }
         });
 
         res.json(item);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al actualizar el item de portfolio' });
+        res.status(500).json({ error: 'Error al aprobar el item' });
+    }
+});
+
+// PATCH /api/portfolio/:id/reject - Rechazar (solo admin)
+router.patch('/:id/reject', requireAuth, async (req, res) => {
+    try {
+        const user = req.user;
+        if (!user || user.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
+
+        const { id } = req.params;
+
+        const item = await prisma.portfolioItem.update({
+            where: { id: id as string },
+            data: { 
+                status: 'rejected',
+                approvedById: user.userId
+            }
+        });
+
+        res.json(item);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al rechazar el item' });
+    }
+});
+
+// PATCH /api/portfolio/:id - Editar categoría/descripción (solo admin)
+router.patch('/:id', requireAuth, async (req, res) => {
+    try {
+        const user = req.user;
+        if (!user || user.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
+
+        const { id } = req.params;
+        const { serviceCategory, description } = req.body;
+
+        const updateData: any = {};
+        if (serviceCategory !== undefined) updateData.serviceCategory = serviceCategory;
+        if (description !== undefined) updateData.description = description;
+
+        const item = await prisma.portfolioItem.update({
+            where: { id: id as string },
+            data: updateData
+        });
+
+        res.json(item);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al editar el item' });
     }
 });
 

@@ -146,122 +146,7 @@ const PromocionesSection = () => {
     );
 };
 
-const PortfolioSection = () => {
-  const [filter, setFilter] = useState('all');
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [currentIdx, setCurrentIdx] = useState(0);
 
-  const portfolioItems = [
-    { cat: 'nail-art', title: 'Flores 3D & Animal Print', desc: 'Diseño mixto con flores acrílicas y estampado animal en rosa y negro.', src: '/images/port-01.jpeg', placeholder: '🌸', tag: 'Nail Art' },
-    { cat: 'nail-art', title: 'Animales & Flores Pink', desc: 'Combinación única de zebra, leopardo y flores 3D en tonos rosas.', src: '/images/port-02.jpeg', placeholder: '🌺', tag: 'Nail Art', className: 'tall' },
-    { cat: 'minimalista', title: 'Marmolado Rosado & Oro', desc: 'Marmolado delicado con detalles en hoja de oro y daisy charms.', src: '/images/port-03.jpeg', placeholder: '✨', tag: 'Minimalista' },
-    { cat: 'nail-art', title: 'Fantasía Colorida', desc: 'Arte 3D multicolor: figuras, flores y efectos únicos sobre stiletto.', src: '/images/port-04.jpeg', placeholder: '🦋', tag: 'Nail Art', className: 'wide' },
-    { cat: 'french', title: 'French Clásico', desc: 'French manicure perfecta y simétrica sobre gel acrílico de larga duración.', src: '/images/port-05.jpeg', placeholder: '💅', tag: 'French' },
-    { cat: 'french', title: 'French Dorado & Leopardo', desc: 'French con punta dorada y estampado leopardo. Audaz y femenino.', src: '/images/port-06.jpeg', placeholder: '🐆', tag: 'French' },
-    { cat: 'minimalista', title: 'Nude Shimmer', desc: 'Nude nacarado ultra refinado. Elegancia en su máxima expresión.', src: '/images/port-07.jpeg', placeholder: '🪞', tag: 'Minimalista' },
-    { cat: 'nail-art', title: 'Chocolate Hearts', desc: 'Beige y blanco con corazones de acrílico y gotas de chocolate pintadas a mano.', src: '/images/port-08.jpeg', placeholder: '🍫', tag: 'Nail Art', className: 'tall' },
-    { cat: 'nail-art', title: 'Spring Garden', desc: 'Flores de cerezo 3D con mariquitas y abejas. La primavera en tus manos.', src: '/images/port-09.jpeg', placeholder: '🌸', tag: 'Nail Art' },
-    { cat: 'nail-art', title: 'Spring Garden II', desc: 'Segunda variación del diseño primavera con flores y criaturas en rosa pálido.', src: '/images/port-10.jpeg', placeholder: '🌼', tag: 'Nail Art' },
-    { cat: 'french', title: 'French Rosas & Flores', desc: 'French con borde rosado y flores 3D de gel en el centro. Dulce y elegante.', src: '/images/port-11.jpeg', placeholder: '🌷', tag: 'French', className: 'wide' },
-    { cat: 'french', title: 'French Amarillo Floral', desc: 'French en amarillo limón con pequeñas flores blancas. Verano puro.', src: '/images/port-12.jpeg', placeholder: '🌻', tag: 'French' },
-    { cat: 'minimalista', title: 'Minimalismo Floral', desc: 'Flor delicada con detalle plateado y aros sobre base blush. Refinado al máximo.', src: '/images/port-13.jpeg', placeholder: '🤍', tag: 'Minimalista' },
-    { cat: 'nail-art', title: 'Ocean Nails', desc: 'Temática marina con conchas, estrellas de mar y perlas nacaradas. Un sueño costero.', src: '/images/port-14.jpeg', placeholder: '🐚', tag: 'Nail Art', className: 'tall' },
-    { cat: 'minimalista', title: 'Floral Cremoso', desc: 'Arte floral sobre base crema con líneas doradas y daisy 3D. Lujo sutil.', src: '/images/port-15.jpeg', placeholder: '🌿', tag: 'Minimalista' },
-  ];
-
-  const visibleItems = portfolioItems.filter(item => filter === 'all' || item.cat === filter);
-
-  const openLightbox = (idx: number) => {
-    setCurrentIdx(idx);
-    setLightboxOpen(true);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeLightbox = () => {
-    setLightboxOpen(false);
-    document.body.style.overflow = '';
-  };
-
-  const prevLightbox = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentIdx((currentIdx - 1 + visibleItems.length) % visibleItems.length);
-  };
-
-  const nextLightbox = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentIdx((currentIdx + 1) % visibleItems.length);
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!lightboxOpen) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') setCurrentIdx((prevIdx) => (prevIdx - 1 + visibleItems.length) % visibleItems.length);
-      if (e.key === 'ArrowRight') setCurrentIdx((prevIdx) => (prevIdx + 1) % visibleItems.length);
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxOpen, visibleItems.length]);
-
-  return (
-    <section id="portfolio" className="mb-portfolio">
-      <div className="mb-port-header">
-        <div>
-          <p className="mb-eyebrow" style={{fontSize:".72rem", fontWeight:700, letterSpacing:".18em", textTransform:"uppercase", color:"#c2185b", marginBottom:".6rem"}}>✦ Nuestro trabajo</p>
-          <h2 className="mb-section-title" style={{fontFamily:"'Playfair Display',Georgia,serif", fontSize:"clamp(2rem,3.5vw,2.75rem)", fontWeight:900, color:"#1a0a10", lineHeight:1.08, marginBottom:".6rem"}}>Portfolio</h2>
-          <p style={{fontSize:".95rem", color:"#7a4a5a", lineHeight:1.7, maxWidth:"420px"}}>Cada uña es un lienzo. Mirá algunos de nuestros trabajos más recientes y dejate inspirar.</p>
-        </div>
-        <div className="mb-port-filters">
-          <button className={`mb-filter-btn ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>Todos</button>
-          <button className={`mb-filter-btn ${filter === 'nail-art' ? 'active' : ''}`} onClick={() => setFilter('nail-art')}>Nail Art</button>
-          <button className={`mb-filter-btn ${filter === 'french' ? 'active' : ''}`} onClick={() => setFilter('french')}>French</button>
-          <button className={`mb-filter-btn ${filter === 'minimalista' ? 'active' : ''}`} onClick={() => setFilter('minimalista')}>Minimalista</button>
-        </div>
-      </div>
-
-      <div className="mb-port-grid">
-        {visibleItems.map((item, idx) => (
-          <div key={idx} className={`mb-port-item ${item.className || ''}`} onClick={() => openLightbox(idx)}>
-            <img 
-              className="mb-port-img" 
-              src={item.src} 
-              alt={item.title}
-              onError={(e) => { e.currentTarget.style.display='none'; if(e.currentTarget.nextElementSibling) (e.currentTarget.nextElementSibling as HTMLElement).style.display='flex'; }}
-            />
-            <div className="mb-port-img-placeholder" style={{display:'none'}}>{item.placeholder}</div>
-            <div className="mb-port-zoom">🔍</div>
-            <div className="mb-port-overlay">
-              <span className="mb-port-tag">{item.tag}</span>
-              <div className="mb-port-title">{item.title}</div>
-              <div className="mb-port-desc">{item.desc}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mb-port-cta">
-        <h3>¿Querés este resultado?</h3>
-        <p>Reservá tu turno hoy y transformá tus manos en obras de arte. Más de 500 clientas ya lo eligieron.</p>
-        <a href="https://wa.me/5492664734034?text=Hola!%20Vi%20el%20portfolio%20y%20quiero%20reservar%20un%20turno%20%F0%9F%92..." target="_blank" rel="noreferrer" className="mb-btn-white">
-          Reservar mi turno →
-        </a>
-      </div>
-
-      {lightboxOpen && visibleItems[currentIdx] && (
-        <div className="mb-lightbox open" onClick={closeLightbox}>
-          <button className="mb-lb-close" onClick={closeLightbox} aria-label="Cerrar">✕</button>
-          <button className="mb-lb-nav mb-lb-prev" onClick={prevLightbox} aria-label="Anterior">‹</button>
-          <img className="mb-lightbox-img" src={visibleItems[currentIdx].src} alt={visibleItems[currentIdx].title} onClick={(e) => e.stopPropagation()} />
-          <div className="mb-lightbox-caption" onClick={(e) => e.stopPropagation()}>
-            <strong>{visibleItems[currentIdx].title}</strong>
-            {visibleItems[currentIdx].desc}
-          </div>
-          <button className="mb-lb-nav mb-lb-next" onClick={nextLightbox} aria-label="Siguiente">›</button>
-        </div>
-      )}
-    </section>
-  );
-};
 const MobileDrawer = ({ user, handleReserveClick }: { user: any, handleReserveClick: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -358,7 +243,7 @@ const MobileDrawer = ({ user, handleReserveClick }: { user: any, handleReserveCl
           <LinkItem href="#" icon="home" title="Inicio" subtitle="Volver a la portada" onClick={closeDrawer} isActive={true} />
           <LinkItem href="#servicios" icon="spa" title="Servicios" subtitle="Lo que hacemos" onClick={closeDrawer} />
           <LinkItem href="#cursos" icon="school" title="Cursos" subtitle="Capacitaciones" onClick={closeDrawer} />
-          <LinkItem href="#portfolio" icon="photo_library" title="Portfolio" subtitle="Nuestros trabajos" onClick={closeDrawer} />
+          <LinkItem href="/portfolio" icon="photo_library" title="Portfolio" subtitle="Nuestros trabajos" onClick={closeDrawer} isRouterLink={true} />
           <LinkItem href="#promociones" icon="local_offer" title="Promociones" subtitle="Descuentos y beneficios" onClick={closeDrawer} />
           {user && <LinkItem href="/dashboard" icon="dashboard" title="Mi Panel" subtitle="Gestión de perfil" onClick={closeDrawer} isRouterLink />}
         </nav>
@@ -430,7 +315,7 @@ export default function LandingPage() {
                     <div className="hidden md:flex items-center space-x-8">
                         <a className="font-['Noto_Serif'] font-bold tracking-tight text-pink-700 dark:text-pink-300 border-b-2 border-pink-700 pb-1 transition-all duration-300 hover:opacity-80" href="#servicios">Servicios</a>
                         <a className="font-['Noto_Serif'] font-bold tracking-tight text-zinc-600 dark:text-zinc-400 hover:text-pink-500 transition-all duration-300 hover:opacity-80" href="#cursos">Cursos</a>
-                        <a className="font-['Noto_Serif'] font-bold tracking-tight text-zinc-600 dark:text-zinc-400 hover:text-pink-500 transition-all duration-300 hover:opacity-80" href="#portfolio">Portfolio</a>
+                        <Link className="font-['Noto_Serif'] font-bold tracking-tight text-zinc-600 dark:text-zinc-400 hover:text-pink-500 transition-all duration-300 hover:opacity-80" to="/portfolio">Portfolio</Link>
                         <a className="font-['Noto_Serif'] font-bold tracking-tight text-zinc-600 dark:text-zinc-400 hover:text-pink-500 transition-all duration-300 hover:opacity-80" href="#promociones">Promociones</a>
                     </div>
                     
@@ -716,7 +601,7 @@ export default function LandingPage() {
 
                 </section>
                 
-                <PortfolioSection />
+
                 <PromocionesSection />
             </main>
 

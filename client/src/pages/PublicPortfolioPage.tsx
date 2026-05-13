@@ -6,11 +6,11 @@ interface PortfolioItem {
     id: string;
     imageUrl: string;
     serviceCategory: string;
-    specialistName: string;
     description: string | null;
     status: string;
-    isFeatured: boolean;
+    role: string;
     createdAt: string;
+    uploadedBy: { name: string } | null;
 }
 
 const CATEGORIES = ['Todos', 'Manicuría', 'Pestañas', 'Estética facial', 'Otros'];
@@ -27,7 +27,7 @@ export default function PublicPortfolioPage() {
             try {
                 const url = activeCategory === 'Todos' 
                     ? `${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio`
-                    : `http://localhost:3001/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
+                    : `${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio?category=${encodeURIComponent(activeCategory)}`;
                 
                 const res = await fetch(url);
                 const data = await res.json();
@@ -66,7 +66,7 @@ export default function PublicPortfolioPage() {
                         Nuestro <span className="text-primary italic">Portfolio</span>
                     </h1>
                     <p className="text-lg text-on-surface-variant max-w-2xl mx-auto">
-                        Descubrí los increíbles resultados y el arte de nuestras especialistas y alumnas.
+                        Descubrí los increíbles resultados de nuestros especialistas y clientes.
                     </p>
                 </div>
 
@@ -118,15 +118,10 @@ export default function PublicPortfolioPage() {
                                         loading="lazy"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
-                                        {item.isFeatured && (
-                                            <span className="absolute top-4 right-4 bg-tertiary-container text-on-tertiary-container text-xs font-bold px-2 py-1 rounded flex items-center gap-1 shadow-md">
-                                                <span className="material-symbols-outlined text-[14px]">star</span> Escaparate
-                                            </span>
-                                        )}
                                         <p className="text-white font-headline font-bold text-xl mb-1 truncate">{item.serviceCategory}</p>
                                         <p className="text-white/80 text-sm font-medium flex items-center gap-1.5">
-                                            <span className="material-symbols-outlined text-[16px]">brush</span>
-                                            {item.specialistName}
+                                            <span className="material-symbols-outlined text-[16px]">person</span>
+                                            {item.uploadedBy?.name || 'Anónimo'}
                                         </p>
                                     </div>
                                 </motion.div>
@@ -165,7 +160,7 @@ export default function PublicPortfolioPage() {
                                     {selectedItem.serviceCategory}
                                 </span>
                                 <h3 className="text-2xl font-headline font-bold text-on-surface mb-6">
-                                    Trabajo realizado por {selectedItem.specialistName}
+                                    Subido por {selectedItem.uploadedBy?.name || 'Anónimo'}
                                 </h3>
                                 {selectedItem.description && (
                                     <p className="text-on-surface-variant font-medium leading-relaxed mb-6">

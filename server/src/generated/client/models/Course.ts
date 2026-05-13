@@ -1549,7 +1549,6 @@ export type CourseCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * The data used to create many Courses.
    */
   data: Prisma.CourseCreateManyInput | Prisma.CourseCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1568,7 +1567,6 @@ export type CourseCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    * The data used to create many Courses.
    */
   data: Prisma.CourseCreateManyInput | Prisma.CourseCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**

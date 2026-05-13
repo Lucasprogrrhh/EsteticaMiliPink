@@ -927,7 +927,6 @@ export type NewsletterSubscriberCreateManyArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many NewsletterSubscribers.
    */
   data: Prisma.NewsletterSubscriberCreateManyInput | Prisma.NewsletterSubscriberCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -946,7 +945,6 @@ export type NewsletterSubscriberCreateManyAndReturnArgs<ExtArgs extends runtime.
    * The data used to create many NewsletterSubscribers.
    */
   data: Prisma.NewsletterSubscriberCreateManyInput | Prisma.NewsletterSubscriberCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**

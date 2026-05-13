@@ -1381,7 +1381,6 @@ export type ServiceCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many Services.
    */
   data: Prisma.ServiceCreateManyInput | Prisma.ServiceCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1400,7 +1399,6 @@ export type ServiceCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many Services.
    */
   data: Prisma.ServiceCreateManyInput | Prisma.ServiceCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
