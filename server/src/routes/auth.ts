@@ -34,7 +34,8 @@ const generateUniqueReferralCode = async (name: string): Promise<string> => {
 // POST /api/auth/register
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { name, email, password, role, phone, referredBy } = req.body;
+        const { name, password, role, phone, referredBy } = req.body;
+        const email = req.body.email?.toLowerCase().trim();
 
         if (!name || !email || !password || !phone) {
             res.status(400).json({ error: 'name, email, password y phone son requeridos.' });
@@ -89,7 +90,8 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 // POST /api/auth/login
 router.post('/login', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { email, password } = req.body;
+        const { password } = req.body;
+        const email = req.body.email?.toLowerCase().trim();
 
         if (!email || !password) {
             res.status(400).json({ error: 'email y password son requeridos.' });
@@ -199,7 +201,7 @@ router.get('/me', requireAuth, async (req: Request, res: Response): Promise<void
 // POST /api/auth/forgot-password (mock reset)
 router.post('/forgot-password', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { email } = req.body;
+        const email = req.body.email?.toLowerCase().trim();
         if (!email) {
             res.status(400).json({ error: 'El email es requerido.' });
             return;

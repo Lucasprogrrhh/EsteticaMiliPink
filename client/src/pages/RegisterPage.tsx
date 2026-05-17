@@ -118,6 +118,8 @@ export default function RegisterPage() {
                                     onChange={e => setEmail(e.target.value)}
                                     required
                                     placeholder="maria@email.com"
+                                    autoCapitalize="none"
+                                    autoCorrect="off"
                                     className="w-full bg-white/60 border border-outline-variant rounded-xl pl-12 pr-4 py-3 text-on-surface placeholder-outline font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
                                 />
                             </div>
