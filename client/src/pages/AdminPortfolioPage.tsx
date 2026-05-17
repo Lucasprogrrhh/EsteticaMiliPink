@@ -34,7 +34,7 @@ export default function AdminPortfolioPage() {
 
     const fetchPortfolio = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/admin`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/portfolio/admin`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Failed to fetch portfolio');
@@ -49,7 +49,7 @@ export default function AdminPortfolioPage() {
 
     const handleUpdateStatus = async (id: string, action: 'approve' | 'reject') => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/${id}/${action}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/portfolio/${id}/${action}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -65,7 +65,7 @@ export default function AdminPortfolioPage() {
     const handleDelete = async (id: string) => {
         if (!confirm('¿Seguro de eliminar esta foto?')) return;
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/portfolio/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -87,7 +87,7 @@ export default function AdminPortfolioPage() {
             fd.append('description', desc);
             fd.append('serviceCategory', category);
 
-            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/portfolio/upload`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/portfolio/upload`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: fd
@@ -140,7 +140,7 @@ export default function AdminPortfolioPage() {
                     >
                         <div className="aspect-square relative">
                             <img 
-                                src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : 'http://localhost:3001'}${item.imageUrl}`} 
+                                src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : '')}${item.imageUrl}`} 
                                 className="w-full h-full object-cover" 
                                 alt={item.serviceCategory} 
                             />

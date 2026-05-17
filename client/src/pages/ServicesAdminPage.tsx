@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Edit, Trash2, Search, AlertCircle, CheckCircle2, Copy } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api');
 
 interface Service {
     id: string;
