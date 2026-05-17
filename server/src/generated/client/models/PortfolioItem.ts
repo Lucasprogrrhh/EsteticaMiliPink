@@ -612,6 +612,7 @@ export type PortfolioItemCreateOrConnectWithoutUploadedByInput = {
 
 export type PortfolioItemCreateManyUploadedByInputEnvelope = {
   data: Prisma.PortfolioItemCreateManyUploadedByInput | Prisma.PortfolioItemCreateManyUploadedByInput[]
+  skipDuplicates?: boolean
 }
 
 export type PortfolioItemCreateWithoutApprovedByInput = {
@@ -647,6 +648,7 @@ export type PortfolioItemCreateOrConnectWithoutApprovedByInput = {
 
 export type PortfolioItemCreateManyApprovedByInputEnvelope = {
   data: Prisma.PortfolioItemCreateManyApprovedByInput | Prisma.PortfolioItemCreateManyApprovedByInput[]
+  skipDuplicates?: boolean
 }
 
 export type PortfolioItemUpsertWithWhereUniqueWithoutUploadedByInput = {
@@ -1563,6 +1565,7 @@ export type PortfolioItemCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many PortfolioItems.
    */
   data: Prisma.PortfolioItemCreateManyInput | Prisma.PortfolioItemCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1581,6 +1584,7 @@ export type PortfolioItemCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many PortfolioItems.
    */
   data: Prisma.PortfolioItemCreateManyInput | Prisma.PortfolioItemCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

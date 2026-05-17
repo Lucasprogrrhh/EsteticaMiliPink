@@ -520,6 +520,7 @@ export type ReminderCreateOrConnectWithoutAdminInput = {
 
 export type ReminderCreateManyAdminInputEnvelope = {
   data: Prisma.ReminderCreateManyAdminInput | Prisma.ReminderCreateManyAdminInput[]
+  skipDuplicates?: boolean
 }
 
 export type ReminderUpsertWithWhereUniqueWithoutAdminInput = {
@@ -582,6 +583,7 @@ export type ReminderCreateOrConnectWithoutAppointmentInput = {
 
 export type ReminderCreateManyAppointmentInputEnvelope = {
   data: Prisma.ReminderCreateManyAppointmentInput | Prisma.ReminderCreateManyAppointmentInput[]
+  skipDuplicates?: boolean
 }
 
 export type ReminderUpsertWithWhereUniqueWithoutAppointmentInput = {
@@ -1437,6 +1439,7 @@ export type ReminderCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many Reminders.
    */
   data: Prisma.ReminderCreateManyInput | Prisma.ReminderCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1455,6 +1458,7 @@ export type ReminderCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many Reminders.
    */
   data: Prisma.ReminderCreateManyInput | Prisma.ReminderCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

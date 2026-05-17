@@ -1195,6 +1195,7 @@ export type BusinessConfigCreateManyArgs<ExtArgs extends runtime.Types.Extension
    * The data used to create many BusinessConfigs.
    */
   data: Prisma.BusinessConfigCreateManyInput | Prisma.BusinessConfigCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1213,6 +1214,7 @@ export type BusinessConfigCreateManyAndReturnArgs<ExtArgs extends runtime.Types.
    * The data used to create many BusinessConfigs.
    */
   data: Prisma.BusinessConfigCreateManyInput | Prisma.BusinessConfigCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

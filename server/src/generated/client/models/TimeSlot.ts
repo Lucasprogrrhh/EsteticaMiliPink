@@ -983,6 +983,7 @@ export type TimeSlotCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many TimeSlots.
    */
   data: Prisma.TimeSlotCreateManyInput | Prisma.TimeSlotCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1001,6 +1002,7 @@ export type TimeSlotCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many TimeSlots.
    */
   data: Prisma.TimeSlotCreateManyInput | Prisma.TimeSlotCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
