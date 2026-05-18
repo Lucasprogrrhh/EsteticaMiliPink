@@ -25,7 +25,7 @@ import AdminCoursesPage from './pages/AdminCoursesPage'
 import AdminTimeSlotsPage from './pages/AdminTimeSlotsPage'
 
 
-const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api');
+const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api');
 
 interface Service {
   id: string
@@ -275,7 +275,7 @@ function Dashboard({ services, appointments, reviews = [] }: { services: Service
                   {reviews[currentReviewIdx].photoUrl && (
                     <div className="shrink-0">
                       <img 
-                        src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : '')}${reviews[currentReviewIdx].photoUrl}`} 
+                        src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${reviews[currentReviewIdx].photoUrl}`} 
                         alt="Trabajo" 
                         className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-xl shadow-lg border border-pink-500/20"
                       />

@@ -295,7 +295,7 @@ export default function LandingPage() {
     const [courses, setCourses] = useState<any[]>([]);
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/courses`)
+        fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/courses`)
             .then(res => res.json())
             .then(data => setCourses(data))
             .catch(console.error);

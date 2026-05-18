@@ -40,14 +40,14 @@ const BookingPage: React.FC = () => {
         const fetchData = async () => {
             try {
                 const [servicesRes, specialistsRes, settingsRes, timeSlotsRes] = await Promise.all([
-                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/services`),
-                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/users/specialists`, {
+                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/services`),
+                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/users/specialists`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/users/admin-settings`, {
+                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/users/admin-settings`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/time-slots`)
+                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/time-slots`)
                 ]);
                 
                 if (!servicesRes.ok || !specialistsRes.ok || !timeSlotsRes.ok) {
@@ -101,7 +101,7 @@ const BookingPage: React.FC = () => {
 
         setSubmitting(true);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/appointments`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/appointments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

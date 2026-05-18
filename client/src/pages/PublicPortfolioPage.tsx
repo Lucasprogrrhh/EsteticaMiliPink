@@ -26,8 +26,8 @@ export default function PublicPortfolioPage() {
             setLoading(true);
             try {
                 const url = activeCategory === 'Todos' 
-                    ? `${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/portfolio`
-                    : `${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : '/api')}/portfolio?category=${encodeURIComponent(activeCategory)}`;
+                    ? `${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/portfolio`
+                    : `${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/portfolio?category=${encodeURIComponent(activeCategory)}`;
                 
                 const res = await fetch(url);
                 const data = await res.json();
@@ -112,7 +112,7 @@ export default function PublicPortfolioPage() {
                                     onClick={() => setSelectedItem(item)}
                                 >
                                     <img 
-                                        src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : '')}${item.imageUrl}`} 
+                                        src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${item.imageUrl}`} 
                                         alt={item.serviceCategory}
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         loading="lazy"
@@ -150,7 +150,7 @@ export default function PublicPortfolioPage() {
                         >
                             <div className="md:w-3/5 bg-black flex items-center justify-center relative">
                                 <img 
-                                    src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : '')}${selectedItem.imageUrl}`} 
+                                    src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${selectedItem.imageUrl}`} 
                                     alt={selectedItem.serviceCategory} 
                                     className="w-full h-auto max-h-[80vh] object-contain"
                                 />
