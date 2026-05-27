@@ -622,7 +622,7 @@ export default function LandingPage() {
                             <span className="material-symbols-outlined text-lg">chat</span>
                             WhatsApp
                         </a>
-                        <a className="flex items-center gap-2 text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="https://maps.app.goo.gl/mwt6LGtU8CbzuJrPA?g_st=ic" target="_blank" rel="noopener noreferrer">
+                        <a className="flex items-center gap-2 text-zinc-500 hover:text-pink-400 hover:translate-x-1 transition-transform font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest" href="https://www.google.com/maps/place/Est%C3%A9tica+pink/@-33.2692303,-66.31105,17z/data=!4m6!3m5!1s0x95d43f003aa378e1:0xbb2fcfc6da7df869!8m2!3d-33.2686563!4d-66.309387!16s%2Fg%2F11z9vww1v_?entry=ttu&g_ep=EgoyMDI2MDUyMC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer">
                             <span className="material-symbols-outlined text-lg">location_on</span>
                             Ubicación
                         </a>
