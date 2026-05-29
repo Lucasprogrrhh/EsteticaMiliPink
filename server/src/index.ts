@@ -59,6 +59,18 @@ app.get('/health', async (req, res) => {
     }
 });
 
+// Global error handler
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error(err);
+    if (err.name === 'MulterError') {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({ error: 'La imagen excede el límite de tamaño de 20MB' });
+        }
+        return res.status(400).json({ error: `Error de subida: ${err.message}` });
+    }
+    res.status(err.status || 500).json({ error: err.message || 'Error interno del servidor' });
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

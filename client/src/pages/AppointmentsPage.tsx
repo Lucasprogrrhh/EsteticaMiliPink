@@ -213,7 +213,7 @@ const AppointmentsPage: React.FC = () => {
                 formData.append('specialistName', selectedAppt.specialist?.name || 'Clínica Estética');
             }
 
-            const response = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/portfolio/client`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/portfolio/upload`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

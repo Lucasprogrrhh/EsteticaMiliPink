@@ -93,7 +93,10 @@ export default function AdminPortfolioPage() {
                 body: fd
             });
             
-            if (!res.ok) throw new Error('Failed to upload via Admin');
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Failed to upload via Admin');
+            }
             
             setUploadModalOpen(false);
             setFile(null);
