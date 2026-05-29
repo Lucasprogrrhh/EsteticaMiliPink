@@ -593,7 +593,6 @@ export default function LandingPage() {
                         <p>Empezás desde cero y llegás a esto. Obras reales creadas durante los cursos.</p>
                         <div className="mb-galeria-grid">
                         <img src="/images/resultados-alumnas-colage.jpeg"  alt="Collage resultados alumnas" title="Nails Art – resultado grupal" />
-                        <img src="/images/resultados-alumnas-colage2.jpeg"        alt="Nail art floral alumna"     title="Flores 3D rosa y negro" />
                         <img src="/images/resultado-alumna-03.png"        alt="Nail art marmolado"          title="Marmolado y flores 3D" />
                         <img src="/images/resultado-alumna-04.png"        alt="Nail art colorido"           title="Arte 3D multicolor" />
                         </div>
