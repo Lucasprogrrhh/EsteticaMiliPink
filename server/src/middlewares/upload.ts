@@ -21,10 +21,13 @@ const storage = multer.diskStorage({
 
 // Filtro para aceptar solo imágenes
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-    if (file.mimetype.startsWith('image/')) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'];
+    
+    if (file.mimetype.startsWith('image/') || allowedExtensions.includes(ext)) {
         cb(null, true);
     } else {
-        cb(new Error('Solo se permiten archivos de imagen'));
+        cb(new Error('Solo se permiten archivos de imagen (.jpg, .jpeg, .png, .webp, .heic)'));
     }
 };
 
