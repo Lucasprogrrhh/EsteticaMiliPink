@@ -222,8 +222,15 @@ const AppointmentsPage: React.FC = () => {
             });
 
             if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error || 'Failed to submit portfolio item');
+                const errText = await response.text().catch(() => '');
+                let errorMessage = 'Failed to submit portfolio item';
+                try {
+                    const errData = JSON.parse(errText);
+                    errorMessage = errData.error || errorMessage;
+                } catch (e) {
+                    errorMessage = `${errorMessage} (${response.status}): ${errText.substring(0, 150)}`;
+                }
+                throw new Error(errorMessage);
             }
 
             setPortfolioModalOpen(false);

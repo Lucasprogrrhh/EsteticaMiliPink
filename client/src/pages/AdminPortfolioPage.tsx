@@ -94,8 +94,15 @@ export default function AdminPortfolioPage() {
             });
             
             if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || 'Failed to upload via Admin');
+                const errText = await res.text().catch(() => '');
+                let errorMessage = 'Failed to upload via Admin';
+                try {
+                    const errData = JSON.parse(errText);
+                    errorMessage = errData.error || errorMessage;
+                } catch (e) {
+                    errorMessage = `${errorMessage} (${res.status}): ${errText.substring(0, 150)}`;
+                }
+                throw new Error(errorMessage);
             }
             
             setUploadModalOpen(false);
