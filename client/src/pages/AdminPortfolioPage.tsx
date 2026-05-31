@@ -150,7 +150,7 @@ export default function AdminPortfolioPage() {
                     >
                         <div className="aspect-square relative">
                             <img 
-                                src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${item.imageUrl}`} 
+                                src={item.imageUrl.startsWith('http') ? item.imageUrl : `${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${item.imageUrl}`} 
                                 className="w-full h-full object-cover" 
                                 alt={item.serviceCategory} 
                             />

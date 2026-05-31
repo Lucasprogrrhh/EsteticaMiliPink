@@ -112,7 +112,7 @@ export default function PublicPortfolioPage() {
                                     onClick={() => setSelectedItem(item)}
                                 >
                                     <img 
-                                        src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${item.imageUrl}`} 
+                                        src={item.imageUrl.startsWith('http') ? item.imageUrl : `${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${item.imageUrl}`} 
                                         alt={item.serviceCategory}
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         loading="lazy"
@@ -150,7 +150,7 @@ export default function PublicPortfolioPage() {
                         >
                             <div className="md:w-3/5 bg-black flex items-center justify-center relative">
                                 <img 
-                                    src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${selectedItem.imageUrl}`} 
+                                    src={selectedItem.imageUrl.startsWith('http') ? selectedItem.imageUrl : `${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${selectedItem.imageUrl}`} 
                                     alt={selectedItem.serviceCategory} 
                                     className="w-full h-auto max-h-[80vh] object-contain"
                                 />

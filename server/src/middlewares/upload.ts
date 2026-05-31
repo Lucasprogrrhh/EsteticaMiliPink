@@ -1,29 +1,34 @@
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
-// Verificar y crear el directorio de subidas si no existe
-const uploadDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Configure Cloudinary from environment variables
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
+// Use Cloudinary storage so images persist across Render restarts
+const storage = new CloudinaryStorage({
+    cloudinary,
+    params: async (req: any, file: Express.Multer.File) => {
+        const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
+        return {
+            folder: 'estetica-portfolio',
+            // Use auto format + quality for best compression
+            format: ext === 'heic' || ext === 'heif' ? 'jpg' : undefined,
+            transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+        };
     },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-    }
 });
 
 // Filtro para aceptar solo imágenes
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'];
-    
+
     if (file.mimetype.startsWith('image/') || allowedExtensions.includes(ext)) {
         cb(null, true);
     } else {
@@ -31,7 +36,7 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
     }
 };
 
-export const upload = multer({ 
+export const upload = multer({
     storage,
     fileFilter,
     limits: {

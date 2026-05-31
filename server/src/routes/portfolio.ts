@@ -63,7 +63,8 @@ router.post('/upload', requireAuth, upload.single('photo'), async (req, res) => 
             return res.status(400).json({ error: 'Es requerida una imagen' });
         }
 
-        const imageUrl = `/uploads/${req.file.filename}`;
+        // When using Cloudinary storage, req.file.path is the full HTTPS URL
+        const imageUrl = req.file.path || `/uploads/${req.file.filename}`;
         
         // Determine role and status based on who uploads
         const isAdmin = user.role === 'ADMIN';
