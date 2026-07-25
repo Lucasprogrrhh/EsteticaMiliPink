@@ -71,8 +71,8 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
     res.status(err.status || 500).json({ error: err.message || 'Error interno del servidor' });
 });
 
-// Inicializar índice único parcial de base de datos
-const initDatabase = async () => {
+// Inicializar índice único parcial de base de datos y luego arrancar el servidor
+const startServer = async () => {
     try {
         console.log("Verificando índice único parcial en base de datos...");
         await prisma.$executeRawUnsafe(`
@@ -82,11 +82,12 @@ const initDatabase = async () => {
         `);
         console.log("Base de datos inicializada correctamente.");
     } catch (error) {
-        console.error("Error al inicializar base de datos:", error);
+        console.error("Error crítico al inicializar base de datos:", error);
     }
+
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
 };
 
-app.listen(PORT, async () => {
-    await initDatabase();
-    console.log(`Server running on port ${PORT}`);
-});
+startServer();
