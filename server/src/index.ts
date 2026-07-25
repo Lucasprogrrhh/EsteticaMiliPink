@@ -71,6 +71,22 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
     res.status(err.status || 500).json({ error: err.message || 'Error interno del servidor' });
 });
 
-app.listen(PORT, () => {
+// Inicializar índice único parcial de base de datos
+const initDatabase = async () => {
+    try {
+        console.log("Verificando índice único parcial en base de datos...");
+        await prisma.$executeRawUnsafe(`
+            CREATE UNIQUE INDEX IF NOT EXISTS "Appointment_dateTime_unique_partial" 
+            ON "Appointment" ("dateTime") 
+            WHERE "status" IN ('PENDING', 'CONFIRMED');
+        `);
+        console.log("Base de datos inicializada correctamente.");
+    } catch (error) {
+        console.error("Error al inicializar base de datos:", error);
+    }
+};
+
+app.listen(PORT, async () => {
+    await initDatabase();
     console.log(`Server running on port ${PORT}`);
 });
