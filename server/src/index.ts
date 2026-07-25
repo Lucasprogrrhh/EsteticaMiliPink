@@ -90,4 +90,38 @@ const startServer = async () => {
     });
 };
 
-startServer();
+// ── DIAGNÓSTICO TEMPORAL ── eliminar tras confirmación ──────────────────────
+const runDiagnostic = async () => {
+    // 1. Mostrar HOST de DATABASE_URL sin exponer credenciales
+    const dbUrl = process.env.DATABASE_URL || '';
+    let dbHost = '(DATABASE_URL no definida)';
+    try {
+        const parsed = new URL(dbUrl);
+        dbHost = parsed.hostname;
+    } catch {
+        dbHost = '(no se pudo parsear DATABASE_URL)';
+    }
+    console.log(`[DIAG] DB HOST en runtime: ${dbHost}`);
+
+    // 2. Consultar el registro de Delfina Naguel vía Prisma (misma conexión de producción)
+    try {
+        const result = await prisma.$queryRawUnsafe<any[]>(`
+            SELECT a.id, a."dateTime", a.status, u.name, u.email, s.name as service
+            FROM "Appointment" a
+            JOIN "User" u ON a."clientId" = u.id
+            JOIN "Service" s ON a."serviceId" = s.id
+            WHERE u.email = 'delfinamnaguel2@gmail.com'
+        `);
+        if (result.length > 0) {
+            console.log(`[DIAG] Registro de Delfina Naguel ENCONTRADO en la DB en runtime (${result.length} turno/s):`);
+            result.forEach(r => console.log(`  → id=${r.id} | fecha=${r.dateTime} | estado=${r.status} | servicio=${r.service}`));
+        } else {
+            console.log(`[DIAG] Registro de Delfina Naguel NO encontrado en la DB en runtime. La app está usando una base de datos diferente a Supabase.`);
+        }
+    } catch (err: any) {
+        console.error(`[DIAG] Error al consultar Delfina Naguel:`, err.message);
+    }
+};
+// ── FIN DIAGNÓSTICO TEMPORAL ─────────────────────────────────────────────────
+
+runDiagnostic().then(() => startServer());
