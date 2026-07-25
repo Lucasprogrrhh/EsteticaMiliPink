@@ -36,6 +36,59 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET available slots for a specific date
+router.get('/available-slots', async (req, res) => {
+    try {
+        const { date } = req.query;
+        if (!date) {
+            return res.status(400).json({ error: 'La fecha (date) es requerida.' });
+        }
+
+        // Obtener todos los timeSlots activos
+        const timeSlots = await prisma.timeSlot.findMany({
+            where: { active: true },
+            orderBy: { time: 'asc' },
+        });
+
+        // Obtener citas activas de ese día
+        const startOfDay = new Date(`${date}T00:00:00.000Z`);
+        const endOfDay = new Date(`${date}T23:59:59.999Z`);
+
+        const activeAppointments = await prisma.appointment.findMany({
+            where: {
+                dateTime: {
+                    gte: startOfDay,
+                    lte: endOfDay,
+                },
+                status: { in: ['PENDING', 'CONFIRMED'] },
+            },
+            select: { dateTime: true },
+        });
+
+        // Mapear los slots de tiempo y marcar disponibilidad
+        const slotsWithAvailability = timeSlots.map(slot => {
+            // Construir el dateTime exacto del slot en la fecha elegida
+            const slotDateTime = new Date(`${date}T${slot.time}`);
+            
+            // Verificar si hay alguna cita en el mismo horario
+            const isBooked = activeAppointments.some(app => {
+                return new Date(app.dateTime).getTime() === slotDateTime.getTime();
+            });
+
+            return {
+                id: slot.id,
+                time: slot.time,
+                available: !isBooked,
+            };
+        });
+
+        res.json(slotsWithAvailability);
+    } catch (error) {
+        console.error("GET /available-slots error:", error);
+        res.status(500).json({ error: 'Error al obtener disponibilidad de horarios' });
+    }
+});
+
 // GET single appointment
 router.get('/:id', async (req, res) => {
     try {
@@ -80,23 +133,7 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Cannot book an appointment in the past' });
         }
 
-        // Overlap validation for specialist
-        if (specialistId) {
-            const existingAppointment = await prisma.appointment.findFirst({
-                where: {
-                    specialistId,
-                    dateTime: appointmentDate,
-                    status: { in: ['PENDING', 'CONFIRMED'] }
-                }
-            });
-
-            if (existingAppointment) {
-                return res.status(400).json({ error: 'El especialista ya tiene una cita reservada a esta hora.' });
-            }
-        }
-
         // El cliente de la cita es quien hace el request si es CLIENT
-        // Un ADMIN podría crear citas para otros (enviando clientId en body), pero lo simplificaremos por ahora
         const clientIdToBook = user.role === 'CLIENT' ? user.userId : (req.body.clientId || user.userId);
 
         const service = await prisma.service.findUnique({ where: { id: serviceId } });
@@ -110,23 +147,43 @@ router.post('/', async (req, res) => {
         const depositPercentage = admin?.depositPercentage ?? 50;
         const depositAmount = Number(service.price) * (depositPercentage / 100);
 
-        const appointment = await prisma.appointment.create({
-            data: {
-                dateTime: appointmentDate,
-                clientId: clientIdToBook,
-                serviceId,
-                depositAmount,
-                ...(specialistId && { specialistId }),
-                ...(notes && { notes }),
-            },
-            include: {
-                client: { select: { id: true, name: true, email: true } },
-                service: true,
-            },
+        // Envolvemos verificación y creación en una transacción atómica para prevenir condiciones de carrera
+        const appointment = await prisma.$transaction(async (tx) => {
+            // Verificar disponibilidad del horario exacto
+            const existingAppointment = await tx.appointment.findFirst({
+                where: {
+                    dateTime: appointmentDate,
+                    status: { in: ['PENDING', 'CONFIRMED'] }
+                }
+            });
+
+            if (existingAppointment) {
+                throw new Error('DUPLICATE_BOOKING');
+            }
+
+            return await tx.appointment.create({
+                data: {
+                    dateTime: appointmentDate,
+                    clientId: clientIdToBook,
+                    serviceId,
+                    depositAmount,
+                    ...(specialistId && { specialistId }),
+                    ...(notes && { notes }),
+                },
+                include: {
+                    client: { select: { id: true, name: true, email: true } },
+                    service: true,
+                },
+            });
         });
+
         res.status(201).json(appointment);
-    } catch (error) {
-        res.status(500).json({ error: 'Error creating appointment' });
+    } catch (error: any) {
+        if (error.message === 'DUPLICATE_BOOKING' || (error.code === 'P2002')) {
+            return res.status(400).json({ error: 'Este turno ya no está disponible, por favor elegí otro horario.' });
+        }
+        console.error("POST /appointments error:", error);
+        res.status(500).json({ error: 'Error al crear la reserva.' });
     }
 });
 

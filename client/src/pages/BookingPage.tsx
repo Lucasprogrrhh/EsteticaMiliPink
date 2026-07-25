@@ -21,14 +21,12 @@ const BookingPage: React.FC = () => {
     const navigate = useNavigate();
 
     const [services, setServices] = useState<Service[]>([]);
-    const [specialists, setSpecialists] = useState<UserRes[]>([]);
-    const [timeSlots, setTimeSlots] = useState<{id:string, time:string}[]>([]);
+    const [timeSlots, setTimeSlots] = useState<{id:string, time:string, available?: boolean}[]>([]);
     const [adminSettings, setAdminSettings] = useState<{paymentAlias: string, adminPhone: string, depositPercentage: number} | null>(null);
     const [loading, setLoading] = useState(true);
 
     // Form state
     const [serviceId, setServiceId] = useState('');
-    const [specialistId, setSpecialistId] = useState('');
     const [dateString, setDateString] = useState('');
     const [timeString, setTimeString] = useState('');
     const [notes, setNotes] = useState('');
@@ -36,33 +34,46 @@ const BookingPage: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
     const [successModal, setSuccessModal] = useState<{show: boolean, waUrl: string}>({show: false, waUrl: ''});
 
+    // Cargar disponibilidad de horarios cuando cambia la fecha
+    const fetchAvailableSlots = async (date: string) => {
+        if (!date) return;
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/appointments/available-slots?date=${date}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setTimeSlots(data);
+                // Si el horario seleccionado previamente ya no está disponible, limpiarlo
+                const currentlySelected = data.find((ts: any) => ts.time === timeString);
+                if (currentlySelected && !currentlySelected.available) {
+                    setTimeString('');
+                }
+            }
+        } catch (err) {
+            console.error("Error al cargar horarios disponibles:", err);
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [servicesRes, specialistsRes, settingsRes, timeSlotsRes] = await Promise.all([
+                const [servicesRes, settingsRes] = await Promise.all([
                     fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/services`),
-                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/users/specialists`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    }),
                     fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/users/admin-settings`, {
                         headers: { 'Authorization': `Bearer ${token}` }
-                    }),
-                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/time-slots`)
+                    })
                 ]);
                 
-                if (!servicesRes.ok || !specialistsRes.ok || !timeSlotsRes.ok) {
+                if (!servicesRes.ok || !settingsRes.ok) {
                     throw new Error('Failed to fetch data');
                 }
                 
                 const servicesData = await servicesRes.json();
-                const specialistsData = await specialistsRes.json();
                 const settingsData = await settingsRes.json();
-                const timeSlotsData = await timeSlotsRes.json();
                 
                 setServices(servicesData.filter((s: any) => s.active));
-                setSpecialists(specialistsData);
                 setAdminSettings(settingsData);
-                setTimeSlots(timeSlotsData.filter((ts: any) => ts.active));
             } catch (err: any) {
                 setError(err.message || 'Could not load required data.');
             } finally {
@@ -79,8 +90,17 @@ const BookingPage: React.FC = () => {
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
-        setDateString(`${year}-${month}-${day}`);
-    }, []);
+        const defaultDate = `${year}-${month}-${day}`;
+        setDateString(defaultDate);
+        fetchAvailableSlots(defaultDate);
+    }, [token]);
+
+    // Refrescar slots disponibles cuando cambia la fecha
+    useEffect(() => {
+        if (dateString) {
+            fetchAvailableSlots(dateString);
+        }
+    }, [dateString]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -109,7 +129,6 @@ const BookingPage: React.FC = () => {
                 },
                 body: JSON.stringify({
                     serviceId,
-                    specialistId: specialistId || undefined,
                     dateTime: dateTime.toISOString(),
                     notes: notes || undefined
                 })
@@ -155,6 +174,8 @@ const BookingPage: React.FC = () => {
         } catch (err: any) {
             setError(err.message);
             setSubmitting(false);
+            // Recargar disponibilidad al dar error para actualizar slots en pantalla
+            fetchAvailableSlots(dateString);
         }
     };
 
@@ -200,25 +221,6 @@ const BookingPage: React.FC = () => {
                         )}
                     </div>
 
-                    {/* Specialist Selection */}
-                    <div>
-                        <label className="block text-sm font-medium text-neutral-300 mb-2">
-                            Select Specialist <span className="text-neutral-500 text-xs font-normal">(Optional)</span>
-                        </label>
-                        <select
-                            value={specialistId}
-                            onChange={(e) => setSpecialistId(e.target.value)}
-                            className="w-full bg-neutral-900 border border-neutral-700 rounded p-3 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition"
-                        >
-                            <option value="">-- No preference --</option>
-                            {specialists.map(specialist => (
-                                <option key={specialist.id} value={specialist.id}>
-                                    {specialist.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
                     {/* Date and Time */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -240,7 +242,7 @@ const BookingPage: React.FC = () => {
                             </label>
                             {timeSlots.length === 0 ? (
                                 <div className="text-sm text-pink-500 bg-pink-500/10 p-3 rounded">
-                                    No hay horarios disponibles. Consultá con la administración.
+                                    No hay horarios disponibles para este día.
                                 </div>
                             ) : (
                                 <select
@@ -251,7 +253,14 @@ const BookingPage: React.FC = () => {
                                 >
                                     <option value="" disabled>-- Choose a time --</option>
                                     {timeSlots.map(ts => (
-                                        <option key={ts.id} value={ts.time}>{ts.time}</option>
+                                        <option 
+                                            key={ts.id} 
+                                            value={ts.time} 
+                                            disabled={ts.available === false}
+                                            className={ts.available === false ? "text-neutral-500 bg-neutral-900" : ""}
+                                        >
+                                            {ts.time} {ts.available === false ? "(Ocupado)" : ""}
+                                        </option>
                                     ))}
                                 </select>
                             )}
