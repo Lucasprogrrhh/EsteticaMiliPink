@@ -92,35 +92,53 @@ const startServer = async () => {
 
 // ── DIAGNÓSTICO TEMPORAL ── eliminar tras confirmación ──────────────────────
 const runDiagnostic = async () => {
-    // 1. Mostrar HOST de DATABASE_URL sin exponer credenciales
+    console.log('[DIAG] ══════════════════════════════════════════');
+
+    // 1. Host de la base de datos en runtime
     const dbUrl = process.env.DATABASE_URL || '';
     let dbHost = '(DATABASE_URL no definida)';
-    try {
-        const parsed = new URL(dbUrl);
-        dbHost = parsed.hostname;
-    } catch {
-        dbHost = '(no se pudo parsear DATABASE_URL)';
-    }
-    console.log(`[DIAG] DB HOST en runtime: ${dbHost}`);
+    try { dbHost = new URL(dbUrl).hostname; } catch { dbHost = '(no parseable)'; }
+    console.log(`[DIAG] DB HOST: ${dbHost}`);
 
-    // 2. Consultar el registro de Delfina Naguel vía Prisma (misma conexión de producción)
     try {
-        const result = await prisma.$queryRawUnsafe<any[]>(`
-            SELECT a.id, a."dateTime", a.status, u.name, u.email, s.name as service
-            FROM "Appointment" a
-            JOIN "User" u ON a."clientId" = u.id
-            JOIN "Service" s ON a."serviceId" = s.id
-            WHERE u.email = 'delfinamnaguel2@gmail.com'
+        // 2. Total de turnos y fecha más reciente
+        const stats = await prisma.$queryRawUnsafe<any[]>(`
+            SELECT COUNT(*) as total, MAX("dateTime") as last_dt, MAX("createdAt") as last_created
+            FROM "Appointment"
         `);
-        if (result.length > 0) {
-            console.log(`[DIAG] Registro de Delfina Naguel ENCONTRADO en la DB en runtime (${result.length} turno/s):`);
-            result.forEach(r => console.log(`  → id=${r.id} | fecha=${r.dateTime} | estado=${r.status} | servicio=${r.service}`));
+        const s = stats[0];
+        console.log(`[DIAG] Total Appointments: ${s.total}`);
+        console.log(`[DIAG] MAX(dateTime):  ${s.last_dt}`);
+        console.log(`[DIAG] MAX(createdAt): ${s.last_created}`);
+
+        // 3. Duplicados activos (PENDING/CONFIRMED en el mismo dateTime)
+        const dupes = await prisma.$queryRawUnsafe<any[]>(`
+            SELECT "dateTime", COUNT(*) as qty, array_agg(id) as ids
+            FROM "Appointment"
+            WHERE status IN ('PENDING', 'CONFIRMED')
+            GROUP BY "dateTime"
+            HAVING COUNT(*) > 1
+        `);
+        if (dupes.length === 0) {
+            console.log('[DIAG] Duplicados activos: NINGUNO ✅ — índice funcionando correctamente');
         } else {
-            console.log(`[DIAG] Registro de Delfina Naguel NO encontrado en la DB en runtime. La app está usando una base de datos diferente a Supabase.`);
+            console.log(`[DIAG] ⚠️  DUPLICADOS ACTIVOS ENCONTRADOS (${dupes.length} conflicto/s):`);
+            dupes.forEach(d => console.log(`  → dateTime=${d.dateTime} | qty=${d.qty} | ids=${d.ids}`));
         }
+
+        // 4. ¿Existe el índice único parcial en esta base?
+        const idx = await prisma.$queryRawUnsafe<any[]>(`
+            SELECT indexname FROM pg_indexes
+            WHERE tablename = 'Appointment'
+            AND indexname = 'Appointment_dateTime_unique_partial'
+        `);
+        console.log(`[DIAG] Índice único parcial: ${idx.length > 0 ? 'EXISTE ✅' : 'NO EXISTE ⚠️  (se creará en startServer)'}`);
+
     } catch (err: any) {
-        console.error(`[DIAG] Error al consultar Delfina Naguel:`, err.message);
+        console.error('[DIAG] Error en diagnóstico:', err.message);
     }
+
+    console.log('[DIAG] ══════════════════════════════════════════');
 };
 // ── FIN DIAGNÓSTICO TEMPORAL ─────────────────────────────────────────────────
 
