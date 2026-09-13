@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { MessageCircle, Send, CheckCircle, Loader2 } from 'lucide-react';
 
-const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api');
+import { API_URL } from '../config/api';
+
+const API = API_URL;
 
 interface Reminder {
   id: string;

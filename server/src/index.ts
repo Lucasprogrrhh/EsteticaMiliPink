@@ -142,4 +142,8 @@ const runDiagnostic = async () => {
 };
 // ── FIN DIAGNÓSTICO TEMPORAL ─────────────────────────────────────────────────
 
-runDiagnostic().then(() => startServer());
+if (!process.env.VERCEL) {
+    runDiagnostic().then(() => startServer());
+}
+
+export default app;

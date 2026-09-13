@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Clock, Plus, Trash2, Edit2, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -17,7 +18,7 @@ export default function AdminTimeSlotsPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api');
+  const API = API_URL;
 
   useEffect(() => {
     fetchSlots();

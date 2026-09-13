@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Camera, User, Phone, Lock, Save, Loader2, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api');
+import { API_URL } from '../config/api';
+const API = API_URL;
 
 export default function ProfilePage() {
   const { token, user: authUser } = useAuth();

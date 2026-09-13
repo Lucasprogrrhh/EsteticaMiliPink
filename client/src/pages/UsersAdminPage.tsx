@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { AlertCircle, CheckCircle2, Search, Users, Shield, ShieldAlert, User as UserIcon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api');
+import { API_URL } from '../config/api';
+const API = API_URL;
 
 interface User {
     id: string;
