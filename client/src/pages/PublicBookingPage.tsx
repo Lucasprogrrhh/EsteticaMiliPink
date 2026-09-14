@@ -57,18 +57,31 @@ const PublicBookingPage: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                // Fetch services independently so failure in settings never blocks services dropdown
-                const servicesRes = await fetch(`${API_URL}/services`);
-                if (servicesRes.ok) {
-                    const servicesData = await servicesRes.json();
-                    setServices(servicesData.filter((s: any) => s.active));
-                } else {
-                    setError('No se pudieron cargar los servicios. Intentá de nuevo.');
+            // Robust fetch helper to handle serverless cold starts
+            const fetchServicesWithRetry = async (retries = 3): Promise<any[]> => {
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        const res = await fetch(`${API_URL}/services`);
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (Array.isArray(data) && data.length > 0) return data;
+                        }
+                    } catch (e) {
+                        console.warn(`Retry ${i + 1} fetching services failed:`, e);
+                    }
+                    // Wait 500ms before retry
+                    await new Promise(r => setTimeout(r, 500));
                 }
+                throw new Error('No se pudieron cargar los servicios despues de varios intentos.');
+            };
+
+            try {
+                const servicesData = await fetchServicesWithRetry();
+                setServices(servicesData.filter((s: any) => s.active));
+                setError('');
             } catch (err: any) {
                 console.error('Error fetching services:', err);
-                setError('Error al cargar la lista de servicios.');
+                setError('No se pudieron cargar los servicios. Por favor recargá la página.');
             }
 
             try {
