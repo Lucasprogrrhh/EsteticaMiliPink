@@ -37,6 +37,14 @@ app.use('/api/promotions', promotionsRouter);
 app.use('/api/courses', coursesRouter);
 app.use('/api/time-slots', timeSlotsRouter);
 
+// Public endpoints for booking page (accessible without login)
+app.get('/api/appointments/available-slots', (req, res, next) => {
+    appointmentsRouter(req, res, next);
+});
+app.get('/api/users/admin-settings', (req, res, next) => {
+    usersRouter(req, res, next);
+});
+
 // Protected routes
 app.use('/api/appointments', requireAuth, appointmentsRouter);
 app.use('/api/users', requireAuth, usersRouter);

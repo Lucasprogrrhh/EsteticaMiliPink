@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_URL } from '../config/api';
 
 interface Service {
     id: string;
@@ -38,13 +39,12 @@ const PublicBookingPage: React.FC = () => {
     const fetchAvailableSlots = async (date: string) => {
         if (!date) return;
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/appointments/available-slots?date=${date}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            const headers: Record<string, string> = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const res = await fetch(`${API_URL}/appointments/available-slots?date=${date}`, { headers });
             if (res.ok) {
                 const data = await res.json();
                 setTimeSlots(data);
-                // Si el horario seleccionado previamente ya no está disponible, limpiarlo
                 const currentlySelected = data.find((ts: any) => ts.time === timeString);
                 if (currentlySelected && !currentlySelected.available) {
                     setTimeString('');
@@ -58,22 +58,22 @@ const PublicBookingPage: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const headers: Record<string, string> = {};
+                if (token) headers['Authorization'] = `Bearer ${token}`;
                 const [servicesRes, settingsRes] = await Promise.all([
-                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/services`),
-                    fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/users/admin-settings`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    })
+                    fetch(`${API_URL}/services`),
+                    fetch(`${API_URL}/users/admin-settings`, { headers })
                 ]);
                 
-                if (!servicesRes.ok || !settingsRes.ok) {
-                    throw new Error('Failed to fetch data');
+                if (!servicesRes.ok) {
+                    throw new Error('Failed to fetch services');
                 }
                 
                 const servicesData = await servicesRes.json();
-                const settingsData = await settingsRes.json();
+                const settingsData = settingsRes.ok ? await settingsRes.json() : null;
                 
                 setServices(servicesData.filter((s: any) => s.active));
-                setAdminSettings(settingsData);
+                if (settingsData) setAdminSettings(settingsData);
             } catch (err: any) {
                 setError(err.message || 'Could not load required data.');
             } finally {
@@ -81,9 +81,7 @@ const PublicBookingPage: React.FC = () => {
             }
         };
 
-        if (token) {
-            fetchData();
-        }
+        fetchData();
 
         // Formatear la fecha para que el mínimo sea hoy
         const now = new Date();
