@@ -119,7 +119,6 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const user = req.user;
-        if (!user) return res.status(401).json({ error: 'Unauthorized' });
 
         const { dateTime, serviceId, specialistId, notes } = req.body;
         if (!dateTime || !serviceId) {
@@ -133,18 +132,27 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Cannot book an appointment in the past' });
         }
 
-        // El cliente de la cita es quien hace el request si es CLIENT
-        const clientIdToBook = user.role === 'CLIENT' ? user.userId : (req.body.clientId || user.userId);
+        // Buscar usuario admin como fallback para reservas públicas sin login
+        const adminUser = await prisma.user.findFirst({
+            where: { role: 'ADMIN' },
+            select: { id: true, depositPercentage: true }
+        });
+
+        // El cliente de la cita es quien hace el request si está autenticado
+        let clientIdToBook = user ? (user.role === 'CLIENT' ? user.userId : (req.body.clientId || user.userId)) : null;
+        
+        if (!clientIdToBook) {
+            if (adminUser) {
+                clientIdToBook = adminUser.id;
+            } else {
+                return res.status(400).json({ error: 'No se pudo asociar la reserva.' });
+            }
+        }
 
         const service = await prisma.service.findUnique({ where: { id: serviceId } });
         if (!service) return res.status(404).json({ error: 'Service not found' });
-
-        const admin = await prisma.user.findFirst({
-            where: { role: 'ADMIN' },
-            select: { depositPercentage: true }
-        });
         
-        const depositPercentage = admin?.depositPercentage ?? 50;
+        const depositPercentage = adminUser?.depositPercentage ?? 50;
         const depositAmount = Number(service.price) * (depositPercentage / 100);
 
         // Envolvemos verificación y creación en una transacción atómica para prevenir condiciones de carrera

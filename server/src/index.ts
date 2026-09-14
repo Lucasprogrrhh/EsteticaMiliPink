@@ -41,6 +41,9 @@ app.use('/api/time-slots', timeSlotsRouter);
 app.get('/api/appointments/available-slots', (req, res, next) => {
     appointmentsRouter(req, res, next);
 });
+app.post('/api/appointments', (req, res, next) => {
+    appointmentsRouter(req, res, next);
+});
 app.get('/api/users/admin-settings', (req, res, next) => {
     usersRouter(req, res, next);
 });

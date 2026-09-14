@@ -137,12 +137,14 @@ const BookingPage: React.FC = () => {
 
         setSubmitting(true);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/appointments`, {
+            const headers: Record<string, string> = {
+                'Content-Type': 'application/json'
+            };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const response = await fetch(`${API_URL}/appointments`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers,
                 body: JSON.stringify({
                     serviceId,
                     dateTime: dateTime.toISOString(),
@@ -158,40 +160,32 @@ const BookingPage: React.FC = () => {
             const selectedService = services.find(s => s.id === serviceId);
 
             // WhatsApp Redirection
-            const targetPhone = adminSettings?.adminPhone;
+            const targetPhone = adminSettings?.adminPhone || '5492664325951';
+            const formatDate = new Date(dateTime).toLocaleDateString('es-AR');
+            const formatTime = new Date(dateTime).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+            const clientName = user?.name || 'Cliente';
+            const serviceTitle = selectedService ? selectedService.name : 'Estética';
+            
+            const message = `Hola! Acabo de reservar un turno en Mili Belleza Study 💅🏻\n✅ *Datos de mi reserva:*\n* Nombre: ${clientName}\n🎀Servicio: ${serviceTitle}\n🗓️Fecha: ${formatDate}\n🕐Hora: ${formatTime}\nTe envío el comprobante de transferencia a continuación. ¡Gracias!🌸`;
+            
+            const cleanPhone = targetPhone.replace(/\D/g, '');
+            const waUrl = cleanPhone 
+                ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`
+                : `https://wa.me/?text=${encodeURIComponent(message)}`;
 
-            if (targetPhone && selectedService) {
-                const formatDate = new Date(dateTime).toLocaleDateString('es-AR');
-                const formatTime = new Date(dateTime).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-                const clientName = user?.name || 'Cliente';
-                
-                const message = `Hola! Acabo de reservar un turno en Mili Belleza Study 💅🏻\n✅ *Datos de mi reserva:*\n* Nombre: ${clientName}\n🎀Servicio: ${selectedService.name}\n🗓️Fecha: ${formatDate}\n🕐Hora: ${formatTime}\nTe envío el comprobante de transferencia a continuación. ¡Gracias!🌸`;
-                
-                const cleanPhone = targetPhone.replace(/\D/g, ''); // leave only numbers
-                if (cleanPhone) {
-                    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-                    
-                    try {
-                        const newWindow = window.open(waUrl, '_blank');
-                        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-                            // Popup blocked
-                        }
-                    } catch (e) {
-                        // Error opening window
-                    }
-                    
-                    setSuccessModal({ show: true, waUrl });
-                    return; // Stop execution to avoid navigating immediately
-                }
+            try {
+                window.open(waUrl, '_blank');
+            } catch (e) {
+                // Popup blocked fallback
             }
 
-            // Redirect to appointments list if no whatsapp redirection
-            navigate('/appointments');
+            setSuccessModal({ show: true, waUrl });
         } catch (err: any) {
-            setError(err.message);
-            setSubmitting(false);
+            setError(err.message || 'Error al procesar la reserva.');
             // Recargar disponibilidad al dar error para actualizar slots en pantalla
             fetchAvailableSlots(dateString);
+        } finally {
+            setSubmitting(false);
         }
     };
 
