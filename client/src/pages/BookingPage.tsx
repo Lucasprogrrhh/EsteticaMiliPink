@@ -58,24 +58,29 @@ const BookingPage: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Fetch services independently so failure in settings never blocks services dropdown
+                const servicesRes = await fetch(`${API_URL}/services`);
+                if (servicesRes.ok) {
+                    const servicesData = await servicesRes.json();
+                    setServices(servicesData.filter((s: any) => s.active));
+                } else {
+                    setError('No se pudieron cargar los servicios. Intentá de nuevo.');
+                }
+            } catch (err: any) {
+                console.error('Error fetching services:', err);
+                setError('Error al cargar la lista de servicios.');
+            }
+
+            try {
                 const headers: Record<string, string> = {};
                 if (token) headers['Authorization'] = `Bearer ${token}`;
-                const [servicesRes, settingsRes] = await Promise.all([
-                    fetch(`${API_URL}/services`),
-                    fetch(`${API_URL}/users/admin-settings`, { headers })
-                ]);
-                
-                if (!servicesRes.ok) {
-                    throw new Error('Failed to fetch services');
+                const settingsRes = await fetch(`${API_URL}/users/admin-settings`, { headers });
+                if (settingsRes.ok) {
+                    const settingsData = await settingsRes.json();
+                    setAdminSettings(settingsData);
                 }
-                
-                const servicesData = await servicesRes.json();
-                const settingsData = settingsRes.ok ? await settingsRes.json() : null;
-                
-                setServices(servicesData.filter((s: any) => s.active));
-                if (settingsData) setAdminSettings(settingsData);
-            } catch (err: any) {
-                setError(err.message || 'Could not load required data.');
+            } catch (err) {
+                console.error('Error fetching admin settings:', err);
             } finally {
                 setLoading(false);
             }
