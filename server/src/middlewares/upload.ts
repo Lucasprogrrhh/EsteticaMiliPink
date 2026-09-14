@@ -10,10 +10,10 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Use Cloudinary storage so images persist across Render restarts
+// Use Cloudinary storage so images persist across restarts
 const storage = new CloudinaryStorage({
     cloudinary,
-    params: async (req: any, file: Express.Multer.File) => {
+    params: async (req: any, file: any) => {
         const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
         return {
             folder: 'estetica-portfolio',
@@ -25,7 +25,7 @@ const storage = new CloudinaryStorage({
 });
 
 // Filtro para aceptar solo imágenes
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (req: any, file: any, cb: multer.FileFilterCallback) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'];
 
