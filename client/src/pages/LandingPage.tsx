@@ -1,3 +1,4 @@
+import { API_URL, BASE_URL } from '../config/api';
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -20,7 +21,7 @@ const PromocionesSection = () => {
             return;
         }
 
-        const msg = `🎀 ¡Registrate en Mili Belleza Study!\nUsá este código al registrarte y las dos obtenemos un 15% OFF\n🌷https://esteticamilipink-1.onrender.com\n👩🏻‍💻Mi código: ${referralCode}`;
+        const msg = `🎀 ¡Registrate en Mili Belleza Study!\nUsá este código al registrarte y las dos obtenemos un 15% OFF\n🌷https://estetica-mili-pink.vercel.app\n👩🏻‍💻Mi código: ${referralCode}`;
         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     };
 
@@ -295,7 +296,7 @@ export default function LandingPage() {
     const [courses, setCourses] = useState<any[]>([]);
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/courses`)
+        fetch(`\/courses`)
             .then(res => res.json())
             .then(data => setCourses(data))
             .catch(console.error);

@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Mail, Lock, AlertCircle } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import { API_URL } from '../config/api'
+
 
 export default function LoginPage() {
     const { login } = useAuth()
@@ -23,7 +25,7 @@ export default function LoginPage() {
 
         if (isForgotPassword) {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/auth/forgot-password`, {
+                const res = await fetch(`\/auth/forgot-password`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })

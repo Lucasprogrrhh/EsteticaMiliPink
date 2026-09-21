@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
+import { API_URL, BASE_URL } from '../config/api';
+
 
 interface PortfolioItem {
     id: string;
@@ -34,7 +36,7 @@ export default function AdminPortfolioPage() {
 
     const fetchPortfolio = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/portfolio/admin`, {
+            const res = await fetch(`\/portfolio/admin`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Failed to fetch portfolio');
@@ -49,7 +51,7 @@ export default function AdminPortfolioPage() {
 
     const handleUpdateStatus = async (id: string, action: 'approve' | 'reject') => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/portfolio/${id}/${action}`, {
+            const res = await fetch(`\/portfolio/${id}/${action}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -65,7 +67,7 @@ export default function AdminPortfolioPage() {
     const handleDelete = async (id: string) => {
         if (!confirm('¿Seguro de eliminar esta foto?')) return;
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/portfolio/${id}`, {
+            const res = await fetch(`\/portfolio/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -87,7 +89,7 @@ export default function AdminPortfolioPage() {
             fd.append('description', desc);
             fd.append('serviceCategory', category);
 
-            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/portfolio/upload`, {
+            const res = await fetch(`\/portfolio/upload`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: fd
@@ -150,7 +152,7 @@ export default function AdminPortfolioPage() {
                     >
                         <div className="aspect-square relative">
                             <img 
-                                src={item.imageUrl.startsWith('http') ? item.imageUrl : `${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${item.imageUrl}`} 
+                                src={item.imageUrl.startsWith('http') ? item.imageUrl : `\${item.imageUrl}`} 
                                 className="w-full h-full object-cover" 
                                 alt={item.serviceCategory} 
                             />

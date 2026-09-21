@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { API_URL } from '../config/api';
+
 
 interface User {
     id: string;
@@ -34,7 +36,7 @@ const AdminAppointmentsPage: React.FC = () => {
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/appointments`, {
+                const response = await fetch(`\/appointments`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -67,7 +69,7 @@ const AdminAppointmentsPage: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/appointments/${id}/status`, {
+            const response = await fetch(`\/appointments/${id}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,7 +92,7 @@ const AdminAppointmentsPage: React.FC = () => {
         if (!window.confirm('¿Estás seguro de que deseas eliminar esta reserva permanentemente?')) return;
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/appointments/${id}`, {
+            const response = await fetch(`\/appointments/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

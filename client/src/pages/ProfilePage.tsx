@@ -257,7 +257,7 @@ export default function ProfilePage() {
             >
               {profile.photoUrl ? (
                 <img 
-                  src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${profile.photoUrl}`} 
+                  src={`\${profile.photoUrl}`} 
                   alt="Perfil" 
                   className="w-full h-full object-cover group-hover:opacity-75 transition-opacity"
                 />

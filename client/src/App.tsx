@@ -23,9 +23,7 @@ import PublicPortfolioPage from './pages/PublicPortfolioPage'
 import AdminPortfolioPage from './pages/AdminPortfolioPage'
 import AdminCoursesPage from './pages/AdminCoursesPage'
 import AdminTimeSlotsPage from './pages/AdminTimeSlotsPage'
-
-
-const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api');
+import { API_URL as API, BASE_URL } from './config/api';
 
 interface Service {
   id: string
@@ -275,7 +273,7 @@ function Dashboard({ services, appointments, reviews = [] }: { services: Service
                   {reviews[currentReviewIdx].photoUrl && (
                     <div className="shrink-0">
                       <img 
-                        src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${reviews[currentReviewIdx].photoUrl}`} 
+                        src={`\${reviews[currentReviewIdx].photoUrl}`} 
                         alt="Trabajo" 
                         className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-xl shadow-lg border border-pink-500/20"
                       />

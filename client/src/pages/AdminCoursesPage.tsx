@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
+import { API_URL, BASE_URL } from '../config/api';
+
 
 interface Course {
     id: string;
@@ -45,7 +47,7 @@ export default function AdminCoursesPage() {
 
     const fetchCourses = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/courses/admin`, {
+            const res = await fetch(`\/courses/admin`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -91,7 +93,7 @@ export default function AdminCoursesPage() {
     const handleDelete = async (id: string) => {
         if (!confirm('¿Seguro de eliminar este curso?')) return;
         try {
-            await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/courses/${id}`, {
+            await fetch(`\/courses/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -104,7 +106,7 @@ export default function AdminCoursesPage() {
     const handleToggleStatus = async (c: Course) => {
         const newStatus = c.status === 'ACTIVE' ? 'HIDDEN' : 'ACTIVE';
         try {
-            await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/courses/${c.id}`, {
+            await fetch(`\/courses/${c.id}`, {
                 method: 'PATCH',
                 headers: { 
                     'Authorization': `Bearer ${token}`,
@@ -134,8 +136,8 @@ export default function AdminCoursesPage() {
 
         try {
             const url = isEditing 
-                ? `${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/courses/${currentCourseId}`
-                : `${import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://esteticamilipink.onrender.com/api')}/courses`;
+                ? `\/courses/${currentCourseId}`
+                : `\/courses`;
                 
             const res = await fetch(url, {
                 method: isEditing ? 'PATCH' : 'POST',
@@ -230,7 +232,7 @@ export default function AdminCoursesPage() {
                 {courses.map(course => (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={course.id} className={`bg-slate-800 rounded-xl overflow-hidden border ${course.status === 'HIDDEN' ? 'border-red-500/50 opacity-60' : 'border-slate-700'}`}>
                         {course.coverImageUrl && (
-                            <img src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api','') : (import.meta.env.DEV ? 'http://localhost:3001' : 'https://esteticamilipink.onrender.com')}${course.coverImageUrl}`} alt={course.name} className="w-full h-40 object-cover" />
+                            <img src={`\${course.coverImageUrl}`} alt={course.name} className="w-full h-40 object-cover" />
                         )}
                         <div className="p-4">
                             <div className="flex justify-between items-start mb-2">
