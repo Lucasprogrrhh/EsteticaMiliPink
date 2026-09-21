@@ -328,16 +328,30 @@ function AppLayout() {
     const headers = { 'Authorization': `Bearer ${token}` }
     const fetchData = async () => {
       try {
+        const fetchWithTimeout = (url: string, options: any = {}) => {
+          return Promise.race([
+            fetch(url, options),
+            new Promise<Response>((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))
+          ]);
+        };
+
         const [sRes, aRes, rRes] = await Promise.all([
-          fetch(`${API}/services`),
-          fetch(`${API}/appointments`, { headers }),
-          fetch(`${API}/reviews`),
+          fetchWithTimeout(`${API}/services`),
+          fetchWithTimeout(`${API}/appointments`, { headers }),
+          fetchWithTimeout(`${API}/reviews`),
         ])
-        setServices(await sRes.json())
-        setAppointments(aRes.ok ? await aRes.json() : [])
-        setReviews(rRes.ok ? await rRes.json() : [])
-      } catch {
-        console.error('Error fetching data')
+        
+        const [sData, aData, rData] = await Promise.all([
+          sRes.ok ? sRes.json().catch(() => []) : [],
+          aRes.ok ? aRes.json().catch(() => []) : [],
+          rRes.ok ? rRes.json().catch(() => []) : []
+        ]);
+
+        setServices(Array.isArray(sData) ? sData : [])
+        setAppointments(Array.isArray(aData) ? aData : [])
+        setReviews(Array.isArray(rData) ? rData : [])
+      } catch (err) {
+        console.error('Error fetching data:', err)
       } finally {
         setLoading(false)
       }
@@ -470,8 +484,8 @@ function AppLayout() {
                 <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-2xl font-bold text-white mb-1">Servicios</h2>
-                      <p className="text-slate-400 text-sm">{services.length} servicios activos disponibles</p>
+                      <h2 className={	ext-2xl font-bold mb-1 }>Servicios</h2>
+                      <p className={	ext-sm }>{services.length} servicios activos disponibles</p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {services.map(s => <ServiceCard key={s.id} service={s} />)}
