@@ -348,7 +348,7 @@ function AppLayout() {
       }
     }
     fetchData()
-  }, [token, location.pathname]) // re-fetch when route changes as well
+  }, [token]) // only re-fetch when auth token changes
 
   useEffect(() => {
     setSidebarOpen(false);

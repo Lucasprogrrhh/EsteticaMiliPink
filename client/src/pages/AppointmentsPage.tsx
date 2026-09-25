@@ -75,7 +75,7 @@ const AppointmentsPage: React.FC = () => {
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
-                const response = await fetch(`\/appointments`, {
+                const response = await fetch(`${API_URL}/appointments`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -107,7 +107,7 @@ const AppointmentsPage: React.FC = () => {
         if (!confirm('Are you sure you want to cancel this appointment?')) return;
 
         try {
-            const response = await fetch(`\/appointments/${id}/status`, {
+            const response = await fetch(`${API_URL}/appointments/${id}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -152,7 +152,7 @@ const AppointmentsPage: React.FC = () => {
                 formData.append('photo', photo);
             }
 
-            const response = await fetch(`\/reviews`, {
+            const response = await fetch(`${API_URL}/reviews`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -214,7 +214,7 @@ const AppointmentsPage: React.FC = () => {
                 formData.append('specialistName', selectedAppt.specialist?.name || 'Clínica Estética');
             }
 
-            const response = await fetch(`\/portfolio/upload`, {
+            const response = await fetch(`${API_URL}/portfolio/upload`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
