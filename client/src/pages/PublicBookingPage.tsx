@@ -180,7 +180,7 @@ const PublicBookingPage: React.FC = () => {
             const clientName = user?.name || 'Cliente';
             const serviceTitle = selectedService ? selectedService.name : 'Estética';
             
-            const message = Hola! Acabo de reservar un turno en Mili Belleza Study 💅🏻\n✅ *Datos de mi reserva:*\n* Nombre: \n🎀Servicio: \n🗓️Fecha: \n🕐Hora: \nTe envío el comprobante de transferencia a continuación. ¡Gracias!🌸;
+            const message = `Hola! Acabo de reservar un turno en Mili Belleza Study 💅🏻\n✅ *Datos de mi reserva:*\n* Nombre: ${clientName}\n🎀Servicio: ${serviceTitle}\n🗓️Fecha: ${formatDate}\n🕐Hora: ${formatTime}\nTe envío el comprobante de transferencia a continuación. ¡Gracias!🌸`;
             
             const cleanPhone = targetPhone.replace(/\D/g, '');
             const waUrl = cleanPhone 
