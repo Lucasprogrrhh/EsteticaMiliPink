@@ -296,7 +296,7 @@ export default function LandingPage() {
     const [courses, setCourses] = useState<any[]>([]);
 
     useEffect(() => {
-        fetch(`\/courses`)
+        fetch(`${API_URL}/courses`)
             .then(res => res.json())
             .then(data => setCourses(data))
             .catch(console.error);

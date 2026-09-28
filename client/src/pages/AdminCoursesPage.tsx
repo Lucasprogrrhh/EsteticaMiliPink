@@ -47,7 +47,7 @@ export default function AdminCoursesPage() {
 
     const fetchCourses = async () => {
         try {
-            const res = await fetch(`\/courses/admin`, {
+            const res = await fetch(`${API_URL}/courses/admin`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -93,7 +93,7 @@ export default function AdminCoursesPage() {
     const handleDelete = async (id: string) => {
         if (!confirm('¿Seguro de eliminar este curso?')) return;
         try {
-            await fetch(`\/courses/${id}`, {
+            await fetch(`${API_URL}/courses/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -106,7 +106,7 @@ export default function AdminCoursesPage() {
     const handleToggleStatus = async (c: Course) => {
         const newStatus = c.status === 'ACTIVE' ? 'HIDDEN' : 'ACTIVE';
         try {
-            await fetch(`\/courses/${c.id}`, {
+            await fetch(`${API_URL}/courses/${c.id}`, {
                 method: 'PATCH',
                 headers: { 
                     'Authorization': `Bearer ${token}`,

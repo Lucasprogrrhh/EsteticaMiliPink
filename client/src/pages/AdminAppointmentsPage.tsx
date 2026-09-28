@@ -36,7 +36,7 @@ const AdminAppointmentsPage: React.FC = () => {
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
-                const response = await fetch(`\/appointments`, {
+                const response = await fetch(`${API_URL}/appointments`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -69,7 +69,7 @@ const AdminAppointmentsPage: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`\/appointments/${id}/status`, {
+            const response = await fetch(`${API_URL}/appointments/${id}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ const AdminAppointmentsPage: React.FC = () => {
         if (!window.confirm('¿Estás seguro de que deseas eliminar esta reserva permanentemente?')) return;
 
         try {
-            const response = await fetch(`\/appointments/${id}`, {
+            const response = await fetch(`${API_URL}/appointments/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -132,7 +132,7 @@ const AdminAppointmentsPage: React.FC = () => {
                             {appointments.map(app => (
                                 <tr key={app.id} className="hover:bg-neutral-800/80 transition text-sm">
                                     <td className="p-4 text-neutral-300">
-                                        {new Date(app.dateTime).toLocaleString([], { dateStyle: 'long', timeStyle: 'short' })}
+                                        {new Date(app.dateTime).toLocaleString('es-AR', { dateStyle: 'long', timeStyle: 'short' })}
                                     </td>
                                     <td className="p-4">
                                         <div className="font-semibold text-white">{app.client.name}</div>

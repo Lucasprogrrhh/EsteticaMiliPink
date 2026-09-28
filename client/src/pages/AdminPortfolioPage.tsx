@@ -36,7 +36,7 @@ export default function AdminPortfolioPage() {
 
     const fetchPortfolio = async () => {
         try {
-            const res = await fetch(`\/portfolio/admin`, {
+            const res = await fetch(`${API_URL}/portfolio/admin`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Failed to fetch portfolio');
@@ -51,7 +51,7 @@ export default function AdminPortfolioPage() {
 
     const handleUpdateStatus = async (id: string, action: 'approve' | 'reject') => {
         try {
-            const res = await fetch(`\/portfolio/${id}/${action}`, {
+            const res = await fetch(`${API_URL}/portfolio/${id}/${action}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -67,7 +67,7 @@ export default function AdminPortfolioPage() {
     const handleDelete = async (id: string) => {
         if (!confirm('¿Seguro de eliminar esta foto?')) return;
         try {
-            const res = await fetch(`\/portfolio/${id}`, {
+            const res = await fetch(`${API_URL}/portfolio/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -89,7 +89,7 @@ export default function AdminPortfolioPage() {
             fd.append('description', desc);
             fd.append('serviceCategory', category);
 
-            const res = await fetch(`\/portfolio/upload`, {
+            const res = await fetch(`${API_URL}/portfolio/upload`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: fd

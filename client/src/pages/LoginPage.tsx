@@ -25,7 +25,7 @@ export default function LoginPage() {
 
         if (isForgotPassword) {
             try {
-                const res = await fetch(`\/auth/forgot-password`, {
+                const res = await fetch(`${API_URL}/auth/forgot-password`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
