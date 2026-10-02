@@ -28,8 +28,8 @@ export default function PublicPortfolioPage() {
             setLoading(true);
             try {
                 const url = activeCategory === 'Todos' 
-                    ? `\/portfolio`
-                    : `\/portfolio?category=${encodeURIComponent(activeCategory)}`;
+                    ? `${API_URL}/portfolio`
+                    : `${API_URL}/portfolio?category=${encodeURIComponent(activeCategory)}`;
                 
                 const res = await fetch(url);
                 const data = await res.json();

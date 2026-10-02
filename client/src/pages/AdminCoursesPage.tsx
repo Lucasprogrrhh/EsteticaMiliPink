@@ -136,8 +136,8 @@ export default function AdminCoursesPage() {
 
         try {
             const url = isEditing 
-                ? `\/courses/${currentCourseId}`
-                : `\/courses`;
+                ? `${API_URL}/courses/${currentCourseId}`
+                : `${API_URL}/courses`;
                 
             const res = await fetch(url, {
                 method: isEditing ? 'PATCH' : 'POST',
