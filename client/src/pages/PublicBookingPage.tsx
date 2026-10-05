@@ -57,46 +57,56 @@ const PublicBookingPage: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            // Robust fetch helper to handle serverless cold starts
-            const fetchServicesWithRetry = async (retries = 3): Promise<any[]> => {
-                for (let i = 0; i < retries; i++) {
-                    try {
-                        const res = await fetch(`${API_URL}/services`);
-                        if (res.ok) {
-                            const data = await res.json();
-                            if (Array.isArray(data) && data.length > 0) return data;
-                        }
-                    } catch (e) {
-                        console.warn(`Retry ${i + 1} fetching services failed:`, e);
-                    }
-                    // Wait 500ms before retry
-                    await new Promise(r => setTimeout(r, 500));
-                }
-                throw new Error('No se pudieron cargar los servicios despues de varios intentos.');
+            // Run services + admin-settings in parallel to avoid sequential cold-start delays
+            const fetchWithTimeout = (url: string, options: RequestInit = {}, timeoutMs = 12000): Promise<Response> => {
+                return Promise.race([
+                    fetch(url, options),
+                    new Promise<Response>((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs))
+                ]);
             };
 
-            try {
-                const servicesData = await fetchServicesWithRetry();
-                setServices(servicesData.filter((s: any) => s.active));
+            const headers: Record<string, string> = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const [servicesResult, settingsResult] = await Promise.allSettled([
+                (async () => {
+                    for (let i = 0; i < 4; i++) {
+                        try {
+                            const res = await fetchWithTimeout(`${API_URL}/services`);
+                            if (res.ok) {
+                                const data = await res.json();
+                                if (Array.isArray(data)) return data;
+                            }
+                        } catch (e) {
+                            console.warn(`Intento ${i + 1} fallido cargando servicios:`, e);
+                        }
+                        if (i < 3) await new Promise(r => setTimeout(r, 800));
+                    }
+                    throw new Error('No se pudieron cargar los servicios.');
+                })(),
+                (async () => {
+                    try {
+                        const res = await fetchWithTimeout(`${API_URL}/users/admin-settings`, { headers });
+                        if (res.ok) return res.json();
+                    } catch (e) {
+                        console.warn('Error cargando configuración:', e);
+                    }
+                    return null;
+                })()
+            ]);
+
+            if (servicesResult.status === 'fulfilled') {
+                setServices((servicesResult.value as any[]).filter((s: any) => s.active));
                 setError('');
-            } catch (err: any) {
-                console.error('Error fetching services:', err);
+            } else {
                 setError('No se pudieron cargar los servicios. Por favor recargá la página.');
             }
 
-            try {
-                const headers: Record<string, string> = {};
-                if (token) headers['Authorization'] = `Bearer ${token}`;
-                const settingsRes = await fetch(`${API_URL}/users/admin-settings`, { headers });
-                if (settingsRes.ok) {
-                    const settingsData = await settingsRes.json();
-                    setAdminSettings(settingsData);
-                }
-            } catch (err) {
-                console.error('Error fetching admin settings:', err);
-            } finally {
-                setLoading(false);
+            if (settingsResult.status === 'fulfilled' && settingsResult.value) {
+                setAdminSettings(settingsResult.value);
             }
+
+            setLoading(false);
         };
 
         fetchData();
