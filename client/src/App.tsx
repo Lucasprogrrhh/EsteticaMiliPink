@@ -92,6 +92,59 @@ function ServiceCard({ service }: { service: Service }) {
   )
 }
 
+// Self-fetching appointments component for Dashboard — always loads fresh data on mount
+function DashboardAppointments({ appointments: propAppointments }: { appointments: Appointment[] }) {
+  const { token } = useAuth()
+  const [appts, setAppts] = useState<Appointment[]>(propAppointments)
+  const [fetching, setFetching] = useState(true)
+
+  useEffect(() => {
+    if (!token) { setFetching(false); return }
+    const controller = new AbortController()
+    const load = async () => {
+      try {
+        const res = await fetch(`${API}/appointments`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+          signal: controller.signal
+        })
+        if (res.ok) {
+          const data = await res.json()
+          if (Array.isArray(data)) {
+            // Sort newest first
+            const sorted = [...data].sort((a, b) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime())
+            setAppts(sorted)
+          }
+        }
+      } catch (err: any) {
+        if (err.name !== 'AbortError') console.error('Error cargando citas:', err)
+      } finally {
+        setFetching(false)
+      }
+    }
+    load()
+    return () => controller.abort()
+  }, [token])
+
+  if (fetching) return <p className="text-on-surface-variant text-sm text-center py-4 animate-pulse">Cargando citas...</p>
+  if (appts.length === 0) return <p className="text-slate-500 text-sm text-center py-4">No hay citas registradas aún.</p>
+
+  return (
+    <table className="w-full">
+      <thead>
+        <tr className="text-left text-xs text-on-surface-variant uppercase tracking-wider font-bold border-b border-outline-variant/30">
+          <th className="pb-3 px-4">Fecha</th>
+          <th className="pb-3 px-4">Cliente</th>
+          <th className="pb-3 px-4">Servicio</th>
+          <th className="pb-3 px-4">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {appts.slice(0, 5).map(a => <AppointmentRow key={a.id} appt={a} />)}
+      </tbody>
+    </table>
+  )
+}
+
 function AppointmentRow({ appt }: { appt: Appointment }) {
   const date = new Date(appt.dateTime)
   return (
@@ -182,23 +235,7 @@ function Dashboard({ services, appointments, reviews = [] }: { services: Service
           <Calendar className="w-4 h-4 text-primary" />
           Próximas citas
         </h3>
-        {appointments.slice(0, 5).length === 0 ? (
-          <p className="text-slate-500 text-sm text-center py-4">No hay citas registradas aún.</p>
-        ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-xs text-on-surface-variant uppercase tracking-wider font-bold border-b border-outline-variant/30">
-                <th className="pb-3 px-4">Fecha</th>
-                <th className="pb-3 px-4">Cliente</th>
-                <th className="pb-3 px-4">Servicio</th>
-                <th className="pb-3 px-4">Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {appointments.slice(0, 5).map(a => <AppointmentRow key={a.id} appt={a} />)}
-            </tbody>
-          </table>
-        )}
+        <DashboardAppointments appointments={appointments} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

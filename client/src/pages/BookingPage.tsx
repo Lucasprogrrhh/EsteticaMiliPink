@@ -176,7 +176,14 @@ const BookingPage: React.FC = () => {
             const clientName = user?.name || 'Cliente';
             const serviceTitle = selectedService ? selectedService.name : 'Estética';
             
-            const message = `Hola! 👋 Acabo de reservar un turno en Mili Belleza Study 💅🏻\n✅ *Datos de mi reserva:*\n▪ Nombre: ${clientName}\n🎀 Servicio: ${serviceTitle}\n📅 Fecha: ${formatDate}\n🕐 Hora: ${formatTime}\nTe envío el comprobante de transferencia a continuación. ¡Gracias! 🌸`;
+            const wave = String.fromCodePoint(0x1F44B);
+            const nails = String.fromCodePoint(0x1F485, 0x1F3FB);
+            const check = String.fromCodePoint(0x2705);
+            const bow = String.fromCodePoint(0x1F380);
+            const cal = String.fromCodePoint(0x1F4C5);
+            const clock = String.fromCodePoint(0x1F550);
+            const flower = String.fromCodePoint(0x1F338);
+            const message = `Hola! ${wave} Acabo de reservar un turno en Mili Belleza Study ${nails}\n${check} *Datos de mi reserva:*\n\u25AA Nombre: ${clientName}\n${bow} Servicio: ${serviceTitle}\n${cal} Fecha: ${formatDate}\n${clock} Hora: ${formatTime}\nTe env\u00EDo el comprobante de transferencia a continuaci\u00F3n. \u00A1Gracias! ${flower}`;
             
             const cleanPhone = targetPhone.replace(/\D/g, '');
             const waUrl = cleanPhone 
