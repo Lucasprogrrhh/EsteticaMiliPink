@@ -183,26 +183,32 @@ const PublicBookingPage: React.FC = () => {
 
             const selectedService = services.find(s => s.id === serviceId);
 
-            // WhatsApp Redirection
+            // WhatsApp Redirection — emojis are pre-encoded to avoid charset issues
             const targetPhone = adminSettings?.adminPhone || '5492664325951';
             const formatDate = new Date(dateTime).toLocaleDateString('es-AR');
             const formatTime = new Date(dateTime).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
             const clientName = user?.name || 'Cliente';
-            const serviceTitle = selectedService ? selectedService.name : 'Estética';
-            
-            const wave = String.fromCodePoint(0x1F44B);
-            const nails = String.fromCodePoint(0x1F485, 0x1F3FB);
-            const check = String.fromCodePoint(0x2705);
-            const bow = String.fromCodePoint(0x1F380);
-            const cal = String.fromCodePoint(0x1F4C5);
-            const clock = String.fromCodePoint(0x1F550);
-            const flower = String.fromCodePoint(0x1F338);
-            const message = `Hola! ${wave} Acabo de reservar un turno en Mili Belleza Study ${nails}\n${check} *Datos de mi reserva:*\n\u25AA Nombre: ${clientName}\n${bow} Servicio: ${serviceTitle}\n${cal} Fecha: ${formatDate}\n${clock} Hora: ${formatTime}\nTe env\u00EDo el comprobante de transferencia a continuaci\u00F3n. \u00A1Gracias! ${flower}`;
-            
-            const cleanPhone = targetPhone.replace(/\D/g, '');
-            const waUrl = cleanPhone 
-                ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`
-                : `https://wa.me/?text=${encodeURIComponent(message)}`;
+            const serviceTitle = selectedService ? selectedService.name : 'Est\u00E9tica';
+
+            // Format phone: add Argentina country code (54) if number is local (10 digits)
+            let cleanPhone = targetPhone.replace(/\D/g, '');
+            if (cleanPhone.length === 10) cleanPhone = '54' + cleanPhone;
+            else if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) cleanPhone = '54' + cleanPhone.slice(1);
+
+            // Build WA URL with pre-percent-encoded emojis — no emoji chars in source
+            const enc = encodeURIComponent;
+            const waText =
+              'Hola!%20%F0%9F%91%8B%20Acabo%20de%20reservar%20un%20turno%20en%20Mili%20Belleza%20Study%20%F0%9F%92%85%F0%9F%8F%BB' +
+              '%0A%E2%9C%85%20*Datos%20de%20mi%20reserva%3A*' +
+              '%0A%E2%96%AA%20Nombre%3A%20' + enc(clientName) +
+              '%0A%F0%9F%8E%80%20Servicio%3A%20' + enc(serviceTitle) +
+              '%0A%F0%9F%93%85%20Fecha%3A%20' + enc(formatDate) +
+              '%0A%F0%9F%95%90%20Hora%3A%20' + enc(formatTime) +
+              '%0ATe%20env%C3%ADo%20el%20comprobante%20de%20transferencia%20a%20continuaci%C3%B3n.%20%C2%A1Gracias!%20%F0%9F%8C%B8';
+
+            const waUrl = cleanPhone
+              ? `https://wa.me/${cleanPhone}?text=${waText}`
+              : `https://wa.me/?text=${waText}`;
 
             try {
                 window.open(waUrl, '_blank');
