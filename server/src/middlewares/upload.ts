@@ -17,9 +17,10 @@ const storage = new CloudinaryStorage({
         const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
         return {
             folder: 'estetica-portfolio',
-            // Use auto format + quality for best compression
+            // Auto-convert HEIC/HEIF to jpg for compatibility
             format: ext === 'heic' || ext === 'heif' ? 'jpg' : undefined,
-            transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+            // Note: transformation removed — it causes Invalid Signature errors in Vercel
+            // Cloudinary applies auto quality/format optimization at delivery time
         };
     },
 });

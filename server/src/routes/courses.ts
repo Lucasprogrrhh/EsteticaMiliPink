@@ -46,7 +46,8 @@ router.post('/', requireAuth, upload.single('coverImage'), async (req, res) => {
 
         let coverImageUrl = undefined;
         if (req.file) {
-            coverImageUrl = `/uploads/${req.file.filename}`;
+            // CloudinaryStorage sets req.file.path to the full HTTPS Cloudinary URL
+            coverImageUrl = req.file.path || `/uploads/${req.file.filename}`;
         }
 
         const course = await prisma.course.create({
@@ -90,7 +91,8 @@ router.patch('/:id', requireAuth, upload.single('coverImage'), async (req, res) 
         if (status !== undefined) data.status = status;
 
         if (req.file) {
-            data.coverImageUrl = `/uploads/${req.file.filename}`;
+            // CloudinaryStorage sets req.file.path to the full HTTPS Cloudinary URL
+            data.coverImageUrl = req.file.path || `/uploads/${req.file.filename}`;
         }
 
         const course = await prisma.course.update({

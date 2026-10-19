@@ -46,8 +46,10 @@ export default function ServicesAdminPage() {
     };
 
     useEffect(() => {
+        if (!token) return; // Wait until auth token is available
+        setError('');       // Clear any previous error before retrying
         fetchServices();
-    }, []);
+    }, [token]); // Re-fetch whenever token changes (login/logout)
 
     const handleOpenModal = (mode: 'create' | 'edit', service?: Service) => {
         setModalMode(mode);

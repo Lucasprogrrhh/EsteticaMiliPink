@@ -232,7 +232,7 @@ export default function AdminCoursesPage() {
                 {courses.map(course => (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={course.id} className={`bg-slate-800 rounded-xl overflow-hidden border ${course.status === 'HIDDEN' ? 'border-red-500/50 opacity-60' : 'border-slate-700'}`}>
                         {course.coverImageUrl && (
-                            <img src={`\${course.coverImageUrl}`} alt={course.name} className="w-full h-40 object-cover" />
+                            <img src={course.coverImageUrl} alt={course.name} className="w-full h-40 object-cover" />
                         )}
                         <div className="p-4">
                             <div className="flex justify-between items-start mb-2">
