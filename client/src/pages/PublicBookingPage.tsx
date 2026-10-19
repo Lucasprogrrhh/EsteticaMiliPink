@@ -206,9 +206,11 @@ const PublicBookingPage: React.FC = () => {
               '%0A%F0%9F%95%90%20Hora%3A%20' + enc(formatTime) +
               '%0ATe%20env%C3%ADo%20el%20comprobante%20de%20transferencia%20a%20continuaci%C3%B3n.%20%C2%A1Gracias!%20%F0%9F%8C%B8';
 
+            // Note: we use api.whatsapp.com/send/ instead of wa.me/
+            // wa.me's 302 redirect drops UTF-8 multi-byte emoji bytes and turns them into  (replacement characters)
             const waUrl = cleanPhone
-              ? `https://wa.me/${cleanPhone}?text=${waText}`
-              : `https://wa.me/?text=${waText}`;
+              ? `https://api.whatsapp.com/send/?phone=${cleanPhone}&text=${waText}`
+              : `https://api.whatsapp.com/send/?text=${waText}`;
 
             try {
                 window.open(waUrl, '_blank');
