@@ -553,35 +553,36 @@ export default function LandingPage() {
                         </div>
                         </div>
 
-                        {/* ── CARD 3: Laminado de Cejas (próximamente) ── */}
-                        <div className="mb-curso-card" style={{opacity:.8}}>
-                        <span className="mb-curso-badge proximamente">Próximamente ✦</span>
+                        {/* ── CARD 3: Laminado de Cejas ── */}
+                        <div className="mb-curso-card">
+                        <span className="mb-curso-badge disponible">Disponible</span>
                         <img
                             className="mb-curso-img"
-                            src="/images/curso-cejas.jpg"
+                            src="/images/curso-laminado-cejas.jpg"
                             alt="Laminado de Cejas"
                             onError={(e) => { e.currentTarget.style.display='none'; if(e.currentTarget.nextElementSibling) (e.currentTarget.nextElementSibling as HTMLElement).style.display='flex'; }}
                         />
-                        <div className="mb-curso-img-placeholder" style={{display:'none',background:'linear-gradient(135deg,#fff9c4,#fff8e1)'}}>✦</div>
+                        <div className="mb-curso-img-placeholder" style={{display:'none',background:'linear-gradient(135deg,#fce4ec,#f8bbd9)'}}>✨</div>
 
                         <div className="mb-curso-body">
-                            <div className="mb-curso-icon">✦</div>
+                            <div className="mb-curso-icon">✨</div>
                             <div className="mb-curso-name">Laminado de Cejas</div>
                             <div className="mb-curso-desc">
-                            Muy pronto: laminado profesional, diseño y pigmentación de cejas perfectas. Anotate en la lista de espera y recibís precio early bird exclusivo antes que nadie.
+                            Dominá la técnica de laminado, perfilado y nutrición para lograr cejas definidas, naturales y con volumen. Una de las capacitaciones con mayor salida laboral inmediata.
                             </div>
                             <div className="mb-curso-pills">
-                            <span className="mb-curso-pill">🔔 Lista de espera abierta</span>
-                            <span className="mb-curso-pill">💛 Precio early bird</span>
+                            <span className="mb-curso-pill">📅 Fechas a confirmar</span>
                             <span className="mb-curso-pill">📜 Certificado incluido</span>
+                            <span className="mb-curso-pill">⚡ Alta demanda laboral</span>
+                            <span className="mb-curso-pill">🏠 Presencial</span>
                             </div>
                             <a
-                            href="https://wa.me/5492664734034?text=Hola!%20Quiero%20anotarme%20en%20la%20lista%20de%20espera%20para%20el%20curso%20de%20Laminado%20de%20Cejas%20%E2%9C%A6"
+                            href="https://api.whatsapp.com/send/?phone=5492664734034&text=Hola!%20Me%20interesa%20el%20Curso%20de%20Laminado%20de%20Cejas%20%E2%9C%A8%20%C2%BFpod%C3%A9s%20darme%20m%C3%A1s%20info%3F"
                             target="_blank"
                             rel="noreferrer"
-                            className="mb-curso-cta waiting"
+                            className="mb-curso-cta active"
                             >
-                            Anotarme en lista de espera →
+                            Consultar por WhatsApp →
                             </a>
                         </div>
                         </div>
