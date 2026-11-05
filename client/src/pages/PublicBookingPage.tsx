@@ -184,7 +184,7 @@ const PublicBookingPage: React.FC = () => {
             const selectedService = services.find(s => s.id === serviceId);
 
             // WhatsApp Redirection — emojis are pre-encoded to avoid charset issues
-            const targetPhone = adminSettings?.adminPhone || '5492664325951';
+            const targetPhone = adminSettings?.adminPhone || '5492664734034';
             const formatDate = new Date(dateTime).toLocaleDateString('es-AR');
             const formatTime = new Date(dateTime).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
             const clientName = user?.name || 'Cliente';

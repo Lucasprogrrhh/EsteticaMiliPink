@@ -39,12 +39,15 @@ app.use('/api/time-slots', timeSlotsRouter);
 
 // Public endpoints for booking page (accessible without login)
 app.get('/api/appointments/available-slots', (req, res, next) => {
+    req.url = '/available-slots';
     appointmentsRouter(req, res, next);
 });
 app.post('/api/appointments', (req, res, next) => {
+    req.url = '/';
     appointmentsRouter(req, res, next);
 });
 app.get('/api/users/admin-settings', (req, res, next) => {
+    req.url = '/admin-settings';
     usersRouter(req, res, next);
 });
 
