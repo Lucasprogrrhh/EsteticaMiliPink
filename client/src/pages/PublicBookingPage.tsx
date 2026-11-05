@@ -206,11 +206,13 @@ const PublicBookingPage: React.FC = () => {
               '%0A%F0%9F%95%90%20Hora%3A%20' + enc(formatTime) +
               '%0ATe%20env%C3%ADo%20el%20comprobante%20de%20transferencia%20a%20continuaci%C3%B3n.%20%C2%A1Gracias!%20%F0%9F%8C%B8';
 
-            // Note: we use api.whatsapp.com/send/ instead of wa.me/
-            // wa.me's 302 redirect drops UTF-8 multi-byte emoji bytes and turns them into  (replacement characters)
-            const waUrl = cleanPhone
-              ? `https://api.whatsapp.com/send/?phone=${cleanPhone}&text=${waText}`
-              : `https://api.whatsapp.com/send/?text=${waText}`;
+            // En dispositivos móviles (Android/iOS) abrimos directamente api.whatsapp.com para abrir la app instalada.
+            // En computadoras de escritorio (Windows/Mac/Linux) abrimos directamente web.whatsapp.com para evitar
+            // la pantalla intermedia de api.whatsapp.com cuyo renderizador HTML corrompe los caracteres Unicode (emojis).
+            const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const waUrl = isMobileDevice
+              ? (cleanPhone ? `https://api.whatsapp.com/send/?phone=${cleanPhone}&text=${waText}` : `https://api.whatsapp.com/send/?text=${waText}`)
+              : (cleanPhone ? `https://web.whatsapp.com/send/?phone=${cleanPhone}&text=${waText}` : `https://web.whatsapp.com/send/?text=${waText}`);
 
             try {
                 window.open(waUrl, '_blank');
