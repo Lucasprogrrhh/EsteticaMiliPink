@@ -50,9 +50,9 @@ router.get('/available-slots', async (req, res) => {
             orderBy: { time: 'asc' },
         });
 
-        // Obtener citas activas de ese día
-        const startOfDay = new Date(`${date}T00:00:00.000Z`);
-        const endOfDay = new Date(`${date}T23:59:59.999Z`);
+        // Obtener citas activas de ese día (usando zona horaria de Argentina UTC-3)
+        const startOfDay = new Date(`${date}T00:00:00-03:00`);
+        const endOfDay = new Date(`${date}T23:59:59.999-03:00`);
 
         const activeAppointments = await prisma.appointment.findMany({
             where: {
@@ -65,10 +65,10 @@ router.get('/available-slots', async (req, res) => {
             select: { dateTime: true },
         });
 
-        // Mapear los slots de tiempo y marcar disponibilidad
+        // Mapear los slots de tiempo y marcar disponibilidad (comparando con el horario local de Argentina)
         const slotsWithAvailability = timeSlots.map(slot => {
-            // Construir el dateTime exacto del slot en la fecha elegida
-            const slotDateTime = new Date(`${date}T${slot.time}`);
+            // Construir el dateTime exacto del slot en la fecha elegida con UTC-3
+            const slotDateTime = new Date(`${date}T${slot.time}:00-03:00`);
             
             // Verificar si hay alguna cita en el mismo horario
             const isBooked = activeAppointments.some(app => {
