@@ -418,10 +418,19 @@ const PublicBookingPage: React.FC = () => {
                                 <button
                                     type="submit"
                                     disabled={submitting}
-                                    className="w-full bg-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-on-primary font-bold py-4 rounded-xl transition-all duration-200 shadow-[0px_4px_14px_rgba(179,0,105,0.25)] active:scale-[0.98] flex items-center justify-center gap-2 text-lg"
+                                    className="w-full bg-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-on-primary font-bold py-4 rounded-xl transition-all duration-200 shadow-[0px_4px_14px_rgba(179,0,105,0.25)] active:scale-[0.98] flex items-center justify-center gap-2 text-lg cursor-pointer"
                                 >
-                                    {submitting ? 'Confirmando...' : 'Confirmar Reserva'}
-                                    {!submitting && <span className="material-symbols-outlined text-xl">event_available</span>}
+                                    {submitting ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                            <span>Procesando reserva...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span>Confirmar Reserva</span>
+                                            <span className="material-symbols-outlined text-xl">event_available</span>
+                                        </>
+                                    )}
                                 </button>
                             </form>
                         )}

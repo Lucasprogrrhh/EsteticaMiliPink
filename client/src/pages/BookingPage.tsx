@@ -332,9 +332,16 @@ const BookingPage: React.FC = () => {
                     <button
                         type="submit"
                         disabled={submitting}
-                        className="w-full bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-500/50 text-white font-bold py-3 px-4 rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-500/50 text-white font-bold py-3 px-4 rounded transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
                     >
-                        {submitting ? 'Confirming...' : 'Confirm Booking'}
+                        {submitting ? (
+                            <>
+                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <span>Procesando reserva...</span>
+                            </>
+                        ) : (
+                            'Confirmar Reserva'
+                        )}
                     </button>
                 </div>
             </form>
